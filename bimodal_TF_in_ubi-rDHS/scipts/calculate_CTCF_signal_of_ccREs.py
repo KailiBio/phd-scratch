@@ -31,9 +31,9 @@ for key,value in fileDic.items():
 	print (key)
 	if len(value)==1:
 		subprocess.call("bigWigAverageOverBed /data/projects/encode/data/"+key+"/"+value[0]+".bigWig /data/zusers/fankaili/ccre/hg19-cREs.bed "+outDir+"CTCF_signal_ccREs_"+cellline+"_"+key+".txt", shell=True)
-                print(value[0])
-                subprocess.call("""awk '{FS=OFS="\t"}{print $1,$5}' """+outDir+"CTCF_signal_ccREs_"+cellline+"_"+key+".txt > "+outDir+"CTCF_signal_ccREs_"+cellline+"_"+key+"_final.txt", shell=True)
-        else:
+        print(value[0])
+        subprocess.call("""awk '{FS=OFS="\t"}{print $1,$5}' """+outDir+"CTCF_signal_ccREs_"+cellline+"_"+key+".txt > "+outDir+"CTCF_signal_ccREs_"+cellline+"_"+key+"_final.txt", shell=True)
+    else:
 		subprocess.call("bigWigAverageOverBed /data/projects/encode/data/"+key+"/"+value[0]+".bigWig /data/zusers/fankaili/ccre/hg19-cREs.bed "+outDir+"CTCF_signal_ccREs_"+cellline+"_"+key+"_1.txt", shell=True)
-                subprocess.call("bigWigAverageOverBed /data/projects/encode/data/"+key+"/"+value[1]+".bigWig /data/zusers/fankaili/ccre/hg19-cREs.bed "+outDir+"CTCF_signal_ccREs_"+cellline+"_"+key+"_2.txt", shell=True)
+        subprocess.call("bigWigAverageOverBed /data/projects/encode/data/"+key+"/"+value[1]+".bigWig /data/zusers/fankaili/ccre/hg19-cREs.bed "+outDir+"CTCF_signal_ccREs_"+cellline+"_"+key+"_2.txt", shell=True)
 		subprocess.call("""awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$5}else{mean=(a[$1]+$5)/2; print $1,mean}}' """+outDir+"CTCF_signal_ccREs_"+cellline+"_"+key+"_1.txt "+outDir+"CTCF_signal_ccREs_"+cellline+"_"+key+"_2.txt > "+outDir+"CTCF_signal_ccREs_"+cellline+"_"+key+"_final.txt", shell=True)

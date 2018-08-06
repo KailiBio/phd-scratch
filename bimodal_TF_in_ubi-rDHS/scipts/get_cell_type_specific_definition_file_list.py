@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Kaili
+# -- Kaili
 # This script is for getting cell-type specific ccRE definition file list.
 # INPUT: master file from Jill: /data/projects/screen/Version-4/ver10/hg19/hg19-Look-Up-Matrix.txt
 # OUTPUT: cell type specific file list: /data/zusers/fankaili/ccre/tf/cell_type_specific/hg19_ccREs_cell_type_specific_definition_file_list.txt

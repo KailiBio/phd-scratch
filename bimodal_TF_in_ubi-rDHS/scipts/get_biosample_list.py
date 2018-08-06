@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Kaili
+# -- Kaili
 # This script is for getting the list of biosamples that from the given ENCODE URL.
 # INPUT: URL from ENCODE. (Don't give it the URL of the matrix.)
 # OUTPUT: /data/zusers/fankaili/ccre/tf/encode_tf_file_list/encode_hg19_tf_cellline_list0.txt

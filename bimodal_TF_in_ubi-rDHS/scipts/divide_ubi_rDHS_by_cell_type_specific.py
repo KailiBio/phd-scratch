@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Kaili
+# -- Kaili
 # This script is for divide ubi-rDHS into PLS/ELS/CTCF-only based on cell-type specific definition.
 # INPUT
 # OUTPUT

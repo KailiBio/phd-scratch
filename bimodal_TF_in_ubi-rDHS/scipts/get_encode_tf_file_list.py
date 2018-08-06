@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Kaili
+# -- Kaili
 # This script is for getting TF file list.
 # INPUT: URL from ENCODE
 # OUTPUT: file list: /data/zusers/fankaili/ccre/tf/encode_tf_file_list/

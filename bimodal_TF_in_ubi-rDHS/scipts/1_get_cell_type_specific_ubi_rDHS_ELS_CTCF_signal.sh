@@ -6,7 +6,7 @@
 # OUTPUT: cell-type specific ubi-rDHS: /data/zusers/fankaili/ccre/tf/cell_type_specific/
 
 
-scriptDir="/data/zusers/fankaili/github/KailiBio/bimodal_TF_in_ubi-rDHS/scripts/"
+scriptDir="/data/zusers/fankaili/github/weng-lab/Kaili/bimodal_TF_in_ubi-rDHS/scipts/"
 
 # 1. get cell type specific definition file list
 python ${script}get_cell_type_specific_definition_file_list.py
