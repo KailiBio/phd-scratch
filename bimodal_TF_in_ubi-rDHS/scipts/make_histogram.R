@@ -27,11 +27,9 @@ for(i in 1:ncol(data)){
     dat = data[,i]
   }
   m = paste("CTCF signal of ubi-rDHS in ",name,"\t",type ,sep="")
-  hist(dat, main = name, xlab = name, col = "#bdbdbd", freq = FALSE,
-       breaks=seq(min(dat)-0.05, max(dat)+0.05, by=0.05))
+  hist(dat, main = name, xlab = name, col = "#bdbdbd", freq = FALSE, breaks=seq(min(dat)-0.05, max(dat)+0.05, by=0.05))
   if(type=="zscore"){
     lines(c(1.64,1.64), c(0,20), col="blue", lwd=2)
   }
 }
-
 dev.off()
