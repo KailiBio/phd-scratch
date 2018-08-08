@@ -18,10 +18,20 @@ Rscript ${scriptDir}make_histogram.R /data/zusers/fankaili/ccre/tf/matrix/hg19_u
 ## 2) ubi-rDHS zscore
 Rscript ${scriptDir}make_histogram.R /data/zusers/fankaili/ccre/tf/matrix/hg19_ubi-rDHS_CTCF_zscore_matrix.txt /data/zusers/fankaili/ccre/tf/figs/ hg19_ubi-rDHS_CTCF_zscore_histogram.pdf zscore
 
+## remove ENCSR617IFZ and ENCSR000BNK, which didn't show bimodal becasue of data quality
+cd /data/zusers/fankaili/ccre/tf/matrix/
+head -1 hg19_ubi-rDHS_CTCF_zscore_matrix.txt | awk '{for(i=1;i<=NF;i++){if($i=="HEK293_ENCSR617IFZ_ENCFF036FIU"){print i}}}'
+# 26
+head -1 hg19_ubi-rDHS_CTCF_zscore_matrix.txt | awk '{for(i=1;i<=NF;i++){if($i=="K562_ENCSR000BNK_ENCFF648ABV"){print i}}}'
+# 31
+cut -f -25,27-30,32- hg19_ubi-rDHS_CTCF_zscore_matrix.txt > temp_hg19_ubi-rDHS_CTCF_zscore_matrix.txt
+mv hg19_ubi-rDHS_CTCF_zscore_matrix.txt hg19_ubi-rDHS_CTCF_zscore_matrix0.txt
+mv temp_hg19_ubi-rDHS_CTCF_zscore_matrix.txt hg19_ubi-rDHS_CTCF_zscore_matrix.txt
+
 
 # 2. classification using EM
 ## 1) ubi-rDHS log10(signal+0.01)
-Rscript ${scriptDir}classify_bimodal_EM.R /data/zusers/fankaili/ccre/tf/matrix/hg19_ubi-rDHS_CTCF_signal_matrix.txt /data/zusers/fankaili/ccre/tf/matrix/ hg19_ubi-rDHS_CTCF_signal_log10_classification.txt \
+# Rscript ${scriptDir}classify_bimodal_EM.R /data/zusers/fankaili/ccre/tf/matrix/hg19_ubi-rDHS_CTCF_signal_matrix.txt /data/zusers/fankaili/ccre/tf/matrix/ hg19_ubi-rDHS_CTCF_signal_log10_classification.txt \
 /data/zusers/fankaili/ccre/tf/figs/hg19_ubi-rDHS_CTCF_signal_log10_classification.pdf log10
 
 ## 2) ubi-rDHS zscore

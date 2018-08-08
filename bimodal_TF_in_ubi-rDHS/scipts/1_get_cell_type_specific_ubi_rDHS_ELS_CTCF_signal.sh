@@ -14,4 +14,4 @@ python ${script}get_cell_type_specific_definition_file_list.py
 # 2. divide ubi-rDHS
 python ${script}divide_ubi_rDHS_by_cell_type_specific.py.py
 #
-nohup python /data/zusers/fankaili/github/KailiBio/bimodal_TF_in_ubi-rDHS/scripts/divide_ubi_rDHS_by_cell_type_specific.py > /data/zusers/fankaili/ccre/tf/cell_type_specific/nohup.divide_ubi_rDHS_by_cell_type_specific.py.out 2>&1&
+nohup python ${scriptDir}divide_ubi_rDHS_by_cell_type_specific.py > /data/zusers/fankaili/ccre/tf/cell_type_specific/nohup.divide_ubi_rDHS_by_cell_type_specific.py.out 2>&1&

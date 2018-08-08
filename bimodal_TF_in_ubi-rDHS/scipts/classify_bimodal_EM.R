@@ -4,8 +4,8 @@
 # INPUT: bimodal values (signal/zscore matrix here)
 # OURPUT: threshold
 
-# EXP: Rscript classify_bimodal_EM.R /data/zusers/fankaili/ccre/tf/matrix/hg19_ubi-rDHS_CTCF_signal_matrix.txt /data/zusers/fankaili/ccre/tf/matrix/ hg19_ubi-rDHS_CTCF_signal_log10_classification.txt
-# /data/zusers/fankaili/ccre/tf/figs/hg19_ubi-rDHS_CTCF_signal_log10_classification.pdf log10
+# EXP: Rscript classify_bimodal_EM.R /data/zusers/fankaili/ccre/tf/matrix/hg19_ubi-rDHS_CTCF_zscore_matrix.txt /data/zusers/fankaili/ccre/tf/matrix/ hg19_ubi-rDHS_CTCF_zscore_classification.txt \
+/data/zusers/fankaili/ccre/tf/figs/hg19_ubi-rDHS_CTCF_zscore_classification.pdf zscore
 
 args<-commandArgs(T)
 inFile = args[1]
@@ -25,19 +25,27 @@ pdf(outFigure)
 for(i in 1:ncol(data)){
   biosample = colnames(data)[i]
 
+  # get data
   if(type=="log2"){
     dat = log2(data[,i]+0.01)
   } else if (type=="log10"){
     dat = log10(data[,i]+0.01)
   } else if(type=="zscore"){
-    dat = data[,i]
+    dat = data[data[,i]!=(-10),i]
+    # remove outliner (-10) here
   }
   names(dat) <- rownames(data)
 
-  myEM <- normalmixEM(dat)
-  plot(myEM, whichplots=2, sub = biosample)
-  p <- myEM$posterior
+  # call EM
+  myEM <- normalmixEM(dat, mu = c(min(dat),max(dat)), sigma = c(2,1))
 
+  # density plot
+  hist(dat, breaks=200, freq = FALSE, main=biosample, xlab="zscore")
+  curve((myEM$lambda[1]*dnorm(x, myEM$mu[1], myEM$sigma[1])), col="red", lwd=2, add=TRUE)
+  curve((myEM$lambda[2]*dnorm(x, myEM$mu[2], myEM$sigma[2])), col="green", lwd=2, add=TRUE)
+
+  # get classification
+  p <- myEM$posterior
   m[names(dat[p[,1]>p[,2]]),i]=1
 }
 dev.off()

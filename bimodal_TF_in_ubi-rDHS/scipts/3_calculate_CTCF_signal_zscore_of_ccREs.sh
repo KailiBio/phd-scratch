@@ -15,7 +15,7 @@ scriptDir="/data/zusers/fankaili/github/weng-lab/Kaili/bimodal_TF_in_ubi-rDHS/sc
 for cellline in `cat /data/zusers/fankaili/ccre/tf/encode_tf_file_list/encode_hg19_tf_cellline_with_cell_type_specific_list.txt`
 do
     echo ${cellline} ;
-    cellline=NT2-D1
+    #cellline=NT2-D1
     python ${scriptDir}calculate_CTCF_signal_of_ccREs.py ${cellline} ;
 done
 
@@ -28,11 +28,18 @@ do
     echo ${cellline} ;
     line=`grep "CTCF" /data/zusers/fankaili/ccre/tf/encode_tf_file_list/encode_hg19_${cellline}_tf_id_list.txt` ;
     if [ "$line" != "" ]; then
-        id=`awk '{print $1}' <<< $line`;
-        file_id=`awk '{print $2}' <<< $line`;
-        bigWigAverageOverBed /data/projects/encode/data/${id}/${file_id}.bigWig \
-        /data/zusers/moorej3/Registry-of-ccREs/hg19/V4/hg19-rDHSs.bed ${outDir}hg19_rDHS_${cellline}_${id}_${file_id}_CTCF_signal.tab ;
-        python /data/zusers/fankaili/ccre/tf/zscore-normalization.py ${outDir}hg19_rDHS_${cellline}_${id}_${file_id}_CTCF_signal.tab > ${outDir}hg19_rDHS_${cellline}_${id}_${file_id}_CTCF_signal_zscore.txt ;
+        n=`echo $line | awk '{print NF}'` ;
+        nn=`expr $(($n/3))` ;
+        for ((i=1;i<=$nn;i++))
+        do
+            a=`expr $((1+($i-1)*3))`;
+            b=`expr $((2+($i-1)*3))`;
+            id=`awk -v i="$a" '{print $i}' <<< $line`;
+            file_id=`awk -v i="$b" '{print $i}' <<< $line`;
+            bigWigAverageOverBed /data/projects/encode/data/${id}/${file_id}.bigWig \
+            /data/zusers/moorej3/Registry-of-ccREs/hg19/V4/hg19-rDHSs.bed ${outDir}hg19_rDHS_${cellline}_${id}_${file_id}_CTCF_signal.tab ;
+            python /data/zusers/fankaili/ccre/tf/zscore-normalization.py ${outDir}hg19_rDHS_${cellline}_${id}_${file_id}_CTCF_signal.tab > ${outDir}hg19_rDHS_${cellline}_${id}_${file_id}_CTCF_signal_zscore.txt ;
+        done
     fi
 done
 

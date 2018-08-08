@@ -6,12 +6,16 @@
 # OUTPUT: file ID list in: /data/zusers/fankaili/ccre/tf/encode_tf_file_list/
 
 scriptDir="/data/zusers/fankaili/github/weng-lab/Kaili/bimodal_TF_in_ubi-rDHS/scipts/"
+hg19_cell_type_specific_file="/data/zusers/fankaili/ccre/tf/cell_type_specific/hg19_ccREs_cell_type_specific_definition_file_list.txt"
+outDir="/data/zusers/fankaili/ccre/tf/encode_tf_file_list/"
+outName="encode_hg19_tf_cellline_with_cell_type_specific"
+
 
 cd /data/zusers/fankaili/ccre/tf/encode_tf_file_list/
 
 # 1. get cell lines
 ## 1-1  all celllines in ccRE cell-type specific file
-awk '{FS=OFS="\t"}{print $1}' /data/zusers/fankaili/ccre/tf/cell_type_specific/hg19_ccREs_cell_type_specific_definition_file_list.txt > hg19_ccRE_biosample.txt
+awk '{FS=OFS="\t"}{print $1}' ${hg19_cell_type_specific_file} > hg19_ccRE_biosample.txt
 awk '{FS=OFS="\t"}{if($1!~/_/){print $0}}' hg19_ccRE_biosample.txt > hg19_ccRE_cellline.txt
 
 ## 1-2 all cellines with hg19 TF ChIP-seq data in ENCODE
@@ -25,8 +29,8 @@ cat hg19_ccRE_cellline.txt encode_hg19_tf_cellline_list.txt | sort | uniq -d > e
 
 # 2. get URL
 awk '{FS=OFS="\t"}{print $1,"https://www.encodeproject.org/search/?type=Experiment&assay_title=ChIP-seq&target.investigated_as=transcription+factor&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens&assembly=hg19&biosample_term_name="$1"&assay_title=ChIP-seq&limit=all&format=json"}' \
-encode_hg19_tf_cellline_with_cell_type_specific_list.txt > encode_hg19_tf_cellline_with_cell_type_specific_URL.txt
-sed -i 's/NT2\/D1\\t/NT2-D1\\t/g' encode_hg19_tf_cellline_with_cell_type_specific_URL.txt
+${outName}_list.txt > ${outName}_URL.txt
+sed -i 's/NT2\/D1\\t/NT2-D1\\t/g' ${outName}_URL.txt
 
 # 3. get ENCODE hg19 TF list for each cellline
-python ${scriptDir}get_encode_tf_file_list.py /data/zusers/fankaili/ccre/tf/encode_tf_file_list/encode_hg19_tf_cellline_with_cell_type_specific_URL.txt
+python ${scriptDir}get_encode_tf_file_list.py ${outDir}${outName}_URL.txt
