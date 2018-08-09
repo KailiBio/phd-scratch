@@ -41,12 +41,17 @@ for(i in 1:ncol(data)){
 
   # density plot
   hist(dat, breaks=200, freq = FALSE, main=biosample, xlab="zscore")
-  curve((myEM$lambda[1]*dnorm(x, myEM$mu[1], myEM$sigma[1])), col="red", lwd=2, add=TRUE)
-  curve((myEM$lambda[2]*dnorm(x, myEM$mu[2], myEM$sigma[2])), col="green", lwd=2, add=TRUE)
-
+  curve((myEM$lambda[1]*dnorm(x, myEM$mu[1], myEM$sigma[1])), col="green", lwd=3, add=TRUE)
+  curve((myEM$lambda[2]*dnorm(x, myEM$mu[2], myEM$sigma[2])), col="red", lwd=3, add=TRUE)
+  lines(c(1.64,1.64), c(0,1), col="blue", lwd=3, lty=2)
+  
   # get classification
   p <- myEM$posterior
-  m[names(dat[p[,1]>p[,2]]),i]=1
+  if(mean(dat[p[,1]>p[,2]]) > mean(dat[p[,1]<p[,2]])){
+    m[names(dat[p[,1]>p[,2]]),i]=1
+  }else{
+    m[names(dat[p[,1]<p[,2]]),i]=1
+  }
 }
 dev.off()
 
