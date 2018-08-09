@@ -15,33 +15,37 @@ scriptDir="/data/zusers/fankaili/github/weng-lab/Kaili/bimodal_TF_in_ubi-rDHS/sc
 for cellline in `cat /data/zusers/fankaili/ccre/tf/encode_tf_file_list/encode_hg19_tf_cellline_with_cell_type_specific_list.txt`
 do
     echo ${cellline} ;
-    #cellline=NT2-D1
-    python ${scriptDir}calculate_CTCF_signal_of_ccREs.py ${cellline} ;
+    if cellline == "NT2/D1" ; then
+        cellline = NT2-D1 ;
+    fi
+    python ${scriptDir}calculate_CTCF_signal_of_ccREs.py ${cellline} "CTCF" "/data/zusers/fankaili/ccre/tf/signal/" ;
 done
 
 
 # 2. calculate CTCF z-score
-outDir="/data/zusers/fankaili/ccre/tf/zscore_ctcf/"
-#
-for cellline in `cat /data/zusers/fankaili/ccre/tf/encode_tf_file_list/encode_hg19_tf_cellline_with_cell_type_specific_list.txt`
-do
-    echo ${cellline} ;
-    line=`grep "CTCF" /data/zusers/fankaili/ccre/tf/encode_tf_file_list/encode_hg19_${cellline}_tf_id_list.txt` ;
-    if [ "$line" != "" ]; then
-        n=`echo $line | awk '{print NF}'` ;
-        nn=`expr $(($n/3))` ;
-        for ((i=1;i<=$nn;i++))
-        do
-            a=`expr $((1+($i-1)*3))`;
-            b=`expr $((2+($i-1)*3))`;
-            id=`awk -v i="$a" '{print $i}' <<< $line`;
-            file_id=`awk -v i="$b" '{print $i}' <<< $line`;
-            bigWigAverageOverBed /data/projects/encode/data/${id}/${file_id}.bigWig \
-            /data/zusers/moorej3/Registry-of-ccREs/hg19/V4/hg19-rDHSs.bed ${outDir}hg19_rDHS_${cellline}_${id}_${file_id}_CTCF_signal.tab ;
-            python /data/zusers/fankaili/ccre/tf/zscore-normalization.py ${outDir}hg19_rDHS_${cellline}_${id}_${file_id}_CTCF_signal.tab > ${outDir}hg19_rDHS_${cellline}_${id}_${file_id}_CTCF_signal_zscore.txt ;
-        done
-    fi
-done
+# outDir="/data/zusers/fankaili/ccre/tf/zscore_ctcf/"
+# #
+# for cellline in `cat /data/zusers/fankaili/ccre/tf/encode_tf_file_list/encode_hg19_tf_cellline_with_cell_type_specific_list.txt`
+# do
+#     echo ${cellline} ;
+#     line=`grep "CTCF" /data/zusers/fankaili/ccre/tf/encode_tf_file_list/encode_hg19_${cellline}_tf_id_list.txt` ;
+#     if [ "$line" != "" ]; then
+#         n=`echo $line | awk '{print NF}'` ;
+#         nn=`expr $(($n/3))` ;
+#         for ((i=1;i<=$nn;i++))
+#         do
+#             a=`expr $((1+($i-1)*3))`;
+#             b=`expr $((2+($i-1)*3))`;
+#             id=`awk -v i="$a" '{print $i}' <<< $line`;
+#             file_id=`awk -v i="$b" '{print $i}' <<< $line`;
+#             bigWigAverageOverBed /data/projects/encode/data/${id}/${file_id}.bigWig \
+#             /data/zusers/moorej3/Registry-of-ccREs/hg19/V4/hg19-rDHSs.bed ${outDir}hg19_rDHS_${cellline}_${id}_${file_id}_CTCF_signal.tab ;
+#             python /data/zusers/fankaili/ccre/tf/zscore-normalization.py ${outDir}hg19_rDHS_${cellline}_${id}_${file_id}_CTCF_signal.tab > ${outDir}hg19_rDHS_${cellline}_${id}_${file_id}_CTCF_signal_zscore.txt ;
+#         done
+#     fi
+# done
+mkdir /data/zusers/fankaili/ccre/tf/zscore_ctcf/
+bash ${scriptDir}calculate_zscore.sh -l /data/zusers/fankaili/ccre/tf/encode_tf_file_list/encode_hg19_tf_cellline_with_cell_type_specific_list.txt -d /data/zusers/fankaili/ccre/tf/zscore_ctcf/ -t CTCF
 
 # 3. make the matrix
 cd /data/zusers/fankaili/ccre/tf/matrix/
@@ -70,22 +74,25 @@ awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$1]){print $0}}}' /data/zusers/
 
 ## 2) ubi-rDHS z-score
 ### get rDHS z-score matrix
-echo "id" > hg19_rDHS_CTCF_zscore_matrix.txt
-awk '{print $4}' /data/zusers/moorej3/Registry-of-ccREs/hg19/V4/hg19-rDHSs.bed >> hg19_rDHS_CTCF_zscore_matrix.txt
-#
-for file in `ls /data/zusers/fankaili/ccre/tf/zscore_ctcf/*_CTCF_signal_zscore.txt`
-do
-    filename0=${file%_CTCF_signal_zscore.txt} ;
-    filename=${filename0#/data/zusers/fankaili/ccre/tf/zscore_ctcf/hg19_rDHS_} ;
-    echo $filename ;
-    echo -e "id\t"$filename > temp.txt ;
-    awk '{FS=" \t";OFS="\t"}{print $1,$2}' $file >> temp.txt ;
-    awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1;b[$1]=$2}else{if(a[$1]){print $0,b[$1]}}}' temp.txt hg19_rDHS_CTCF_zscore_matrix.txt > temp_matrix.txt ;
-    mv temp_matrix.txt hg19_rDHS_CTCF_zscore_matrix.txt ;
-    rm temp*.txt;
-done
+# echo "id" > hg19_rDHS_CTCF_zscore_matrix.txt
+# awk '{print $4}' /data/zusers/moorej3/Registry-of-ccREs/hg19/V4/hg19-rDHSs.bed >> hg19_rDHS_CTCF_zscore_matrix.txt
+# #
+# for file in `ls /data/zusers/fankaili/ccre/tf/zscore_ctcf/*_CTCF_signal_zscore.txt`
+# do
+#     filename0=${file%_CTCF_signal_zscore.txt} ;
+#     filename=${filename0#/data/zusers/fankaili/ccre/tf/zscore_ctcf/hg19_rDHS_} ;
+#     echo $filename ;
+#     echo -e "id\t"$filename > temp.txt ;
+#     awk '{FS=" \t";OFS="\t"}{print $1,$2}' $file >> temp.txt ;
+#     awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1;b[$1]=$2}else{if(a[$1]){print $0,b[$1]}}}' temp.txt hg19_rDHS_CTCF_zscore_matrix.txt > temp_matrix.txt ;
+#     mv temp_matrix.txt hg19_rDHS_CTCF_zscore_matrix.txt ;
+#     rm temp*.txt;
+# done
+bash ${scriptDir}make_tf_zscore_matrix.sh -l /data/zusers/moorej3/ENCODE-Registry/hg19/V4/hg19-rDHSs.bed -d /data/zusers/fankaili/ccre/tf/matrix/ \
+ -m hg19_rDHS_CTCF_zscore_matrix.txt -t CTCF -f /data/zusers/fankaili/ccre/tf/zscore_ctcf/
 
 ### get ubi-rDHS signal matrix
+cd /data/zusers/fankaili/ccre/tf/matrix/
 awk '{FS=OFS="\t"}{if($1=="id"){print $0}}' hg19_rDHS_CTCF_zscore_matrix.txt > hg19_ubi-rDHS_CTCF_zscore_matrix_DHSID.txt
 awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$1]){print $0}}}' /data/zusers/fankaili/ccre/ubi_ccREs_hg19_list.txt hg19_rDHS_CTCF_zscore_matrix.txt >> hg19_ubi-rDHS_CTCF_zscore_matrix_DHSID.txt
 awk '{FS=OFS="\t"}{if($1=="id"){print $0}}' hg19_ubi-rDHS_CTCF_zscore_matrix_DHSID.txt > hg19_ubi-rDHS_CTCF_zscore_matrix.txt

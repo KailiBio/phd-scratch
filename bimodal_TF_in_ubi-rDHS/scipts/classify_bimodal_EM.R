@@ -5,14 +5,16 @@
 # OURPUT: threshold
 
 # EXP: Rscript classify_bimodal_EM.R /data/zusers/fankaili/ccre/tf/matrix/hg19_ubi-rDHS_CTCF_zscore_matrix.txt /data/zusers/fankaili/ccre/tf/matrix/ hg19_ubi-rDHS_CTCF_zscore_classification.txt \
-/data/zusers/fankaili/ccre/tf/figs/hg19_ubi-rDHS_CTCF_zscore_classification.pdf zscore
+# /data/zusers/fankaili/ccre/tf/figs/hg19_ubi-rDHS_CTCF_zscore_classification.pdf zscore
 
 args<-commandArgs(T)
-inFile = args[1]
-outDir = args[2]
-outMatrix = args[3]
-outFigure = args[4]
+outDir = args[1]
+tf = args[2] ## CTCF, SMC3, RAD21 et, al.
 type = args[5] ## log2, log10, zscore
+
+inFile = paste(outDir,"hg19_ubi-rDHS_",tf,"_zscore_matrix.txt", sep="")
+outMatrix = paste("hg19_ubi-rDHS_",tf,"_zscore_classification.txt", sep="")
+outFigure = paste("/data/zusers/fankaili/ccre/tf/figs/","hg19_ubi-rDHS_",tf,"_zscore_classification.pdf", sep="")
 
 library("mixtools")
 setwd(outDir)
@@ -34,17 +36,21 @@ for(i in 1:ncol(data)){
     dat = data[data[,i]!=(-10),i]
     # remove outliner (-10) here
   }
-  names(dat) <- rownames(data)
+  names(dat) <- rownames(data[data[,i]!=(-10),i])
 
   # call EM
-  myEM <- normalmixEM(dat, mu = c(min(dat),max(dat)), sigma = c(2,1))
+  if(tf=="CTCF"){
+    myEM <- normalmixEM(dat, mu = c(min(dat),max(dat)), sigma = c(2,1))
+  }else{
+    myEM <- normalmixEM(dat, mu = c(min(dat),max(dat)), sigma = c(4,1))
+  }
 
   # density plot
   hist(dat, breaks=200, freq = FALSE, main=biosample, xlab="zscore")
   curve((myEM$lambda[1]*dnorm(x, myEM$mu[1], myEM$sigma[1])), col="green", lwd=3, add=TRUE)
   curve((myEM$lambda[2]*dnorm(x, myEM$mu[2], myEM$sigma[2])), col="red", lwd=3, add=TRUE)
   lines(c(1.64,1.64), c(0,1), col="blue", lwd=3, lty=2)
-  
+
   # get classification
   p <- myEM$posterior
   if(mean(dat[p[,1]>p[,2]]) > mean(dat[p[,1]<p[,2]])){
