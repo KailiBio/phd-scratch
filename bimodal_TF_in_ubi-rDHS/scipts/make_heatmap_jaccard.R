@@ -142,6 +142,18 @@ pheatmap(h3k4me3_pls_j, display_numbers = F, main = "high H3K4me3 ubi-rDHS-PLS\n
 dev.off()
 
 ###################
+# pls - H3K27ac
+###################
+
+h3k27ac_pls_j = calculate_jaccard(h3k27ac_pls)
+colnames(h3k27ac_pls_j) = rownames(h3k27ac_pls_j) = colnames(h3k27ac_pls)
+
+pdf("ubi_rDHS_PLS_H3K27ac_Jaccard.pdf")
+pheatmap(h3k27ac_pls_j, display_numbers = F, main = "high H3K27ac ubi-rDHS-PLS\nJaccard Index",
+         breaks = (0:10)/10, color = colorRampPalette(brewer.pal(9,"RdYlBu")[9:1])(10))
+dev.off()
+
+###################
 # H3K27ac
 ###################
 
@@ -162,6 +174,18 @@ colnames(h3k27ac_non_pls_j) = rownames(h3k27ac_non_pls_j) = colnames(h3k27ac_no_
 
 pdf("ubi_rDHS_nonPLS_H3K27ac_Jaccard.pdf")
 pheatmap(h3k27ac_non_pls_j, display_numbers = F, main = "high H3K27ac ubi-rDHS-non-PLS\nJaccard Index",
+         breaks = (0:10)/10, color = colorRampPalette(brewer.pal(9,"RdYlBu")[9:1])(10))
+dev.off()
+
+###################
+# no pls - H3K27ac
+###################
+
+h3k4me3_non_pls_j = calculate_jaccard(h3k4me3_no_pls)
+colnames(h3k4me3_non_pls_j) = rownames(h3k4me3_non_pls_j) = colnames(h3k4me3_no_pls)
+
+pdf("ubi_rDHS_nonPLS_H3K4me3_Jaccard.pdf")
+pheatmap(h3k4me3_non_pls_j, display_numbers = F, main = "high H3K4me3 ubi-rDHS-non-PLS\nJaccard Index",
          breaks = (0:10)/10, color = colorRampPalette(brewer.pal(9,"RdYlBu")[9:1])(10))
 dev.off()
 

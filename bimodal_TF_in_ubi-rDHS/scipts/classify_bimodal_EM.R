@@ -4,8 +4,7 @@
 # INPUT: bimodal values (signal/zscore matrix here)
 # OURPUT: threshold
 
-# EXP: Rscript classify_bimodal_EM.R /data/zusers/fankaili/ccre/tf/matrix/hg19_ubi-rDHS_CTCF_zscore_matrix.txt /data/zusers/fankaili/ccre/tf/matrix/ hg19_ubi-rDHS_CTCF_zscore_classification.txt \
-# /data/zusers/fankaili/ccre/tf/figs/hg19_ubi-rDHS_CTCF_zscore_classification.pdf zscore
+# EXP: Rscript classify_bimodal_EM.R /data/zusers/fankaili/ccre/tf/matrix/ CTCF zscore
 
 args<-commandArgs(T)
 outDir = args[1]
@@ -36,7 +35,7 @@ for(i in 1:ncol(data)){
     dat = data[data[,i]!=(-10),i]
     # remove outliner (-10) here
   }
-  names(dat) <- rownames(data[data[,i]!=(-10),i])
+  names(dat) <- rownames(data[data[,i]!=(-10),])
 
   # call EM
   if(tf=="CTCF"){
@@ -44,7 +43,7 @@ for(i in 1:ncol(data)){
   }else{
     myEM <- normalmixEM(dat, mu = c(min(dat),max(dat)), sigma = c(4,1))
   }
-
+  
   # density plot
   hist(dat, breaks=200, freq = FALSE, main=biosample, xlab="zscore")
   curve((myEM$lambda[1]*dnorm(x, myEM$mu[1], myEM$sigma[1])), col="green", lwd=3, add=TRUE)

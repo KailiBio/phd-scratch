@@ -8,7 +8,7 @@
 #########################
 help_info(){
 	echo "usage:"
-	echo "sh calculate_zscore.sh <option>* [-l list] [-d ourDir] [-m outMatrix] [-t tf] [-f zscore_folder]"
+	echo "sh calculate_zscore.sh <option>* [-l list] [-d ourDir] [-t tf]"
 	echo ""
 	echo "This file is for makding TF zscore matrix of all biosamples."
 	echo ""
