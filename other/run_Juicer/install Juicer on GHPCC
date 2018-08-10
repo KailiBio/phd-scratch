@@ -1,0 +1,42 @@
+
+## -- from Tyler
+
+Notes for HICCUPS:
+download juicebox git repository
+https://github.com/theaidenlab/juicebox
+
+download apache-ant
+wget http://mirror.symnds.com/software/Apache//ant/binaries/apache-ant-1.9.7-bin.tar.gz
+to run ant to build juicebox jars must set some env variables:
+http://dita-ot.sourceforge.net/doc/ot-userguide13/xhtml/installing/linux_installingant.html
+
+unzipped juicebox/lib/jcuda/Archive.JCuda.0.7.0.zip
+and copy resulting files to juicebox/native_launcher/natives
+
+modify juicebox/build.xml:
+      <zipfileset src="${basedir}/lib/jcuda/jcuda-0.7.0.jar"/>
+      <zipfileset src="${basedir}/lib/jcuda/jcudaUtils-0.0.4.jar"/>
+(2 places)
+
+modify juicebox/juicebox.properties:
+jdk.home.1.8=/share/pkg/jdk/1.8.0_31
+
+Compile jar from source:
+bsub -q interactive -W 6:00 -R rusage[mem=50000] -Is bash
+module load jdk/1.8.0_31
+export ANT_OPTS="-Xmx256M"
+export ANT_HOME="/home/tb37w/Downloads/apache-ant-1.9.7"
+export PATH=${ANT_HOME}/bin:${JAVA_HOME}/bin:${PATH}
+ant
+cp out/artifacts/Juicebox_clt_jar/Juicebox.jar native_launcher/Juicebox_CLT.jar
+
+Run HICCUPS:
+bsub -q interactive -q gpu_geforceGTX -R "rusage[mem=10000,ngpus_excl_p=1] span[hosts=1]"
+# bsub -q interactive -q gpu -a gpuexcl2_p -W 6:00 -R rusage[mem=5000] -Is bash
+module load jdk/1.8.0_31
+module load gcc/4.7.4
+module load cuda/7.0.28
+
+bash juicebox.sh hiccups --ignore_sparsity -r 10000 -f 0.1 -p 2 -i 5 -d 20000 -c 8 https://hicfiles.s3.amazonaws.com/hiseq/gm12878/in-situ/combined.hic /home/tb37w/project/Research/Schahram/test/opt/juicer/work/HIC003/aligned/inter_loops_GM_final_test
+
+
