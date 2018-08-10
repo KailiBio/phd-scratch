@@ -7,6 +7,7 @@ https://github.com/theaidenlab/juicebox
 
 download apache-ant
 wget http://mirror.symnds.com/software/Apache//ant/binaries/apache-ant-1.9.7-bin.tar.gz
+## then change "export ANT_HOME="/home/tb37w/Downloads/apache-ant-1.9.7" to wherever you end up downloading apache-ant
 to run ant to build juicebox jars must set some env variables:
 http://dita-ot.sourceforge.net/doc/ot-userguide13/xhtml/installing/linux_installingant.html
 
