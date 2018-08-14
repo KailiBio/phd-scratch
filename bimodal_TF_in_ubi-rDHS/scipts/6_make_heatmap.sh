@@ -10,9 +10,9 @@
 cd /data/zusers/fankaili/ccre/tf/matrix/
 mv hg19_ubi-rDHS_CTCF_signal_log10_classification.txt hg19_ubi-rDHS_CTCF_signal_log10_classification_ccreid.txt
 # zscore 1.64
-head -1 hg19_ubi-rDHS_CTCF_zscore_1.64_classification.txt > hg19_ubi-rDHS_CTCF_zscore_1.64_classification_ccreid.txt
-awk '{FS=OFS="\t"}{if(NR==FNR){a[$5]=$4}else{if(a[$1]){b=a[$1];$1=b;print $0}}}' /data/zusers/fankaili/ccre/ccREs_ID_transfer_clean.bed hg19_ubi-rDHS_CTCF_zscore_1.64_classification.txt | \
-sort -k1n >> hg19_ubi-rDHS_CTCF_zscore_1.64_classification_ccreid.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$1]){print $0}}}' /data/zusers/fankaili/ccre/ubi_ccREs_hg19_list.txt hg19_rDHS_CTCF_zscore_1.64_classification.txt > hg19_ubi-rDHS_CTCF_zscore_1.64_classification.txt
+head -1 hg19_rDHS_CTCF_zscore_1.64_classification.txt > hg19_ubi-rDHS_CTCF_zscore_1.64_classification_ccreid.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$5]=$4}else{if(a[$1]){b=a[$1];$1=b;print $0}}}' /data/zusers/fankaili/ccre/ccREs_ID_transfer_clean.bed hg19_ubi-rDHS_CTCF_zscore_1.64_classification.txt | sort -k1n >> hg19_ubi-rDHS_CTCF_zscore_1.64_classification_ccreid.txt
 # zscore em
 head -1 hg19_ubi-rDHS_CTCF_zscore_classification.txt > hg19_ubi-rDHS_CTCF_zscore_em_classification_ccreid.txt
 awk 'NR>1' hg19_ubi-rDHS_CTCF_zscore_classification.txt | sort -k1n >> hg19_ubi-rDHS_CTCF_zscore_em_classification_ccreid.txt

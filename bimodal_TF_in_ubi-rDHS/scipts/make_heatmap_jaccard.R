@@ -10,6 +10,7 @@ setwd("/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/
 library(pheatmap)
 library(RColorBrewer)
 library(dplyr)
+library(plyr)
 
 ############
 # function
