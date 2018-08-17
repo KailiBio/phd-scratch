@@ -54,3 +54,20 @@ awk 'NR>1' hg19_ubi-rDHS_CTCF_2_zscore_classification.txt | sort -k1n >> hg19_ub
 # 3. make heatmap
 ### run locally
 Rscript make_heatmap_jaccard_1.R
+
+
+
+#####################################
+# 4. classify H3K4me3&H3K27ac by EM
+Rscript classify_bimodal_EM_3.R
+Rscript classify_bimodal_EM_4.R
+
+# 5. make new heatmaps for all using EM classification
+## H3K27ac
+head -1 hg19_ubi-rDHS_H3K27ac_zscore_classification.txt > hg19_ubi-rDHS_H3K27ac_zscore_em_classification_ccreid.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$5]=$4}else{if(a[$1]){b=a[$1];$1=b;print $0}}}' /data/zusers/fankaili/ccre/ccREs_ID_transfer_clean.bed hg19_ubi-rDHS_H3K27ac_zscore_classification.txt | \
+sort -k1n >> hg19_ubi-rDHS_H3K27ac_zscore_em_classification_ccreid.txt
+## H3K4me3
+head -1 hg19_ubi-rDHS_H3K4me3_zscore_classification.txt > hg19_ubi-rDHS_H3K4me3_zscore_em_classification_ccreid.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$5]=$4}else{if(a[$1]){b=a[$1];$1=b;print $0}}}' /data/zusers/fankaili/ccre/ccREs_ID_transfer_clean.bed hg19_ubi-rDHS_H3K4me3_zscore_classification.txt | \
+sort -k1n >> hg19_ubi-rDHS_H3K4me3_zscore_em_classification_ccreid.txt
