@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # -- Kaili
-# This script is for getting corresponding zscore file name from master_file: /data/zusers/moorej3/Registry-of-ccREs/hg19/V4/Cell-Type-Specific/Master-Cell-List.txt
+# This script is for getting corresponding zscore file name from master_file: /data/zusers/moorej3/ENCODE-Registry/hg19/V4/Cell-Type-Specific/Master-Cell-List.txt
 # INPUT: 1) file lines from master file
 #			eg: ---	---	---	---	---	---	ENCSR000DPF	ENCFF001GVQ	A549	Group12
 #				ENCSR346JWH	ENCFF891YXC	---	---	ENCSR714TJD	ENCFF743TET	---	---	A673	Group5

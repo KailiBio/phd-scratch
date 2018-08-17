@@ -25,5 +25,5 @@ filelist = open(inFile).readlines()
 for line in filelist:
     cellline = line.rstrip().split("\t")[0]
     filename = line.rstrip().split("\t")[1]
-    command1 = """awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$1]){print $1,$2}}}' /data/zusers/fankaili/ccre/ubi_ccREs_hg19_list.txt /data/zusers/moorej3/Registry-of-ccREs/hg19/V4/signal-output/"""+filename+" > "+outDir+"hg19_ubi-rDHS_"+cellline+"_"+mark+"_zscore.txt\n"
+    command1 = """awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$1]){print $1,$2}}}' /data/zusers/fankaili/ccre/ubi_ccREs_hg19_list.txt /data/zusers/moorej3/ENCODE-Registry/hg19/V4/signal-output/"""+filename+" > "+outDir+"hg19_ubi-rDHS_"+cellline+"_"+mark+"_zscore.txt\n"
     subprocess.call(command1, shell=True)
