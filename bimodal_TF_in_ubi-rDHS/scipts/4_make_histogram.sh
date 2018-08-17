@@ -18,6 +18,7 @@ Rscript ${scriptDir}make_histogram.R /data/zusers/fankaili/ccre/tf/matrix/hg19_u
 ## 2) ubi-rDHS zscore
 Rscript ${scriptDir}make_histogram.R /data/zusers/fankaili/ccre/tf/matrix/hg19_ubi-rDHS_CTCF_zscore_matrix.txt /data/zusers/fankaili/ccre/tf/figs/ hg19_ubi-rDHS_CTCF_zscore_histogram.pdf zscore
 
+
 ## remove ENCSR617IFZ and ENCSR000BNK, which didn't show bimodal becasue of data quality
 cd /data/zusers/fankaili/ccre/tf/matrix/
 head -1 hg19_ubi-rDHS_CTCF_zscore_matrix.txt | awk '{for(i=1;i<=NF;i++){if($i=="HEK293_ENCSR617IFZ_ENCFF036FIU"){print i}}}'
@@ -28,6 +29,15 @@ cut -f -25,27-30,32- hg19_ubi-rDHS_CTCF_zscore_matrix.txt > temp_hg19_ubi-rDHS_C
 mv hg19_ubi-rDHS_CTCF_zscore_matrix.txt hg19_ubi-rDHS_CTCF_zscore_matrix0.txt
 mv temp_hg19_ubi-rDHS_CTCF_zscore_matrix.txt hg19_ubi-rDHS_CTCF_zscore_matrix.txt
 
+## remove ENCSR000BSE and ENCSR000BIE, which show quality problem
+head -1 hg19_ubi-rDHS_CTCF_zscore_matrix.txt | awk '{for(i=1;i<=NF;i++){if($i=="HCT116_ENCSR000BSE_ENCFF021YGW"){print i}}}'
+# 22
+head -1 hg19_ubi-rDHS_CTCF_zscore_matrix.txt | awk '{for(i=1;i<=NF;i++){if($i=="HepG2_ENCSR000BIE_ENCFF804LNZ"){print i}}}'
+# 28
+cut -f -21,23-27,29- hg19_ubi-rDHS_CTCF_zscore_matrix.txt > temp_hg19_ubi-rDHS_CTCF_zscore_matrix.txt
+mv hg19_ubi-rDHS_CTCF_zscore_matrix.txt hg19_ubi-rDHS_CTCF_zscore_matrix0.txt
+mv temp_hg19_ubi-rDHS_CTCF_zscore_matrix.txt hg19_ubi-rDHS_CTCF_zscore_matrix.txt
+
 
 # 2. classification using EM
 ## 1) ubi-rDHS log10(signal+0.01)
@@ -35,10 +45,12 @@ mv temp_hg19_ubi-rDHS_CTCF_zscore_matrix.txt hg19_ubi-rDHS_CTCF_zscore_matrix.tx
 # /data/zusers/fankaili/ccre/tf/figs/hg19_ubi-rDHS_CTCF_signal_log10_classification.pdf log10
 
 ## 2) ubi-rDHS zscore
+# run locally
 Rscript ${scriptDir}classify_bimodal_EM.R /data/zusers/fankaili/ccre/tf/matrix/hg19_ubi-rDHS_CTCF_zscore_matrix.txt /data/zusers/fankaili/ccre/tf/matrix/ hg19_ubi-rDHS_CTCF_zscore_classification.txt \
-/data/zusers/fankaili/ccre/tf/figs/hg19_ubi-rDHS_CTCF_zscore_classification.pdf zscore
+/data/zusers/fankaili/ccre/tf/figs/hg19_ubi-rDHS_CTCF_zscore_classification.pdf
 ## or locally run ss_bimodal_threshold_em2_nooutliner.R
 
 # 3. classification using zscore>1.64
-awk '{FS=OFS="\t"}{if($1=="id"){print $0}else{printf $1;for(i=2;i<=NF;i++){if($i>1.64){printf "\t"1}else{printf "\t"0}};printf "\n"}}' /data/zusers/fankaili/ccre/tf/matrix/hg19_rDHS_CTCF_zscore_matrix.txt > \
-/data/zusers/fankaili/ccre/tf/matrix/hg19_ubi-rDHS_CTCF_zscore_1.64_classification.txt
+cd /data/zusers/fankaili/ccre/tf/matrix/
+awk '{FS=OFS="\t"}{if($1=="id"){print $0}else{printf $1;for(i=2;i<=NF;i++){if($i>1.64){printf "\t"1}else{printf "\t"0}};printf "\n"}}' \
+hg19_ubi-rDHS_CTCF_zscore_matrix.txt > hg19_ubi-rDHS_CTCF_zscore_1.64_classification.txt
