@@ -17,7 +17,7 @@ head -1 /data/zusers/fankaili/ccre/tf/matrix/hg19_ccRE_CTCF_signal_matrix.txt | 
 ## 1) get master file line
 for cellline in `cat /data/zusers/fankaili/ccre/tf/hg19_cellline_with_CTCF_using.txt`
 do
-    grep $cellline /data/zusers/moorej3/Registry-of-ccREs/hg19/V4/Cell-Type-Specific/Master-Cell-List.txt ;
+    grep $cellline /data/zusers/moorej3/ENCODE-Registry/hg19/V4/Cell-Type-Specific/Master-Cell-List.txt ;
 done > /data/zusers/fankaili/ccre/tf/hg19_cellline_with_TF_data_master_file.txt
 #
 vim /data/zusers/fankaili/ccre/tf/hg19_cellline_with_TF_data_master_file.txt # modifying

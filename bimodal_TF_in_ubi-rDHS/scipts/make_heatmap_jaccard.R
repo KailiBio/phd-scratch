@@ -125,7 +125,7 @@ ctcf_em_h3k27ac_no_pls <- ctcf_em_h3k27ac[no_pls,]
 h3k4me3_j = calculate_jaccard(h3k4me3)
 colnames(h3k4me3_j) = rownames(h3k4me3_j) = colnames(h3k4me3)
 
-pdf("ubi_rDHS_H3K4me3_Jaccard.pdf")
+pdf("./heatmap2/ubi_rDHS_H3K4me3_Jaccard.pdf")
 pheatmap(h3k4me3_j, display_numbers = F, main = "high H3K4me3 ubi-rDHS\nJaccard Index",
          breaks = (0:10)/10, color = colorRampPalette(brewer.pal(9,"RdYlBu")[9:1])(10))
 dev.off()
@@ -137,7 +137,7 @@ dev.off()
 h3k4me3_pls_j = calculate_jaccard(h3k4me3_pls)
 colnames(h3k4me3_pls_j) = rownames(h3k4me3_pls_j) = colnames(h3k4me3_pls)
 
-pdf("ubi_rDHS_PLS_H3K4me3_Jaccard.pdf")
+pdf("./heatmap2/ubi_rDHS_PLS_H3K4me3_Jaccard.pdf")
 pheatmap(h3k4me3_pls_j, display_numbers = F, main = "high H3K4me3 ubi-rDHS-PLS\nJaccard Index",
          breaks = (0:10)/10, color = colorRampPalette(brewer.pal(9,"RdYlBu")[9:1])(10))
 dev.off()
@@ -149,7 +149,7 @@ dev.off()
 h3k27ac_pls_j = calculate_jaccard(h3k27ac_pls)
 colnames(h3k27ac_pls_j) = rownames(h3k27ac_pls_j) = colnames(h3k27ac_pls)
 
-pdf("ubi_rDHS_PLS_H3K27ac_Jaccard.pdf")
+pdf("./heatmap2/ubi_rDHS_PLS_H3K27ac_Jaccard.pdf")
 pheatmap(h3k27ac_pls_j, display_numbers = F, main = "high H3K27ac ubi-rDHS-PLS\nJaccard Index",
          breaks = (0:10)/10, color = colorRampPalette(brewer.pal(9,"RdYlBu")[9:1])(10))
 dev.off()
@@ -161,7 +161,7 @@ dev.off()
 h3k27ac_j = calculate_jaccard(h3k27ac)
 colnames(h3k27ac_j) = rownames(h3k27ac_j) = colnames(h3k27ac)
 
-pdf("ubi_rDHS_H3K27ac_Jaccard.pdf")
+pdf("./heatmap2/ubi_rDHS_H3K27ac_Jaccard.pdf")
 pheatmap(h3k27ac_j, display_numbers = F, main = "high H3K27ac ubi-rDHS\nJaccard Index",
          breaks = (0:10)/10, color = colorRampPalette(brewer.pal(9,"RdYlBu")[9:1])(10))
 dev.off()
@@ -173,7 +173,7 @@ dev.off()
 h3k27ac_non_pls_j = calculate_jaccard(h3k27ac_no_pls)
 colnames(h3k27ac_non_pls_j) = rownames(h3k27ac_non_pls_j) = colnames(h3k27ac_no_pls)
 
-pdf("ubi_rDHS_nonPLS_H3K27ac_Jaccard.pdf")
+pdf("./heatmap2/ubi_rDHS_nonPLS_H3K27ac_Jaccard.pdf")
 pheatmap(h3k27ac_non_pls_j, display_numbers = F, main = "high H3K27ac ubi-rDHS-non-PLS\nJaccard Index",
          breaks = (0:10)/10, color = colorRampPalette(brewer.pal(9,"RdYlBu")[9:1])(10))
 dev.off()
@@ -185,7 +185,7 @@ dev.off()
 h3k4me3_non_pls_j = calculate_jaccard(h3k4me3_no_pls)
 colnames(h3k4me3_non_pls_j) = rownames(h3k4me3_non_pls_j) = colnames(h3k4me3_no_pls)
 
-pdf("ubi_rDHS_nonPLS_H3K4me3_Jaccard.pdf")
+pdf("./heatmap2/ubi_rDHS_nonPLS_H3K4me3_Jaccard.pdf")
 pheatmap(h3k4me3_non_pls_j, display_numbers = F, main = "high H3K4me3 ubi-rDHS-non-PLS\nJaccard Index",
          breaks = (0:10)/10, color = colorRampPalette(brewer.pal(9,"RdYlBu")[9:1])(10))
 dev.off()
@@ -197,7 +197,7 @@ dev.off()
 ctcf_1.64_j = calculate_jaccard(ctcf_1.64)
 colnames(ctcf_1.64_j) = rownames(ctcf_1.64_j) = colnames(ctcf_1.64)
 
-pdf("ubi_rDHS_CTCF_zscore_1.64_Jaccard.pdf", width = 12, height = 12)
+pdf("./heatmap2/ubi_rDHS_CTCF_zscore_1.64_Jaccard.pdf", width = 12, height = 12)
 pheatmap(ctcf_1.64_j, display_numbers = F, main = "high CTCF ubi-rDHS (zscore>1.64)\nJaccard Index",
          breaks = (0:10)/10, color = colorRampPalette(brewer.pal(9,"RdYlBu")[9:1])(10))
 dev.off()
@@ -209,7 +209,7 @@ dev.off()
 ctcf_em_j = calculate_jaccard(ctcf_em)
 colnames(ctcf_em_j) = rownames(ctcf_em_j) = colnames(ctcf_em)
 
-pdf("ubi_rDHS_CTCF_zscore_em_Jaccard.pdf", width = 12, height = 12)
+pdf("./heatmap2/ubi_rDHS_CTCF_zscore_em_Jaccard.pdf", width = 12, height = 12)
 pheatmap(ctcf_em_j, display_numbers = F, main = "high CTCF ubi-rDHS (EM)\nJaccard Index",
          breaks = (0:10)/10, color = colorRampPalette(brewer.pal(9,"RdYlBu")[9:1])(10))
 dev.off()
@@ -221,7 +221,7 @@ dev.off()
 ctcf_1.64_pls_j = calculate_jaccard(ctcf_1.64_pls)
 colnames(ctcf_1.64_pls_j) = rownames(ctcf_1.64_pls_j) = colnames(ctcf_1.64_pls)
 
-pdf("ubi-rDHS_PLS_CTCF_zscore_1.64_Jaccard.pdf", width=12, height = 12)
+pdf("./heatmap2/ubi-rDHS_PLS_CTCF_zscore_1.64_Jaccard.pdf", width=12, height = 12)
 pheatmap(ctcf_1.64_pls_j, display_numbers = F, main = "high CTCF ubi-rDHS-PLS (zscore>1.64)\nJaccard Index",
          breaks = (0:10)/10, color = colorRampPalette(brewer.pal(9,"RdYlBu")[9:1])(10))
 dev.off()
@@ -233,7 +233,7 @@ dev.off()
 ctcf_em_pls_j = calculate_jaccard(ctcf_em_pls)
 colnames(ctcf_em_pls_j) = rownames(ctcf_em_pls_j) = colnames(ctcf_em_pls)
 
-pdf("ubi-rDHS_PLS_CTCF_em_Jaccard.pdf", height = 12, width = 12)
+pdf("./heatmap2/ubi-rDHS_PLS_CTCF_em_Jaccard.pdf", height = 12, width = 12)
 pheatmap(ctcf_em_pls_j, display_numbers = F, main = "high CTCF ubi-rDHS-PLS (EM)\nJaccard Index",
          breaks = (0:10)/10, color = colorRampPalette(brewer.pal(9,"RdYlBu")[9:1])(10))
 dev.off()
@@ -245,7 +245,7 @@ dev.off()
 ctcf_1.64_no_pls_j = calculate_jaccard(ctcf_1.64_no_pls)
 colnames(ctcf_1.64_no_pls_j) = rownames(ctcf_1.64_no_pls_j) = colnames(ctcf_1.64_no_pls)
 
-pdf("ubi-rDHS_nonPLS_CTCF_zscore_1.64_Jaccard.pdf", height = 12, width = 12)
+pdf("./heatmap2/ubi-rDHS_nonPLS_CTCF_zscore_1.64_Jaccard.pdf", height = 12, width = 12)
 pheatmap(ctcf_1.64_no_pls_j, display_numbers = F, main = "high CTCF ubi-rDHS nonPLS (zscore>1.64)\nJaccard Index",
          breaks = (0:10)/10, color = colorRampPalette(brewer.pal(9,"RdYlBu")[9:1])(10))
 dev.off()
@@ -257,7 +257,7 @@ dev.off()
 ctcf_em_no_pls_j = calculate_jaccard(ctcf_em_no_pls)
 colnames(ctcf_em_no_pls_j) = rownames(ctcf_em_no_pls_j) = colnames(ctcf_em_no_pls)
 
-pdf("ubi-rDHS_nonPLS_CTCF_em_Jaccard.pdf", height = 12, width = 12)
+pdf("./heatmap2/ubi-rDHS_nonPLS_CTCF_em_Jaccard.pdf", height = 12, width = 12)
 pheatmap(ctcf_em_no_pls_j, display_numbers = F, main = "high CTCF ubi-rDHS nonPLS (EM)\nJaccard Index",
          breaks = (0:10)/10, color = colorRampPalette(brewer.pal(9,"RdYlBu")[9:1])(10))
 dev.off()
@@ -269,7 +269,7 @@ dev.off()
 ctcf_1.64_h3k27ac_j = calculate_jaccard_two(ctcf_1.64_h3k27ac, h3k27ac)
 colnames(ctcf_1.64_h3k27ac_j) = rownames(ctcf_1.64_h3k27ac_j) = colnames(ctcf_1.64_h3k27ac)
 
-pdf("ubi_rDHS_H3K27ac_CTCF_zscore_1.64_Jaccard.pdf", width = 12, height = 12)
+pdf("./heatmap2/ubi_rDHS_H3K27ac_CTCF_zscore_1.64_Jaccard.pdf", width = 12, height = 12)
 pheatmap(ctcf_1.64_h3k27ac_j, display_numbers = F, main = "high H3K27ac&CTCF ubi-rDHS (zscore>1.64)\nJaccard Index",
          breaks = (0:10)/10, color = colorRampPalette(brewer.pal(9,"RdYlBu")[9:1])(10))
 dev.off()
@@ -281,7 +281,7 @@ dev.off()
 ctcf_em_h3k27ac_j = calculate_jaccard_two(ctcf_em_h3k27ac, h3k27ac)
 colnames(ctcf_em_h3k27ac_j) = rownames(ctcf_em_h3k27ac_j) = colnames(ctcf_em_h3k27ac)
 
-pdf("ubi_rDHS_H3K27ac_CTCF_em_Jaccard.pdf", height = 10, width = 10)
+pdf("./heatmap2/ubi_rDHS_H3K27ac_CTCF_em_Jaccard.pdf", height = 10, width = 10)
 pheatmap(ctcf_em_h3k27ac_j, display_numbers = F, main = "high H3K27ac&CTCF ubi-rDHS (EM)\nJaccard Index",
          breaks = (0:10)/10, color = colorRampPalette(brewer.pal(9,"RdYlBu")[9:1])(10))
 dev.off()
@@ -293,7 +293,7 @@ dev.off()
 ctcf_em_h3k4me3_pls_j = calculate_jaccard_two(ctcf_em_h3k4me3_pls, h3k4me3_pls)
 colnames(ctcf_em_h3k4me3_pls_j) = rownames(ctcf_em_h3k4me3_pls_j) = colnames(ctcf_em_h3k4me3_pls)
 
-pdf("ubi_rDHS_PLS_H3K4me3_CTCF_zscore_1.64_Jaccard.pdf", height = 10, width = 10)
+pdf("./heatmap2/ubi_rDHS_PLS_H3K4me3_CTCF_zscore_1.64_Jaccard.pdf", height = 10, width = 10)
 pheatmap(ctcf_em_h3k4me3_pls_j, display_numbers = F, main = "high H3K4me3&CTCF ubi-rDHS PLS(zscore>1.64)\nJaccard Index",
          breaks = (0:10)/10, color = colorRampPalette(brewer.pal(9,"RdYlBu")[9:1])(10))
 dev.off()
@@ -305,7 +305,7 @@ dev.off()
 ctcf_em_h3k4me3_pls_j = calculate_jaccard_two(ctcf_em_h3k4me3_pls, h3k4me3_pls)
 colnames(ctcf_em_h3k4me3_pls_j) = rownames(ctcf_em_h3k4me3_pls_j) = colnames(ctcf_em_h3k4me3_pls)
 
-pdf("ubi_rDHS_PLS_H3K4me3_CTCF_em_Jaccard.pdf", height = 10, width = 10)
+pdf("./heatmap2/ubi_rDHS_PLS_H3K4me3_CTCF_em_Jaccard.pdf", height = 10, width = 10)
 pheatmap(ctcf_em_h3k4me3_pls_j, display_numbers = F, main = "high H3K4me3&CTCF ubi-rDHS PLS(EM)\nJaccard Index",
          breaks = (0:10)/10, color = colorRampPalette(brewer.pal(9,"RdYlBu")[9:1])(10))
 dev.off()
@@ -317,7 +317,7 @@ dev.off()
 ctcf_1.64_h3k27ac_no_pls_j = calculate_jaccard_two(ctcf_1.64_h3k27ac_no_pls, h3k27ac_no_pls)
 colnames(ctcf_1.64_h3k27ac_no_pls_j) = rownames(ctcf_1.64_h3k27ac_no_pls_j) = colnames(ctcf_1.64_h3k27ac_no_pls)
 
-pdf("ubi_rDHS_nonPLS_H3K27ac_CTCF_zscore_1.64_Jaccard.pdf", height = 10, width = 10)
+pdf("./heatmap2/ubi_rDHS_nonPLS_H3K27ac_CTCF_zscore_1.64_Jaccard.pdf", height = 10, width = 10)
 pheatmap(ctcf_1.64_h3k27ac_no_pls_j, display_numbers = F, main = "high H3K27ac&CTCF ubi-rDHS nonPLS (zscore>1.64)\nJaccard Index",
          breaks = (0:10)/10, color = colorRampPalette(brewer.pal(9,"RdYlBu")[9:1])(10))
 dev.off()
@@ -329,7 +329,7 @@ dev.off()
 ctcf_em_h3k27ac_no_pls_j = calculate_jaccard_two(ctcf_em_h3k27ac_no_pls, h3k27ac_no_pls)
 colnames(ctcf_em_h3k27ac_no_pls_j) = rownames(ctcf_em_h3k27ac_no_pls_j) = colnames(ctcf_em_h3k27ac_no_pls)
 
-pdf("ubi_rDHS_nonPLS_H3K27ac_CTCF_em_Jaccard.pdf", height = 10, width = 10)
+pdf("./heatmap2/ubi_rDHS_nonPLS_H3K27ac_CTCF_em_Jaccard.pdf", height = 10, width = 10)
 pheatmap(ctcf_em_h3k27ac_no_pls_j, display_numbers = F, main = "high H3K27ac&CTCF ubi-rDHS nonPLS(EM)\nJaccard Index",
          breaks = (0:10)/10, color = colorRampPalette(brewer.pal(9,"RdYlBu")[9:1])(10))
 dev.off()
