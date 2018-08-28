@@ -4,11 +4,10 @@
 
 setwd("/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/ss_zscore/")
 
-pls <- as.vector(read.table("../hg19_ubi-rDHS_PLS_list_DHSID.txt")[,1])
-no_pls <- as.vector(read.table("../hg19_ubi-rDHS_non_PLS_list_DHSID.txt")[,1])
-
 file=list.files()
 
+pls <- as.vector(read.table("../hg19_ubi-rDHS_PLS_list_DHSID.txt")[,1])
+no_pls <- as.vector(read.table("../hg19_ubi-rDHS_non_PLS_list_DHSID.txt")[,1])
 #######################
 # non PLS
 #######################
@@ -33,7 +32,7 @@ for (i in 1:length(file)){
       n=length(union(rownames(xx), rownames(yy)))
       jaccard = round(m/n,3)
       #
-      smoothScatter(x$V2, y$V2, nrpoints = 0, main = "non-PLS (n = 1,912)\n",
+      smoothScatter(x$V2, y$V2, nrpoints = 0, main = "non-PLS (n = 1,912); CTCF",
                     xlab = paste(a_name, " (z-score>1.64: ", xx1, ")", sep=""),
                     ylab = paste(b_name, " (z-score>1.64: ", yy1, ")", sep=""))
       lines(c(1.64, 1.64), c(-12,10), col="red", lwd=3, lty=2)
@@ -68,7 +67,7 @@ for (i in 1:length(file)){
       n=length(union(rownames(xx), rownames(yy)))
       jaccard = round(m/n,3)
       #
-      smoothScatter(x$V2, y$V2, nrpoints = 0, main = "ubi-rDHS non-PLS (n = 9,009)\n",
+      smoothScatter(x$V2, y$V2, nrpoints = 0, main = "ubi-rDHS PLS (n = 9,009); CTCF",
                     xlab = paste(a_name, " (z-score>1.64: ", xx1, ")", sep=""),
                     ylab = paste(b_name, " (z-score>1.64: ", yy1, ")", sep=""))
       lines(c(1.64, 1.64), c(-12,10), col="red", lwd=3, lty=2)
@@ -105,7 +104,7 @@ for (i in 1:length(file)){
       n=length(union(rownames(xx), rownames(yy)))
       jaccard = round(m/n,3)
       #
-      smoothScatter(x$V2, y$V2, nrpoints = 0, main = "ubi-rDHS (n = 10,921)\n",
+      smoothScatter(x$V2, y$V2, nrpoints = 0, main = "ubi-rDHS (n = 10,921); CTCF",
                     xlab = paste(a_name, " (z-score>1.64: ", xx1, ")", sep=""),
                     ylab = paste(b_name, " (z-score>1.64: ", yy1, ")", sep=""))
       lines(c(1.64, 1.64), c(-12,10), col="red", lwd=3, lty=2)
@@ -118,4 +117,224 @@ for (i in 1:length(file)){
 dev.off()
 
 
+#######################
+# H3K4me3
+#######################
+setwd("/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/zscore_h3k4me3/")
+file=list.files()
+#######################
+# H3K4me3, non-PLS
+#######################
+pdf("../ubi-rDHS_non_PLS_H3K4me3_scatter.pdf", height = 8, width = 8)
+for (i in 1:length(file)){
+  a = data.frame(read.table(file[i]))
+  rownames(a) = a[,1]
+  a_name = unlist(strsplit(file[i], "_"))[3]
+  for (j in 1:length(file)){
+    if(j>i){
+      b = data.frame(read.table(file[j]))
+      rownames(b) = b[,1]
+      b_name = unlist(strsplit(file[j], "_"))[3]
+      #
+      x = a[no_pls,]
+      y = b[no_pls,]
+      xx = x[x$V2>1.64,]
+      yy = y[y$V2>1.64,]
+      xx1 = nrow(xx)
+      yy1 = nrow(yy)
+      m=length(intersect(rownames(xx), rownames(yy)))
+      n=length(union(rownames(xx), rownames(yy)))
+      jaccard = round(m/n,3)
+      #
+      smoothScatter(x$V2, y$V2, nrpoints = 0, main = "non-PLS (n = 1,912); H3K4me3",
+                    xlab = paste(a_name, " (z-score>1.64: ", xx1, ")", sep=""),
+                    ylab = paste(b_name, " (z-score>1.64: ", yy1, ")", sep=""))
+      lines(c(1.64, 1.64), c(-12,10), col="red", lwd=3, lty=2)
+      lines(c(-12,10), c(1.64, 1.64), col="red", lwd=3, lty=2)
+      legend("topleft", legend = paste("intersect:",m,"\nunion:",n,"\nJaccardIndex=",jaccard),
+             bty = "n")
+    }
+  }
+}
+dev.off()
+#######################
+# H3K4me3, PLS
+#######################
+pdf("../ubi-rDHS_PLS_H3K4me3_scatter.pdf", height = 8, width = 8)
+for (i in 1:length(file)){
+  a = data.frame(read.table(file[i]))
+  rownames(a) = a[,1]
+  a_name = unlist(strsplit(file[i], "_"))[3]
+  for (j in 1:length(file)){
+    if(j>i){
+      b = data.frame(read.table(file[j]))
+      rownames(b) = b[,1]
+      b_name = unlist(strsplit(file[j], "_"))[3]
+      #
+      x = a[pls,]
+      y = b[pls,]
+      xx = x[x$V2>1.64,]
+      yy = y[y$V2>1.64,]
+      xx1 = nrow(xx)
+      yy1 = nrow(yy)
+      m=length(intersect(rownames(xx), rownames(yy)))
+      n=length(union(rownames(xx), rownames(yy)))
+      jaccard = round(m/n,3)
+      #
+      smoothScatter(x$V2, y$V2, nrpoints = 0, main = "ubi-rDHS PLS (n = 9,009); H3K4me3",
+                    xlab = paste(a_name, " (z-score>1.64: ", xx1, ")", sep=""),
+                    ylab = paste(b_name, " (z-score>1.64: ", yy1, ")", sep=""))
+      lines(c(1.64, 1.64), c(-12,10), col="red", lwd=3, lty=2)
+      lines(c(-12,10), c(1.64, 1.64), col="red", lwd=3, lty=2)
+      legend("topleft", legend = paste("intersect:",m,"\nunion:",n,"\nJaccardIndex=",jaccard),
+             bty = "n")
+    }
+  }
+}
+dev.off()
+#######################
+# H3K4me3, ubi-rDHS
+#######################
+pdf("../ubi-rDHS_H3K4me3_scatter.pdf", height = 8, width = 8)
+for (i in 1:length(file)){
+  a = data.frame(read.table(file[i]))
+  rownames(a) = a[,1]
+  a_name = unlist(strsplit(file[i], "_"))[3]
+  for (j in 1:length(file)){
+    if(j>i){
+      b = data.frame(read.table(file[j]))
+      rownames(b) = b[,1]
+      b_name = unlist(strsplit(file[j], "_"))[3]
+      #
+      x = a
+      y = b
+      xx = x[x$V2>1.64,]
+      yy = y[y$V2>1.64,]
+      xx1 = nrow(xx)
+      yy1 = nrow(yy)
+      m=length(intersect(rownames(xx), rownames(yy)))
+      n=length(union(rownames(xx), rownames(yy)))
+      jaccard = round(m/n,3)
+      #
+      smoothScatter(x$V2, y$V2, nrpoints = 0, main = "ubi-rDHS (n = 10,921); H3K4me3",
+                    xlab = paste(a_name, " (z-score>1.64: ", xx1, ")", sep=""),
+                    ylab = paste(b_name, " (z-score>1.64: ", yy1, ")", sep=""))
+      lines(c(1.64, 1.64), c(-12,10), col="red", lwd=3, lty=2)
+      lines(c(-12,10), c(1.64, 1.64), col="red", lwd=3, lty=2)
+      legend("topleft", legend = paste("intersect:",m,"\nunion:",n,"\nJaccardIndex=",jaccard),
+             bty = "n")
+    }
+  }
+}
+dev.off()
+#######################
+# H3K27ac
+#######################
+setwd("/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/zscore_h3k27ac/")
+file=list.files()
+#######################
+# H3K27ac, non-PLS
+#######################
+pdf("../ubi-rDHS_non_PLS_H3K27ac_scatter.pdf", height = 8, width = 8)
+for (i in 1:length(file)){
+  a = data.frame(read.table(file[i]))
+  rownames(a) = a[,1]
+  a_name = unlist(strsplit(file[i], "_"))[3]
+  for (j in 1:length(file)){
+    if(j>i){
+      b = data.frame(read.table(file[j]))
+      rownames(b) = b[,1]
+      b_name = unlist(strsplit(file[j], "_"))[3]
+      #
+      x = a[no_pls,]
+      y = b[no_pls,]
+      xx = x[x$V2>1.64,]
+      yy = y[y$V2>1.64,]
+      xx1 = nrow(xx)
+      yy1 = nrow(yy)
+      m=length(intersect(rownames(xx), rownames(yy)))
+      n=length(union(rownames(xx), rownames(yy)))
+      jaccard = round(m/n,3)
+      #
+      smoothScatter(x$V2, y$V2, nrpoints = 0, main = "non-PLS (n = 1,912); H3K27ac",
+                    xlab = paste(a_name, " (z-score>1.64: ", xx1, ")", sep=""),
+                    ylab = paste(b_name, " (z-score>1.64: ", yy1, ")", sep=""))
+      lines(c(1.64, 1.64), c(-12,10), col="red", lwd=3, lty=2)
+      lines(c(-12,10), c(1.64, 1.64), col="red", lwd=3, lty=2)
+      legend("topleft", legend = paste("intersect:",m,"\nunion:",n,"\nJaccardIndex=",jaccard),
+             bty = "n")
+    }
+  }
+}
+dev.off()
+#######################
+# H3K27ac, PLS
+#######################
+pdf("../ubi-rDHS_PLS_H3K27ac_scatter.pdf", height = 8, width = 8)
+for (i in 1:length(file)){
+  a = data.frame(read.table(file[i]))
+  rownames(a) = a[,1]
+  a_name = unlist(strsplit(file[i], "_"))[3]
+  for (j in 1:length(file)){
+    if(j>i){
+      b = data.frame(read.table(file[j]))
+      rownames(b) = b[,1]
+      b_name = unlist(strsplit(file[j], "_"))[3]
+      #
+      x = a[pls,]
+      y = b[pls,]
+      xx = x[x$V2>1.64,]
+      yy = y[y$V2>1.64,]
+      xx1 = nrow(xx)
+      yy1 = nrow(yy)
+      m=length(intersect(rownames(xx), rownames(yy)))
+      n=length(union(rownames(xx), rownames(yy)))
+      jaccard = round(m/n,3)
+      #
+      smoothScatter(x$V2, y$V2, nrpoints = 0, main = "ubi-rDHS PLS (n = 9,009); H3K27ac",
+                    xlab = paste(a_name, " (z-score>1.64: ", xx1, ")", sep=""),
+                    ylab = paste(b_name, " (z-score>1.64: ", yy1, ")", sep=""))
+      lines(c(1.64, 1.64), c(-12,10), col="red", lwd=3, lty=2)
+      lines(c(-12,10), c(1.64, 1.64), col="red", lwd=3, lty=2)
+      legend("topleft", legend = paste("intersect:",m,"\nunion:",n,"\nJaccardIndex=",jaccard),
+             bty = "n")
+    }
+  }
+}
+dev.off()
+#######################
+# H3K27ac, ubi-rDHS
+#######################
+pdf("../ubi-rDHS_H3K27ac_scatter.pdf", height = 8, width = 8)
+for (i in 1:length(file)){
+  a = data.frame(read.table(file[i]))
+  rownames(a) = a[,1]
+  a_name = unlist(strsplit(file[i], "_"))[3]
+  for (j in 1:length(file)){
+    if(j>i){
+      b = data.frame(read.table(file[j]))
+      rownames(b) = b[,1]
+      b_name = unlist(strsplit(file[j], "_"))[3]
+      #
+      x = a
+      y = b
+      xx = x[x$V2>1.64,]
+      yy = y[y$V2>1.64,]
+      xx1 = nrow(xx)
+      yy1 = nrow(yy)
+      m=length(intersect(rownames(xx), rownames(yy)))
+      n=length(union(rownames(xx), rownames(yy)))
+      jaccard = round(m/n,3)
+      #
+      smoothScatter(x$V2, y$V2, nrpoints = 0, main = "ubi-rDHS (n = 10,921); H3k27ac",
+                    xlab = paste(a_name, " (z-score>1.64: ", xx1, ")", sep=""),
+                    ylab = paste(b_name, " (z-score>1.64: ", yy1, ")", sep=""))
+      lines(c(1.64, 1.64), c(-12,10), col="red", lwd=3, lty=2)
+      lines(c(-12,10), c(1.64, 1.64), col="red", lwd=3, lty=2)
+      legend("topleft", legend = paste("intersect:",m,"\nunion:",n,"\nJaccardIndex=",jaccard),
+             bty = "n")
+    }
+  }
+}
+dev.off()
 #######################
