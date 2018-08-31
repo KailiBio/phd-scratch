@@ -37,15 +37,15 @@ for biosample in data.keys():
 		signal_file_name = biosample+"_"+hm
 		if hm in list:
 			code.append("bamToBed -i "+case+" > /data/zusers/fankaili/ideas/run_ideas_repeat/signal/"+signal_file_name+"_case_2.bed"+"\n")
-			code.append("intersectBed -a /data/zusers/fankaili/ideas/run_ideas_repeat/mm10_tab.bed -b /data/zusers/fankaili/ideas/run_ideas_repeat/signal/"+signal_file_name+"_case_2.bed -wa -a > /data/zusers/fankaili/ideas/run_ideas_repeat/signal/"+signal_file_name+"_case_2_count.bed"+"\n")
+			code.append("intersectBed -a /data/zusers/fankaili/ideas/run_ideas_repeat/mm10_tab.bed -b /data/zusers/fankaili/ideas/run_ideas_repeat/signal/"+signal_file_name+"_case_2.bed -wa -c > /data/zusers/fankaili/ideas/run_ideas_repeat/signal/"+signal_file_name+"_case_2_count.bed"+"\n")
 			code.append("bamToBed -i "+control+" > /data/zusers/fankaili/ideas/run_ideas_repeat/signal/"+signal_file_name+"_control_2.bed"+"\n")
-			code.append("intersectBed -a /data/zusers/fankaili/ideas/run_ideas_repeat/mm10_tab.bed -b /data/zusers/fankaili/ideas/run_ideas_repeat/signal/"+signal_file_name+"_control_2.bed -wa -a > /data/zusers/fankaili/ideas/run_ideas_repeat/signal/"+signal_file_name+"_control_2_count.bed"+"\n")
+			code.append("intersectBed -a /data/zusers/fankaili/ideas/run_ideas_repeat/mm10_tab.bed -b /data/zusers/fankaili/ideas/run_ideas_repeat/signal/"+signal_file_name+"_control_2.bed -wa -c > /data/zusers/fankaili/ideas/run_ideas_repeat/signal/"+signal_file_name+"_control_2_count.bed"+"\n")
 		else:
 			list.append(hm)
 			code.append("bamToBed -i "+case+" > /data/zusers/fankaili/ideas/run_ideas_repeat/signal/"+signal_file_name+"_case_1.bed"+"\n")
-			code.append("intersectBed -a /data/zusers/fankaili/ideas/run_ideas_repeat/mm10_tab.bed -b /data/zusers/fankaili/ideas/run_ideas_repeat/signal/"+signal_file_name+"_case_1.bed -wa -a > /data/zusers/fankaili/ideas/run_ideas_repeat/signal/"+signal_file_name+"_case_1_count.bed"+"\n")
+			code.append("intersectBed -a /data/zusers/fankaili/ideas/run_ideas_repeat/mm10_tab.bed -b /data/zusers/fankaili/ideas/run_ideas_repeat/signal/"+signal_file_name+"_case_1.bed -wa -c > /data/zusers/fankaili/ideas/run_ideas_repeat/signal/"+signal_file_name+"_case_1_count.bed"+"\n")
 			code.append("bamToBed -i "+control+" > /data/zusers/fankaili/ideas/run_ideas_repeat/signal/"+signal_file_name+"_control_1.bed"+"\n")
-			code.append("intersectBed -a /data/zusers/fankaili/ideas/run_ideas_repeat/mm10_tab.bed -b /data/zusers/fankaili/ideas/run_ideas_repeat/signal/"+signal_file_name+"_control_1.bed -wa -a > /data/zusers/fankaili/ideas/run_ideas_repeat/signal/"+signal_file_name+"_control_1_count.bed"+"\n")
+			code.append("intersectBed -a /data/zusers/fankaili/ideas/run_ideas_repeat/mm10_tab.bed -b /data/zusers/fankaili/ideas/run_ideas_repeat/signal/"+signal_file_name+"_control_1.bed -wa -c > /data/zusers/fankaili/ideas/run_ideas_repeat/signal/"+signal_file_name+"_control_1_count.bed"+"\n")
 			code.append("Rscript /data/zusers/fankaili/github/weng-lab/Kaili/IDEAS_ChromHMM/ideas/test_ideas/negBinomial.R /data/zusers/fankaili/ideas/run_ideas_repeat/signal/"+signal_file_name+"_case_1_count.bed /data/zusers/fankaili/ideas/run_ideas_repeat/signal/"+signal_file_name+"_control_1_count.bed /data/zusers/fankaili/ideas/run_ideas_repeat/signal/"+signal_file_name+"_1.txt"+"\n")
 			input.append(biosample+" "+hm+" /data/zusers/fankaili/ideas/run_ideas_repeat/signal/"+signal_file_name+"_1.txt"+"\n")
 
