@@ -75,15 +75,15 @@ awk '{if(NR>10){print $0}}' hg19_ubi-rDHS_MF.txt > hg19_ubi-rDHS_MF_clean.txt
 #
 Rscript make_figs_from_PANTHER.R "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/" \
 "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/hg19_ubi-rDHS_BP_clean.txt" \
-"hg19_ubi-rDHS_BP_15.pdf" "10,921 ubi-rDHS (top 15)" 15
+"hg19_ubi-rDHS_BP_15" "10,921 ubi-rDHS (top 15)" 15
 #
 Rscript make_figs_from_PANTHER.R "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/" \
 "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/hg19_ubi-rDHS_CC_clean.txt" \
-"hg19_ubi-rDHS_CC_15.pdf" "10,921 ubi-rDHS (top 15)" 15
+"hg19_ubi-rDHS_CC_15" "10,921 ubi-rDHS (top 15)" 15
 #
 Rscript make_figs_from_PANTHER.R "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/" \
 "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/hg19_ubi-rDHS_MF_clean.txt" \
-"hg19_ubi-rDHS_MF_15.pdf" "10,921 ubi-rDHS (top 15)" 15
+"hg19_ubi-rDHS_MF_15" "10,921 ubi-rDHS (top 15)" 15
 
 awk '{if(NR>10){print $0}}' hg19_ubi-rDHS_overlapped_BP.txt > hg19_ubi-rDHS_overlapped_BP_clean.txt
 awk '{if(NR>10){print $0}}' hg19_ubi-rDHS_overlapped_CC.txt > hg19_ubi-rDHS_overlapped_CC_clean.txt
@@ -91,15 +91,15 @@ awk '{if(NR>10){print $0}}' hg19_ubi-rDHS_overlapped_MF.txt > hg19_ubi-rDHS_over
 #
 Rscript make_figs_from_PANTHER.R "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/" \
 "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/hg19_ubi-rDHS_overlapped_BP_clean.txt" \
-"hg19_ubi-rDHS_overlapped_BP_15.pdf" "10,921 ubi-rDHS overlapped genes (top 15)" 15
+"hg19_ubi-rDHS_overlapped_BP_15" "10,921 ubi-rDHS overlapped genes (top 15)" 15
 #
 Rscript make_figs_from_PANTHER.R "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/" \
 "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/hg19_ubi-rDHS_overlapped_CC_clean.txt" \
-"hg19_ubi-rDHS_overlapped_CC_15.pdf" "10,921 ubi-rDHS overlapped genes (top 15)" 15
+"hg19_ubi-rDHS_overlapped_CC_15" "10,921 ubi-rDHS overlapped genes (top 15)" 15
 #
 Rscript make_figs_from_PANTHER.R "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/" \
 "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/hg19_ubi-rDHS_overlapped_MF_clean.txt" \
-"hg19_ubi-rDHS_overlapped_MF_15.pdf" "10,921 ubi-rDHS overlapped genes (top 15)" 15
+"hg19_ubi-rDHS_overlapped_MF_15" "10,921 ubi-rDHS overlapped genes (top 15)" 15
 
 awk '{if(NR>10){print $0}}' hg19_ubi-rDHS_PLS_BP.txt > hg19_ubi-rDHS_PLS_BP_clean.txt
 awk '{if(NR>10){print $0}}' hg19_ubi-rDHS_PLS_CC.txt > hg19_ubi-rDHS_PLS_CC_clean.txt
@@ -107,15 +107,15 @@ awk '{if(NR>10){print $0}}' hg19_ubi-rDHS_PLS_MF.txt > hg19_ubi-rDHS_PLS_MF_clea
 #
 Rscript make_figs_from_PANTHER.R "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/" \
 "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/hg19_ubi-rDHS_PLS_BP_clean.txt" \
-"hg19_ubi-rDHS_PLS_BP_15.pdf" "9,009 ubi-rDHS PLS (top 15)" 15
+"hg19_ubi-rDHS_PLS_BP_15" "9,009 ubi-rDHS PLS (top 15)" 15
 #
 Rscript make_figs_from_PANTHER.R "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/" \
 "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/hg19_ubi-rDHS_PLS_CC_clean.txt" \
-"hg19_ubi-rDHS_PLS_CC_15.pdf" "9,009 ubi-rDHS PLS (top 15)" 15
+"hg19_ubi-rDHS_PLS_CC_15" "9,009 ubi-rDHS PLS (top 15)" 15
 #
 Rscript make_figs_from_PANTHER.R "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/" \
 "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/hg19_ubi-rDHS_PLS_MF_clean.txt" \
-"hg19_ubi-rDHS_PLS_MF_15.pdf" "9,009 ubi-rDHS PLS (top 15)" 15
+"hg19_ubi-rDHS_PLS_MF_15" "9,009 ubi-rDHS PLS (top 15)" 15
 
 awk '{if(NR>10){print $0}}' hg19_ubi-rDHS_nonPLS_BP.txt > hg19_ubi-rDHS_nonPLS_BP_clean.txt
 awk '{if(NR>10){print $0}}' hg19_ubi-rDHS_nonPLS_CC.txt > hg19_ubi-rDHS_nonPLS_CC_clean.txt
@@ -123,15 +123,15 @@ awk '{if(NR>10){print $0}}' hg19_ubi-rDHS_nonPLS_MF.txt > hg19_ubi-rDHS_nonPLS_M
 #
 Rscript make_figs_from_PANTHER.R "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/" \
 "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/hg19_ubi-rDHS_nonPLS_BP_clean.txt" \
-"hg19_ubi-rDHS_nonPLS_BP_15.pdf" "1,912 ubi-rDHS ELS/CTCF-only (top 15)" 15
+"hg19_ubi-rDHS_nonPLS_BP_15" "1,912 ubi-rDHS ELS/CTCF-only (top 15)" 15
 #
 Rscript make_figs_from_PANTHER.R "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/" \
 "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/hg19_ubi-rDHS_nonPLS_CC_clean.txt" \
-"hg19_ubi-rDHS_nonPLS_CC_15.pdf" "1,912 ubi-rDHS ELS/CTCF-only (top 15)" 15
+"hg19_ubi-rDHS_nonPLS_CC_15" "1,912 ubi-rDHS ELS/CTCF-only (top 15)" 15
 #
 Rscript make_figs_from_PANTHER.R "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/" \
 "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/hg19_ubi-rDHS_nonPLS_MF_clean.txt" \
-"hg19_ubi-rDHS_nonPLS_MF_15.pdf" "1,912 ubi-rDHS ELS/CTCF-only (top 15)" 15
+"hg19_ubi-rDHS_nonPLS_MF_15" "1,912 ubi-rDHS ELS/CTCF-only (top 15)" 15
 
 awk '{if(NR>10){print $0}}' hg19_ubi-rDHS_2_BP.txt > hg19_ubi-rDHS_2_BP_clean.txt
 awk '{if(NR>10){print $0}}' hg19_ubi-rDHS_2_CC.txt > hg19_ubi-rDHS_2_CC_clean.txt
@@ -139,15 +139,15 @@ awk '{if(NR>10){print $0}}' hg19_ubi-rDHS_2_MF.txt > hg19_ubi-rDHS_2_MF_clean.tx
 #
 Rscript make_figs_from_PANTHER.R "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/" \
 "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/hg19_ubi-rDHS_2_BP_clean.txt" \
-"hg19_ubi-rDHS_2_BP_15.pdf" "29,733 ubi-rDHS (top 15)" 15
+"hg19_ubi-rDHS_2_BP_15" "29,733 ubi-rDHS (top 15)" 15
 #
 Rscript make_figs_from_PANTHER.R "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/" \
 "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/hg19_ubi-rDHS_2_CC_clean.txt" \
-"hg19_ubi-rDHS_2_CC_15.pdf" "29,733 ubi-rDHS (top 15)" 15
+"hg19_ubi-rDHS_2_CC_15" "29,733 ubi-rDHS (top 15)" 15
 #
 Rscript make_figs_from_PANTHER.R "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/" \
 "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/hg19_ubi-rDHS_2_MF_clean.txt" \
-"hg19_ubi-rDHS_2_MF_15.pdf" "29,733 ubi-rDHS (top 15)" 15
+"hg19_ubi-rDHS_2_MF_15" "29,733 ubi-rDHS (top 15)" 15
 
 awk '{if(NR>10){print $0}}' hg19_ubi-rDHS_2_overlapped_BP.txt > hg19_ubi-rDHS_2_overlapped_BP_clean.txt
 awk '{if(NR>10){print $0}}' hg19_ubi-rDHS_2_overlapped_CC.txt > hg19_ubi-rDHS_2_overlapped_CC_clean.txt
@@ -155,12 +155,12 @@ awk '{if(NR>10){print $0}}' hg19_ubi-rDHS_2_overlapped_MF.txt > hg19_ubi-rDHS_2_
 #
 Rscript make_figs_from_PANTHER.R "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/" \
 "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/hg19_ubi-rDHS_2_overlapped_BP_clean.txt" \
-"hg19_ubi-rDHS_2_overlapped_BP_15.pdf" "29,733 ubi-rDHS overlapped genes (top 15)" 15
+"hg19_ubi-rDHS_2_overlapped_BP_15" "29,733 ubi-rDHS overlapped genes (top 15)" 15
 #
 Rscript make_figs_from_PANTHER.R "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/" \
 "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/hg19_ubi-rDHS_2_overlapped_CC_clean.txt" \
-"hg19_ubi-rDHS_2_overlapped_CC_15.pdf" "29,733 ubi-rDHS overlapped genes (top 15)" 15
+"hg19_ubi-rDHS_2_overlapped_CC_15" "29,733 ubi-rDHS overlapped genes (top 15)" 15
 #
 Rscript make_figs_from_PANTHER.R "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/" \
 "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/hg19_ubi-rDHS_2_overlapped_MF_clean.txt" \
-"hg19_ubi-rDHS_2_overlapped_MF_15.pdf" "29,733 ubi-rDHS overlapped genes (top 15)" 15
+"hg19_ubi-rDHS_2_overlapped_MF_15" "29,733 ubi-rDHS overlapped genes (top 15)" 15
