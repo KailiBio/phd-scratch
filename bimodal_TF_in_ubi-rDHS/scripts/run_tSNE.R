@@ -89,7 +89,7 @@ for (i in 0:nrow(cellList)){
       scale_color_manual(limits=c("Promoter-like_Signatures","Enhancer-like_Signatures","CTCF-only","DNase-only","Inactive"),
                          values=c("#ff0000","#ffcd00","#00b0f0","#06da93","#e1e1e1"),
                          name = paste(substring(type,1,20),"\nspecific five-group", sep=""), 
-                         breaks=c("CTCF-only","DNase-only","Enhancer-like_Signatures","Inactive","Promoter-like_Signatures"),
+                         breaks=c("Promoter-like_Signatures","Enhancer-like_Signatures","CTCF-only","DNase-only","Inactive"),
                          labels=bb)
     ### distance
     c = ggplot(out, aes(x = X1, y = X2, color = data2$distance)) + 
