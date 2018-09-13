@@ -126,7 +126,7 @@ for i in range(len(data)):
         else:
             biosample = data[i]['biosample_term_name'] + "_" + data[i]['age']
         signal_file_name = biosample + "_DNAme"
-        code.append("bigWigAverageOverBed "+data[i]['fn']+" "+path+"tab_bed6/mm10_200bin_tab.bed "+path+"signal/"+signal_file_name+"_200bin.tab"+"\n")
+        code.append("bigWigAverageOverBed "+data[i]['fn']+" "+path+"mm10_tab.bed "+path+"signal/"+signal_file_name+"_200bin.tab"+"\n")
         code.append("""awk '{print $6}' """+path+"signal/"+signal_file_name+"_200bin.tab > "+path+"signal/"+signal_file_name+"_200bin.txt"+"\n")
         input.append(biosample+" DNAme "+ path + "signal/" + signal_file_name + "_200bin.txt"+"\n")
     elif data[i]['assay_term_name']=='ATAC-seq':
@@ -136,7 +136,7 @@ for i in range(len(data)):
         else:
             biosample = data[i]['biosample_term_name'] + "_" + data[i]['age']
         signal_file_name = biosample + "_ATAC"
-        code.append("bigWigAverageOverBed "+data[i]['fn']+" "+path+"tab_bed6/mm10_200bin_tab.bed "+path+"signal/"+signal_file_name+"_200bin.tab"+"\n")
+        code.append("bigWigAverageOverBed "+data[i]['fn']+" "+path+"mm10tab.bed "+path+"signal/"+signal_file_name+"_200bin.tab"+"\n")
         code.append("""awk '{print $5}' """+path+"signal/"+signal_file_name+"_200bin.tab > "+path+"signal/"+signal_file_name+"_200bin.txt"+"\n")
         input.append(biosample+" ATAC "+ path + "signal/" + signal_file_name + "_200bin.txt"+"\n")
     elif data[i]['assay_term_name']=='ChIP-seq':
@@ -146,7 +146,7 @@ for i in range(len(data)):
         else:
             biosample = data[i]['biosample_term_name'] + "_" + data[i]['age']
         signal_file_name = biosample + "_" + data[i]['label']
-        code.append("bigWigAverageOverBed "+data[i]['fn']+" "+path+"tab_bed6/mm10_200bin_tab.bed "+path+"signal/"+signal_file_name+"_200bin.tab"+"\n")
+        code.append("bigWigAverageOverBed "+data[i]['fn']+" "+path+"mm10_200bin_tab.bed "+path+"signal/"+signal_file_name+"_200bin.tab"+"\n")
         code.append("""awk '{print $5}' """+path+"signal/"+signal_file_name+"_200bin.tab > "+path+"signal/"+signal_file_name+"_200bin.txt"+"\n")
         input.append(biosample+" "+data[i]['label']+" "+ path + "signal/" + signal_file_name + "_200bin.txt"+"\n")
 
