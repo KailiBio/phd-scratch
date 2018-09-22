@@ -2,9 +2,7 @@
 
 # Code from Xiaoou
 
-
 import sys
-
 
 def main():
     with open(sys.argv[1], 'r') as f, open(sys.argv[2], 'w') as out:
@@ -20,12 +18,15 @@ def main():
 def ts(lst):
     exp = [float(x) for x in lst]
     n = len(exp)
-    max_exp = max(exp) + 0.001
-    total = 0
-    for i in exp:
-        total += (max_exp - i) * 1.0 / max_exp
-    total /= n - 1
-    return total
+    max_exp = max(exp)
+    if(max_exp==0):
+        return -0.1
+    else:
+        total = 0
+        for i in exp:
+            total += (max_exp - i) * 1.0 / max_exp
+        total /= n - 1
+        return total
 
 
 if __name__ == '__main__':
