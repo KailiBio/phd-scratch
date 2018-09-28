@@ -48,7 +48,7 @@ if __name__ == "__main__":
                 elif f.output_type=="signal p-value" and f.file_format=="bigWig" and f.bio_rep==[1] and f.tech_rep==['1_1'] and f.assembly=="mm10":
                     fileID = f.accession
             # code line for getting signal
-            code.append("bigWigAverageOverBed /data/projects/encode/data/"+expID+"/"+fileID+".bw /data/zusers/fankaili/ideas/run_ideas_p_value/mm10_tab.bed /data/zusers/fankaili/ideas/signal/macs2_pvalue/"+sample+"_"+mark+"_macs2_pvalue.tab"+"\n")
+            code.append("bigWigAverageOverBed /data/projects/encode/data/"+expID+"/"+fileID+".bigWig /data/zusers/fankaili/ideas/run_ideas_p_value/mm10_tab.bed /data/zusers/fankaili/ideas/signal/macs2_pvalue/"+sample+"_"+mark+"_macs2_pvalue.tab"+"\n")
             if mark=="WGBS":
                 code.append("cut -f 6 /data/zusers/fankaili/ideas/signal/macs2_pvalue/"+sample+"_"+mark+"_macs2_pvalue.tab > /data/zusers/fankaili/ideas/signal/macs2_pvalue/"+sample+"_"+mark+"_macs2_pvalue.txt"+"\n")
             else:
