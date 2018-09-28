@@ -25,19 +25,15 @@ if __name__ == "__main__":
     outDir = "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/hg38_tissue_gene_exp_list.txt"
 
     q = QueryDCC(auth=False)
-    expID = []
     out = []
     for exp in q.getExps(url):
+		expID = exp.files[0].expID
+		sample = ("_").join([exp.biosample_term_name.replace(" ","_"), exp.age_display.replace(" ","_")])
         for f in exp.files:
-            if not f.expID in expID:
-                expID.append(f.expID)
-                myexp = Exp.fromJsonFile(f.expID)
-                for myfile in myexp.files:
-                    if myfile.bio_rep==[1] and myfile.tech_rep==['1_1'] and myfile.file_format=="tsv" and myfile.output_type=="gene quantifications" and myfile.assembly=="GRCh38":
-                        print(f.expID)
-                        print(myfile.accession)
-                        sample = ("_").join([exp.biosample_term_name.replace(" ","_"), exp.age_display.replace(" ","_")])
-                        out.append(("\t").join([f.expID, myfile.accession ,exp.biosample_term_name.replace(" ","_"), sample])+"\n")
-                        subprocess.call("""grep "ENSG" /data/projects/encode/data/"""+f.expID+"/"+myfile.accession+".tsv | cut -f 1,6 | sort -k1 > /data/zusers/fankaili/ccre/hg38_ubi-rDHS/tissue_gene_exp/"+f.expID+".txt", shell=True)
+            if f.bio_rep==[1] and f.tech_rep==['1_1'] and f.file_format=="tsv" and f.output_type=="gene quantifications" and f.assembly=="GRCh38":
+                print(expID)
+                print(f.accession)
+                out.append(("\t").join([expID, f.accession ,exp.biosample_term_name.replace(" ","_"), sample])+"\n")
+                subprocess.call("""grep "ENSG" /data/projects/encode/data/"""+expID+"/"+f.accession+".tsv | cut -f 1,6 | sort -k1 > /data/zusers/fankaili/ccre/hg38_ubi-rDHS/tissue_gene_exp/"+expID+".txt", shell=True)
 
     write_file(out,outDir)
