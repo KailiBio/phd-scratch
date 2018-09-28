@@ -30,6 +30,7 @@ if __name__ == "__main__":
     out = []
     code = []
     for exp in q.getExps(url):
+        fileID = ""
         if exp.biosample_term_name in tissue_list:
             # sample name
             sample = ("_").join([exp.biosample_term_name.replace(" ","_"), exp.age_display.replace(" ","_")])
@@ -43,19 +44,28 @@ if __name__ == "__main__":
             expID = exp.files[0].expID
             # file ID
             for f in exp.files:
-                if mark=="WGBS" and f.output_type=="signal" and f.file_format=="bigWig" and f.bio_rep==[1] and f.tech_rep==['1_1'] and f.assembly=="mm10":
+                if mark=="WGBS" and f.output_type=="signal" and f.file_format=="bigWig" and f.bio_rep==[1] and f.assembly=="mm10":
                     fileID = f.accession
-                elif f.output_type=="signal p-value" and f.file_format=="bigWig" and f.bio_rep==[1] and f.tech_rep==['1_1'] and f.assembly=="mm10":
+                elif mark=="DNase-seq" and f.output_type=="read-depth normalized signal" and f.bio_rep==[1] and f.assembly=="mm10":
                     fileID = f.accession
-            # code line for getting signal
-            code.append("bigWigAverageOverBed /data/projects/encode/data/"+expID+"/"+fileID+".bigWig /data/zusers/fankaili/ideas/run_ideas_p_value/mm10_tab.bed /data/zusers/fankaili/ideas/signal/macs2_pvalue/"+sample+"_"+mark+"_macs2_pvalue.tab"+"\n")
-            if mark=="WGBS":
-                code.append("cut -f 6 /data/zusers/fankaili/ideas/signal/macs2_pvalue/"+sample+"_"+mark+"_macs2_pvalue.tab > /data/zusers/fankaili/ideas/signal/macs2_pvalue/"+sample+"_"+mark+"_macs2_pvalue.txt"+"\n")
+                elif f.output_type=="signal p-value" and f.file_format=="bigWig" and f.bio_rep==[1] and f.assembly=="mm10":
+                    fileID = f.accession
+                elif f.output_type=="signal p-value" and f.file_format=="bigWig" and f.bio_rep==[2] and f.assembly=="mm10":
+                    fileID = f.accession
+            if fileID!="":
+                # code line for getting signal
+                code.append("bigWigAverageOverBed /data/projects/encode/data/"+expID+"/"+fileID+".bigWig /data/zusers/fankaili/ideas/run_ideas_p_value/mm10_tab.bed /data/zusers/fankaili/ideas/signal/macs2_pvalue/"+sample+"_"+mark+"_macs2_pvalue.tab"+"\n")
+                if mark=="WGBS":
+                    code.append("cut -f 6 /data/zusers/fankaili/ideas/signal/macs2_pvalue/"+sample+"_"+mark+"_macs2_pvalue.tab > /data/zusers/fankaili/ideas/signal/macs2_pvalue/"+sample+"_"+mark+"_macs2_pvalue.txt"+"\n")
+                else:
+                    code.append("cut -f 5 /data/zusers/fankaili/ideas/signal/macs2_pvalue/"+sample+"_"+mark+"_macs2_pvalue.tab > /data/zusers/fankaili/ideas/signal/macs2_pvalue/"+sample+"_"+mark+"_macs2_pvalue.txt"+"\n")
+                # input
+                filePath="/data/zusers/fankaili/ideas/signal/macs2_pvalue/"+sample+"_"+mark+"_macs2_pvalue.txt"
+                out.append(("\t").join([sample, mark, filePath, expID, fileID])+"\n")
+            elif len(exp.files) < 5:
+                print(expID,"no bigWig")
             else:
-                code.append("cut -f 5 /data/zusers/fankaili/ideas/signal/macs2_pvalue/"+sample+"_"+mark+"_macs2_pvalue.tab > /data/zusers/fankaili/ideas/signal/macs2_pvalue/"+sample+"_"+mark+"_macs2_pvalue.txt"+"\n")
-            # input
-            filePath="/data/zusers/fankaili/ideas/signal/macs2_pvalue/"+sample+"_"+mark+"_macs2_pvalue.txt"
-            out.append(("\t").join([sample, mark, filePath, expID, fileID])+"\n")
+                print(expID)
 
     write_file(out,outDir)
     write_file(code,codeDir)
