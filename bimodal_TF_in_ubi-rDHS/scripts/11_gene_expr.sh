@@ -39,34 +39,75 @@ awk '{if($2=="protein_coding"){print $0}}' hg19_geneID_geneType_geneSymbol.txt >
 
 Rscript make_closest_gene_exp_analysis_figs.R
 
+# 3. get RNAseq matched DNase sample
+python ${scriptDir}get_RNAseq_match_DNase.py
+sort -k3,3 hg19_RNA_matched_DNase_file_list.txt > hg19_RNA_matched_DNase_file_list_sorted.txt
 
+### get not ubi-rDHS overlapped TSS file
+awk '{FS=OFS="\t"}{if($13==0){print $5,$6,$7,$8,$9,$10,$11}}' hg19_ubi-rDHS_closest_gene.bed | sort -u | cut -f 4 \
+> hg19_ubi-rDHS_overlapped_TSS_list.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$4]!=1){print $0}}}' hg19_ubi-rDHS_overlapped_TSS_list.txt TSS.Filtered.bed \
+> hg19_ubi-rDHS_non_overlapped_TSS_list.txt
+
+### get non ubi-rDHSs
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$4]!=1){print $0}}}' /data/zusers/fankaili/ccre/ubi_ccREs_hg19_list.txt \
+/data/zusers/moorej3/ENCODE-Registry/hg19/V4/hg19-rDHSs.bed > /data/zusers/fankaili/ccre/hg19_non_ubi-rDHS.bed
+
+#
+while read line
+do
+    echo ${line};
+    rna_exp_id=`awk '{FS=OFS="\t"}{print $1}' <<< ${line}` ;
+    sample=`awk '{FS=OFS="\t"}{print $3}' <<< ${line}` ;
+    dnase_exp_id=`awk '{FS=OFS="\t"}{print $5}' <<< ${line}` ;
+    dnase_file_id=`awk '{FS=OFS="\t"}{print $6}' <<< ${line}` ;
+    #
+    awk '{FS=OFS="\t"}{if(NR==FNR){if($2>1.64){a[$1]=1}}else{if(a[$4]){print $0}}}' \
+    /data/zusers/moorej3/ENCODE-Registry/hg19/V4/signal-output/${dnase_exp_id}"-"${dnase_file_id}.txt \
+    /data/zusers/fankaili/ccre/hg19_non_ubi-rDHS.bed > ./non_ubi_active_DHS/${dnase_exp_id}_DHS.bed ;
+    #
+    bedtools intersect -a ./non_ubi_active_DHS/${dnase_exp_id}_DHS.bed -b hg19_ubi-rDHS_non_overlapped_TSS_list.txt -wa -wb \
+    | cut -f 11 | sort -u > temp.txt ;
+    #
+    awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$1]==1){print $1,$2,"ubi-rDHS_overlapped"}}}' \
+    hg19_ubi-rDHS_overlapped_gene_list0.txt ./all_gene_exp/${rna_exp_id}.txt > ./gene_exp_comparison_file/${sample}.txt ;
+    #
+    awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$1]==1){print $1,$2,"active-rDHS_overlapped"}}}' \
+    temp.txt ./all_gene_exp/${rna_exp_id}.txt >> ./gene_exp_comparison_file/${sample}.txt ;
+    #
+    Rscript /data/zusers/fankaili/github/weng-lab/Kaili/bimodal_TF_in_ubi-rDHS/scripts/make_comparison_barplot.R ${sample} ;
+done < hg19_RNA_matched_DNase_file_list_sorted.txt
+
+while read line
+do
+    sample=`awk '{FS=OFS="\t"}{print $3}' <<< ${line}` ;
+    Rscript /data/zusers/fankaili/github/weng-lab/Kaili/bimodal_TF_in_ubi-rDHS/scripts/make_comparison_barplot.R ${sample} ;
+done < hg19_RNA_matched_DNase_file_list_sorted.txt
+
+
+# 4. RAMGAE signal
+
+###### RAMPAGE
+head -1 hg19-tss-rampage-matrix.txt | awk '{FS=OFS="\t"}{for(i=1;i<=NF;i++){if($i=="ENCFF198YEH"){print i}}}'
+# 239 +
+head -1 hg19-tss-rampage-matrix.txt | awk '{FS=OFS="\t"}{for(i=1;i<=NF;i++){if($i=="ENCFF707TAV"){print i}}}'
+# 251 -
+
+bedtools intersect -a ./non_ubi_active_DHS/ENCSR000EMT_DHS.bed -b hg19_ubi-rDHS_non_overlapped_TSS_list.txt -wa -wb \
+| cut -f 5,6,7,8,9,10 | sort -u > temp.txt ;
+
+awk '{FS=OFS="\t"}{print $4,0,$6,"active-rDHS_overlapped"}' temp.txt > GM12878_rampage_file.txt
+awk '{FS=OFS="\t"}{if($13==0){print $8,0,$10,"ubi-rDHS_overlapped"}}' hg19_ubi-rDHS_closest_gene.bed >> GM12878_rampage_file.txt
+
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1;b[$1]=$239}else{if($3=="+" && a[$1]==1){print $1,b[$1],$3,$4}else{print $0}}}' \
+hg19-tss-rampage-matrix.txt GM12878_rampage_file.txt > temp2.txt
+#
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1;b[$1]=$251}else{if($3=="-" && a[$1]==1){print $1,b[$1],$3,$4}else{print $0}}}' \
+hg19-tss-rampage-matrix.txt temp2.txt > GM12878_rampage_file.txt
 
 #------------------------------------------------------------------------------------------------------------------------
 
-# 3. get hg38 gene expression matrix
-cd /data/zusers/fankaili/ccre/hg38_ubi-rDHS/all_gene_exp/
-python ${scriptDir}get_GRCh38_RNA_exp.py
-#
-echo "gene_id" > hg38_all_gene_exp_matrix.txt
-cut -f 1 ./all_gene_exp/ENCSR023ZXN.txt >> hg38_all_gene_exp_matrix.txt
-for file in `ls /data/zusers/fankaili/ccre/hg38_ubi-rDHS/all_gene_exp/`
-do
-    echo $file;
-    echo ${file%.txt} > temp.txt;
-    awk '{print $2}' ./all_gene_exp/${file} >> temp.txt ;
-    paste hg38_all_gene_exp_matrix.txt temp.txt > temp2.txt;
-    mv temp2.txt hg38_all_gene_exp_matrix.txt;
-done
-rm temp.txt
-
-### get ref -- using GENCODE.v24
-cp /data/zusers/moorej3/moorej.ghpcc.project/Reference/Human/hg38/GENCODE24/gencode.v24.annotation.gtf /home/fankaili/genome/
-awk '{FS=" ";OFS="\t"}{if($3=="gene"){split($10,a,"\"");split($12,b,"\"");split($16,c,"\"");print a[2],b[2],c[2]}}' \
-/home/fankaili/genome/gencode.v24.annotation.gtf > hg38_geneID_geneType_geneSymbol.txt
-#
-awk '{if($2=="protein_coding"){print $0}}' hg38_geneID_geneType_geneSymbol.txt > hg38_proteinCoding_geneID_geneType_geneSymbol.txt
-
-# 4. get housekeeping genes and tissue-specific genes
+# 1. get housekeeping genes and tissue-specific genes
 
 ## get housekeeping gene from paper
 cd /home/fankaili/genome/
@@ -106,31 +147,3 @@ grep "AC073869.1" hg38_geneID_geneType_geneSymbol.txt >> hg38_housekeeping_geneI
 sort -u hg38_housekeeping_geneID_geneType_geneSymbol.txt > temp5.txt
 mv temp5.txt hg38_housekeeping_geneID_geneType_geneSymbol.txt
 rm temp*.txt
-
-## get tissue specificity score
-### 1) get tissues expression matrix
-# 46 tissues in total 113 samples
-python ${scriptDir}get_GRCh38_tissue_RNA_exp.py
-#
-echo "gene_id" > hg38_tissue_gene_exp_matrix.txt
-cut -f 1 ./all_gene_exp/ENCSR023ZXN.txt >> hg38_tissue_gene_exp_matrix.txt
-for file in `ls /data/zusers/fankaili/ccre/hg38_ubi-rDHS/tissue_gene_exp/`
-do
-    echo $file;
-    echo ${file%.txt} > temp.txt;
-    awk '{print $2}' ./all_gene_exp/${file} >> temp.txt ;
-    paste hg38_tissue_gene_exp_matrix.txt temp.txt > temp2.txt;
-    mv temp2.txt hg38_tissue_gene_exp_matrix.txt;
-done
-rm temp.txt
-
-### 2) calculate tissue specificity index
-cp /data/zusers/zhangx/seq/mouse_ccRE/ts_all.py /data/zusers/fankaili/github/weng-lab/Kaili/bimodal_TF_in_ubi-rDHS/scripts/
-#
-awk '{if(NR>1){print $0}}' hg38_tissue_gene_exp_matrix.txt > tmp.txt
-python ${scriptDir}ts_all.py tmp.txt hg38_tissue_gene_exp_TSscore.txt
-rm tmp.txt
-#
-awk '{if(NR>1){print $0}}' hg38_all_gene_exp_matrix.txt > tmp.txt
-python ${scriptDir}ts_all.py tmp.txt hg38_all_gene_exp_TSscore.txt
-rm tmp.txt
