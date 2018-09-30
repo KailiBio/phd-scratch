@@ -29,6 +29,8 @@ if __name__ == "__main__":
     for exp in q.getExps(url):
 	sample = ("_").join([exp.biosample_term_name.replace(" ","_"), exp.age_display.replace(" ","_")])
 	expID = exp.files[0].expID
+        plus = ""
+        minus = ""
         for f in exp.files:
             if f.bio_rep==[1] and f.tech_rep==['1_1'] and f.file_format=="bigWig" and f.output_type=="plus strand signal of unique reads" and f.assembly=="GRCh38":
 		plus = f.accession
@@ -38,5 +40,7 @@ if __name__ == "__main__":
 		minus = f.accession
 		print(minus)
 		subprocess.call("bigWigAverageOverBed /data/projects/encode/data/"+f.expID+"/"+minus+".bigWig /data/zusers/fankaili/ccre/hg38_ubi-rDHS/TSS.Filtered_sorted.bed /data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage/"+minus+".tab", shell=True)
+            if plus != "" and minus != "" :
+                break
 	out.append(("\t").join([expID, plus, minus, sample])+"\n")
     write_file(out,outDir)
