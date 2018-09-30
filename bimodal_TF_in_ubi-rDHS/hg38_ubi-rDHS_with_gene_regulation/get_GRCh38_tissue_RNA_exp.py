@@ -34,6 +34,6 @@ if __name__ == "__main__":
                 print(expID)
                 print(f.accession)
                 out.append(("\t").join([expID, f.accession ,exp.biosample_term_name.replace(" ","_"), sample])+"\n")
-                subprocess.call("""grep "ENSG" /data/projects/encode/data/"""+expID+"/"+f.accession+".tsv | cut -f 1,6 | sort -k1 > /data/zusers/fankaili/ccre/hg38_ubi-rDHS/tissue_gene_exp/"+expID+".txt", shell=True)
+                # subprocess.call("""grep "ENSG" /data/projects/encode/data/"""+expID+"/"+f.accession+".tsv | cut -f 1,6 | sort -k1 > /data/zusers/fankaili/ccre/hg38_ubi-rDHS/tissue_gene_exp/"+expID+".txt", shell=True)
 
     write_file(out,outDir)
