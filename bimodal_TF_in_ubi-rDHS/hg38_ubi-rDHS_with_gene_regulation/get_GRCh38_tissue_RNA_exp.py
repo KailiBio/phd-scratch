@@ -27,8 +27,8 @@ if __name__ == "__main__":
     q = QueryDCC(auth=False)
     out = []
     for exp in q.getExps(url):
-		expID = exp.files[0].expID
-		sample = ("_").join([exp.biosample_term_name.replace(" ","_"), exp.age_display.replace(" ","_")])
+	expID = exp.files[0].expID
+	sample = ("_").join([exp.biosample_term_name.replace(" ","_"), exp.age_display.replace(" ","_")])
         for f in exp.files:
             if f.bio_rep==[1] and f.tech_rep==['1_1'] and f.file_format=="tsv" and f.output_type=="gene quantifications" and f.assembly=="GRCh38":
                 print(expID)
