@@ -77,9 +77,13 @@ awk '{print $4}' ./closest_gene/GRCh38_ubi-rOCR_closest_gene.bed | sort -u | wc 
 awk '{FS=OFS="\t"}{if($15==0){print $4,$8,$9,$10,$13}}' ./closest_gene/GRCh38_ubi-rOCR_closest_gene.bed | sort -u | cut -f 1 | sort \
 | uniq -c > ./closest_gene/GRCh38_ubi-rOCR_overlapped_TSS_count.txt
 #
-awk '{FS=OFS="\t"}{if($15==0){print $4,$14}}' ./closest_gene/GRCh38_ubi-rOCR_closest_gene.bed | sort -u | cut -f 1 | sort \
-| uniq -c > ./closest_gene/GRCh38_ubi-rOCR_overlapped_gene_count.txt
+# awk '{FS=OFS="\t"}{if($15==0){print $4,$14}}' ./closest_gene/GRCh38_ubi-rOCR_closest_gene.bed | sort -u | cut -f 1 | sort \
+# | uniq -c > ./closest_gene/GRCh38_ubi-rOCR_overlapped_gene_count.txt
+# add control
+bedtools closest -a GRCh38-rOCRs.bed -b TSS.Filtered.bed -d -k 1 | awk '{FS=OFS="\t"}{if($12==0){print $4,$5,$6,$7,$10}}' | sort -u \
+| cut -f 1 | sort | uniq -c > ./closest_gene/GRCh38_rOCR_overlapped_TSS_count.txt
 
+bedtools closest -a GRCh38_ubi-rOCRs_EDGEid.bed -b TSS.Filtered.bed -d -k 1 > ./closest_gene/GRCh38_ubi-rOCR_closest_gene.bed
 # Rscript make_basic_figures.R
 
 
