@@ -37,16 +37,27 @@ matrix$type = as.vector(matrix$type)
 matrix[hk,]$type = "HK_published"
 
 library(ggplot2)
-library(gridExtra)
-pdf("tissue_specificity_index.pdf", width=12, height = 6)
-g1 = ggplot(matrix, aes(all, fill = type)) + 
-  geom_histogram(alpha = 0.5, aes(y = ..density..), position = 'identity') +
-  xlab("tissue_specificity_index")
-g2 = ggplot(matrix, aes(all, fill = type)) + 
+
+ggplot(matrix, aes(all, fill = type)) + 
   geom_histogram(alpha = 0.5, aes(y = ..count..), position = 'identity') +
-  xlab("tissue_specificity_index")
-grid.arrange(g1, g2, ncol=2)
-dev.off()
+  xlab("tissue_specificity_index") + scale_fill_manual(values = c("#ef8a62", "#67a9cf")) +
+  labs(title="Tissue-specificity index for genes")
+ggsave("tissue_specificity_index.pdf")
+
+
+overlapped = as.vector(read.table("GRCh38_ubi-rOCR_closest_gene_list.bed")[,1])
+matrix = transform(matrix, ubi.rOCR = "non-overlapped")
+matrix$ubi.rOCR = as.vector(matrix$ubi.rOCR)
+matrix[overlapped,]$ubi.rOCR = "overlapped"
+
+library(ggplot2)
+
+ggplot(matrix, aes(all, fill = ubi.rOCR)) + 
+  geom_histogram(alpha = 0.5, aes(y = ..count..), position = 'identity') +
+  xlab("tissue_specificity_index") + scale_fill_manual(values = c("#af8dc3", "#7fbf7b")) +
+  labs(title="Tissue-specificity index for genes")
+ggsave("tissue_specificity_index2.pdf")
+
 
 ######################
 
@@ -61,9 +72,18 @@ dev.off()
 ######################
 tss_ts = read.table("hg38_tissue_TSS_exp_TSscore.txt", header = TRUE, row.names = 1)
 
-ggplot(tss_ts, aes(all)) + 
+overlapped_tss = as.vector(read.table("GRCh38_ubi-rOCR_closest_TSS_list.bed")[,1])
+matrix2 = transform(tss_ts, ubi.rOCR="non-overlapped")
+matrix2$ubi.rOCR = as.vector(matrix2$ubi.rOCR)
+matrix2[overlapped_tss,]$ubi.rOCR = "overlapped"
+
+library(ggplot2)
+
+
+ggplot(matrix2, aes(all, fill = ubi.rOCR)) + 
   geom_histogram(alpha = 0.5, aes(y = ..count..), position = 'identity') + 
-  xlab("tissue_specificity_index")
+  xlab("tissue_specificity_index") + scale_fill_manual(values = c("#af8dc3", "#7fbf7b")) +
+  labs(title="Tissue-specificity index for TSSs")
 ggsave("TSS_tissue_specificity_index.pdf")
 
 
