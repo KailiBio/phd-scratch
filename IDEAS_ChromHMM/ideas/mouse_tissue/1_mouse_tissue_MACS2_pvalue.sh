@@ -2,6 +2,9 @@
 
 # -- Kaili
 # This script is for getting mouse tissue signal files.
+##### Still can't access all the data.
+# Some data seems not included in json (ENCSR371KFW)
+# Some data (P54 WGBS) seems not download yet and also no bw file.
 
 scriptDir="/data/zusers/fankaili/github/weng-lab/Kaili/IDEAS_ChromHMM/ideas/mouse_tissue/"
 workDir="/data/zusers/fankaili/ideas/"
@@ -119,3 +122,33 @@ cp /data/zusers/fankaili/ideas/run_ideas_p_value/run_IDEAS_8hm_atac_dname_pvalue
 vim mouse_tissue_8hm_ATAC_WGBS_DNase_TF.sh
 
 nohup bash mouse_tissue_8hm_ATAC_WGBS_DNase_TF.sh > nohup.mouse_tissue_8hm_ATAC_WGBS_DNase_TF.out 2>&1&
+
+
+
+#####################
+# Oct 02
+cd /data/zusers/fankaili/ideas/mouse_tissue_8hm_ATAC_WGBS/
+mv mouse_tissue_8hm_ATAC_WGBS.input mouse_tissue_8hm_ATAC_WGBS.input0
+sort -u mouse_tissue_8hm_ATAC_WGBS.input0 > mouse_tissue_8hm_ATAC_WGBS.input
+vim mouse_tissue_8hm_ATAC_WGBS.sh
+# change result folder
+nohup bash mouse_tissue_8hm_ATAC_WGBS.sh > nohup.mouse_tissue_8hm_ATAC_WGBS_2.out 2>&1&
+
+
+
+cd /data/zusers/fankaili/ideas/mouse_tissue_8hm_ATAC_WGBS_DNase/
+mv mouse_tissue_8hm_ATAC_WGBS_DNase.input mouse_tissue_8hm_ATAC_WGBS_DNase.input0
+cp mouse_tissue_8hm_ATAC_WGBS_DNase.input0 ss.txt
+vim ss.txt
+sed -i 's/.50_day/.5_day/g' ss.txt
+sort -u ss.txt > mouse_tissue_8hm_ATAC_WGBS_DNase.input
+vim mouse_tissue_8hm_ATAC_WGBS_DNase.sh
+# change result folder
+nohup bash mouse_tissue_8hm_ATAC_WGBS_DNase.sh > nohup.mouse_tissue_8hm_ATAC_WGBS_DNase_2.out 2>&1&
+
+
+
+#####################
+# heart only
+mkdir /data/zusers/fankaili/ideas/heart/
+cd /data/zusers/fankaili/ideas/heart/
