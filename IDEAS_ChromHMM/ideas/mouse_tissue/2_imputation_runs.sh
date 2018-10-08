@@ -21,11 +21,11 @@ cp /data/zusers/fankaili/ideas/mouse_tissue_8hm_ATAC_WGBS/mm10.bed ./e14.5p0_8hm
 grep "_14.5" /data/zusers/fankaili/ideas/run_ideas_p_value/run_IDEAS_8hm_atac_dname_pvalue.input > ./e14.5p0_8hm_ATAC_DNAme_CTCF_1/e14.5p0_8hm_ATAC_DNAme_CTCF_1.input
 grep "_0" /data/zusers/fankaili/ideas/run_ideas_p_value/run_IDEAS_8hm_atac_dname_pvalue.input >> ./e14.5p0_8hm_ATAC_DNAme_CTCF_1/e14.5p0_8hm_ATAC_DNAme_CTCF_1.input
 # CTCF
-grep "CTCF" /data/zusers/fankaili/ideas/mm10_tissue_used_list.txt | grep "_0_day" | cut -f 1-3 >> ./e14.5p0_8hm_ATAC_DNAme_CTCF_1/e14.5p0_8hm_ATAC_DNAme_CTCF_1.input
-grep "CTCF" /data/zusers/fankaili/ideas/mm10_tissue_used_list.txt | grep "_14.5_day" | cut -f 1-3 >> ./e14.5p0_8hm_ATAC_DNAme_CTCF_1/e14.5p0_8hm_ATAC_DNAme_CTCF_1.input
+grep "CTCF" /data/zusers/fankaili/ideas/mm10_tissue_used_list.txt | grep "_0_day" | awk '{FS="\t";OFS=" "}{print $1,$2,$3}' >> ./e14.5p0_8hm_ATAC_DNAme_CTCF_1/e14.5p0_8hm_ATAC_DNAme_CTCF_1.input
+grep "CTCF" /data/zusers/fankaili/ideas/mm10_tissue_used_list.txt | grep "_14.5_day" | awk '{FS="\t";OFS=" "}{print $1,$2,$3}' >> ./e14.5p0_8hm_ATAC_DNAme_CTCF_1/e14.5p0_8hm_ATAC_DNAme_CTCF_1.input
 ## 221 files in total
-sed -i 's/_0_day/_0/g' ./e14.5p0_8hm_ATAC_DNAme_CTCF_1/e14.5p0_8hm_ATAC_DNAme_CTCF_1.input
-sed -i 's/_14.5_day/_14.5/g' ./e14.5p0_8hm_ATAC_DNAme_CTCF_1/e14.5p0_8hm_ATAC_DNAme_CTCF_1.input
+sed -i 's/_0_day /_0 /g' ./e14.5p0_8hm_ATAC_DNAme_CTCF_1/e14.5p0_8hm_ATAC_DNAme_CTCF_1.input
+sed -i 's/_14.5_day /_14.5 /g' ./e14.5p0_8hm_ATAC_DNAme_CTCF_1/e14.5p0_8hm_ATAC_DNAme_CTCF_1.input
 
 ## .sh file
 cp /data/zusers/fankaili/ideas/mouse_tissue_8hm_ATAC_WGBS/mouse_tissue_8hm_ATAC_WGBS.sh ./e14.5p0_8hm_ATAC_DNAme_CTCF_1/e14.5p0_8hm_ATAC_DNAme_CTCF_1.sh
@@ -48,11 +48,11 @@ grep "lung_14.5" /data/zusers/fankaili/ideas/run_ideas_p_value/run_IDEAS_8hm_ata
 grep "liver_14.5" /data/zusers/fankaili/ideas/run_ideas_p_value/run_IDEAS_8hm_atac_dname_pvalue.input >> ./e14.5p0_8hm_ATAC_DNAme_CTCF_2/e14.5p0_8hm_ATAC_DNAme_CTCF_2.input
 grep "_0" /data/zusers/fankaili/ideas/run_ideas_p_value/run_IDEAS_8hm_atac_dname_pvalue.input >> ./e14.5p0_8hm_ATAC_DNAme_CTCF_2/e14.5p0_8hm_ATAC_DNAme_CTCF_2.input
 # CTCF
-grep "CTCF" /data/zusers/fankaili/ideas/mm10_tissue_used_list.txt | grep "_0_day" | cut -f 1-3 >> ./e14.5p0_8hm_ATAC_DNAme_CTCF_2/e14.5p0_8hm_ATAC_DNAme_CTCF_2.input
-grep "CTCF" /data/zusers/fankaili/ideas/mm10_tissue_used_list.txt | grep "_14.5_day" | cut -f 1-3 >> ./e14.5p0_8hm_ATAC_DNAme_CTCF_2/e14.5p0_8hm_ATAC_DNAme_CTCF_2.input
+grep "CTCF" /data/zusers/fankaili/ideas/mm10_tissue_used_list.txt | grep "_0_day" | awk '{FS="\t";OFS=" "}{print $1,$2,$3}' >> ./e14.5p0_8hm_ATAC_DNAme_CTCF_2/e14.5p0_8hm_ATAC_DNAme_CTCF_2.input
+grep "CTCF" /data/zusers/fankaili/ideas/mm10_tissue_used_list.txt | grep "_14.5_day" | awk '{FS="\t";OFS=" "}{print $1,$2,$3}' >> ./e14.5p0_8hm_ATAC_DNAme_CTCF_2/e14.5p0_8hm_ATAC_DNAme_CTCF_2.input
 ## 121 files in total
-sed -i 's/_0_day/_0/g' ./e14.5p0_8hm_ATAC_DNAme_CTCF_2/e14.5p0_8hm_ATAC_DNAme_CTCF_2.input
-sed -i 's/_14.5_day/_14.5/g' ./e14.5p0_8hm_ATAC_DNAme_CTCF_2/e14.5p0_8hm_ATAC_DNAme_CTCF_2.input
+sed -i 's/_0_day /_0 /g' ./e14.5p0_8hm_ATAC_DNAme_CTCF_2/e14.5p0_8hm_ATAC_DNAme_CTCF_2.input
+sed -i 's/_14.5_day /_14.5 /g' ./e14.5p0_8hm_ATAC_DNAme_CTCF_2/e14.5p0_8hm_ATAC_DNAme_CTCF_2.input
 
 ## .sh file
 cp /data/zusers/fankaili/ideas/mouse_tissue_8hm_ATAC_WGBS/mouse_tissue_8hm_ATAC_WGBS.sh ./e14.5p0_8hm_ATAC_DNAme_CTCF_2/e14.5p0_8hm_ATAC_DNAme_CTCF_2.sh
