@@ -54,7 +54,7 @@ do
     filename=${file%.tab};
     echo $filename;
     echo -e "id\t"${filename} > temp.txt;
-    cut -f 1,5 /data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage/${file} >> temp.txt;
+    cut -f 1,4 /data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage/${file} >> temp.txt;
     awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$2;b[$1]=1}else{if(b[$1]){print $0,a[$1]}}}' temp.txt hg38_tss_rampage_signal_matrix.txt > temp2.txt;
     mv temp2.txt hg38_tss_rampage_signal_matrix.txt;
 done
