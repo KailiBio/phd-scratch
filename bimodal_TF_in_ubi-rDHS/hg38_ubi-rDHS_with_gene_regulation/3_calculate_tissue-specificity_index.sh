@@ -104,8 +104,7 @@ python ${scriptDir}ts_all.py tmp.txt hg38_tissue_TSS_exp_TSscore0.txt
 sed -i 's/-0.100000/NA/g' hg38_tissue_TSS_exp_TSscore0.txt
 rm tmp.txt
 ### remove duplicate TSSs
-sort -k1,3 -k6 -u TSS.Filtered.bed | cut -f 1-6 > TSS.Filtered_clean.bed
-awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=1}else{if(FNR==1){print $0}else if(a[$1]){print $0}}}' TSS.Filtered_clean.bed \
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=1}else{if(FNR==1){print $0}else if(a[$1]){print $0}}}' TSS.Filtered.uniq.bed \
 hg38_tissue_TSS_exp_TSscore0.txt > hg38_tissue_TSS_exp_TSscore.txt
 
 
