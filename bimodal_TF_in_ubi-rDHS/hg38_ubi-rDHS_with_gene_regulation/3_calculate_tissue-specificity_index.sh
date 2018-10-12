@@ -86,13 +86,13 @@ do
     plus=`awk '{FS=OFS="\t"}{print $2}' <<< $line` ;
     echo ${plus} ;
     echo ${plus} > temp.txt;
-    awk '{print $5}' ./rampage/${plus}.tab >> temp.txt ;
+    awk '{print $4}' ./rampage/${plus}.tab >> temp.txt ;
     paste hg38_tissue_TSS_exp_matrix.txt temp.txt > temp2.txt;
     mv temp2.txt hg38_tissue_TSS_exp_matrix.txt;
     minus=`awk '{FS=OFS="\t"}{print $3}' <<< $line` ;
     echo ${minus} ;
     echo ${minus} > temp.txt;
-    awk '{print $5}' ./rampage/${minus}.tab >> temp.txt ;
+    awk '{print $4}' ./rampage/${minus}.tab >> temp.txt ;
     paste hg38_tissue_TSS_exp_matrix.txt temp.txt > temp2.txt;
     mv temp2.txt hg38_tissue_TSS_exp_matrix.txt;
 done < hg38_tissue_TSS_exp_list2.txt
