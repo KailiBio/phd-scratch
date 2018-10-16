@@ -43,6 +43,9 @@ nohup bash ./code/codes_for_getting_signal_pvalue_10.sh > ./code/nohup.codes_for
 
 # .bed file
 awk '{FS="\t";OFS=" "}{print $1,$2,$3,$4}' ${workDir}mm10_OCR-center_bins_v1.sorted.bed > mm10_OCR-center_bins_v1.sorted_space.bed
+awk '{FS="\t";OFS=" "}{if(NR==FNR){a[$4]=$0}else{print a[$1]}}' /data/zusers/fankaili/ideas/dhs_bins/mm10_OCR-center_bins_v1.bed \
+/data/zusers/fankaili/ideas/dhs_bins/v1_100_300bp/signal/heart_0_ATAC.tab > mm10_OCR-center_bins_v1_signal_based.bed
+awk '{FS="\t";OFS=" "}{print $1,$2,$3,$4}' mm10_OCR-center_bins_v1_signal_based.bed > mm10_OCR-center_bins_v1_signal_based_space.bed
 # .input file
 cp signal_pvalue.input DHS_v1_100-300bp.input
 # .sh file
@@ -53,7 +56,7 @@ cp /data/zusers/fankaili/ideas/run_ideas_p_value/run_IDEAS_8hm_atac_dname_pvalue
 vim DHS_v1_100-300bp.parafile
 
 # run IDEAS
-nohup bash DHS_v1_100-300bp.sh ./nohup.DHS_v1_100-300bp.out 2>&1&
+nohup bash DHS_v1_100-300bp.sh > ./nohup.DHS_v1_100-300bp.out 2>&1&
 
 
 # 2. v2_1_300bp
@@ -89,6 +92,9 @@ nohup bash ./code/codes_for_getting_signal_pvalue_10.sh > ./code/nohup.codes_for
 
 # .bed file
 awk '{FS="\t";OFS=" "}{print $1,$2,$3,$4}' ${workDir}mm10_OCR-center_bins_v2.sorted.bed > mm10_OCR-center_bins_v2.sorted_space.bed
+awk '{FS="\t";OFS=" "}{if(NR==FNR){a[$4]=$0}else{print a[$1]}}' /data/zusers/fankaili/ideas/dhs_bins/mm10_OCR-center_bins_v2.bed \
+/data/zusers/fankaili/ideas/dhs_bins/v2_1_300bp/signal/heart_0_DNAme.tab > mm10_OCR-center_bins_v2_signal_based.bed
+awk '{FS="\t";OFS=" "}{print $1,$2,$3,$4}' mm10_OCR-center_bins_v2_signal_based.bed > mm10_OCR-center_bins_v2_signal_based_space.bed
 # .input file
 cp signal_pvalue.input DHS_v2_1-300bp.input
 # .sh file
@@ -99,4 +105,4 @@ cp /data/zusers/fankaili/ideas/dhs_bins/v1_100_300bp/DHS_v1_100-300bp.parafile D
 vim DHS_v2_1-300bp.parafile
 
 # run IDEAS
-nohup bash DHS_v2_1-300bp.sh ./nohup.DHS_v2_1-300bp.out 2>&1&
+nohup bash DHS_v2_1-300bp.sh > ./nohup.DHS_v2_1-300bp.out 2>&1&
