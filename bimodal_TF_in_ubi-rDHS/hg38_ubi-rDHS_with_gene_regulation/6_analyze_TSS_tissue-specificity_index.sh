@@ -2,6 +2,11 @@
 
 # -- Kaili
 # This script is for analyzing TSS tissue-specificity index.
+# 1. RAMPAGE signal between biosamples
+# 2. RAMPAGE signal between ubi-rDHS overlapped and not overlapped TSSs.
+# 3. Scatter plot for TS index of all TSS in a gene and overlapped TSS.
+# 4. Scatter plot for TS index of overlapped TSS in a gene and rest TSS.
+# 5. maximum TSS TS index in gene
 
 scriptDir="/data/zusers/fankaili/github/weng-lab/Kaili/bimodal_TF_in_ubi-rDHS/hg38_ubi-rDHS_with_gene_regulation/"
 workDir="/data/zusers/fankaili/ccre/hg38_ubi-rDHS/"
@@ -28,12 +33,14 @@ awk '{FS=OFS="\t"}{if(NR==FNR){a[$11]=1}else{if(a[$4]){print $0}}}' ./closest_ge
 # 1. RAMPAGE signal between biosamples
 ## function for getting RAMPAGE signal
 getRampageSignal(){
-    awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$4}else{print $8,a[$4]}}' \
-    /data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage/$1.tab /data/zusers/fankaili/ccre/hg38_ubi-rDHS/TSS.Filtered.uniq_plus.bed > \
-    /data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_tissue/$3_rampage.txt
-    awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$4}else{print $8,a[$4]}}' \
-    /data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage/$2.tab /data/zusers/fankaili/ccre/hg38_ubi-rDHS/TSS.Filtered.uniq_minus.bed >> \
-    /data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_tissue/$3_rampage.txt
+    # setting path
+    rampage_signal_dir="/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage/"
+    tss_plus="/data/zusers/fankaili/ccre/hg38_ubi-rDHS/TSS.Filtered.uniq_plus.bed"
+    tss_minus="/data/zusers/fankaili/ccre/hg38_ubi-rDHS/TSS.Filtered.uniq_minus.bed"
+    output_dir="/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_tissue/"
+    #
+    awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$4}else{print $8,a[$4]}}' ${rampage_signal_dir}$1.tab  ${tss_plus}> ${output_dir}$3_rampage.txt
+    awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$4}else{print $8,a[$4]}}' ${rampage_signal_dir}$2.tab  ${tss_minus} >> ${output_dir}$3_rampage.txt
 }
 
 ## calculate signal
