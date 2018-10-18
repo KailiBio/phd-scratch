@@ -8,6 +8,7 @@
 # 4. GO analysis for ubi-rOCRs overlapped genes
 # 5. get ubi-rORCs overlapped TSSs list and loci
 # 6. for ubi-rOCRs overlapped genes, the percentage of overlapped TSSs.
+# 7. how many ubi-rDHS overlapped genes are bidirectional?
 
 EDGE_hg38="/data/projects/psychencode/Registry/V1/GRCh38/"
 scriptDir="/data/zusers/fankaili/github/weng-lab/Kaili/bimodal_TF_in_ubi-rDHS/hg38_ubi-rDHS_with_gene_regulation/"
@@ -129,3 +130,25 @@ cut -f 11,14 ./closest_gene/GRCh38_ubi-rOCR_closest_gene_merged.bed | sort -u | 
 #
 awk '{FS=OFS="\t"}{if(NR==FNR){a[$14]=1}else{if(a[$7]){print $4,$7}}}' ./closest_gene/GRCh38_ubi-rOCR_closest_gene_merged.bed \
 hg38_merged_TSS_gene.bed | sort -u | cut -f 2 | sort | uniq -c > ./closest_gene/hg38_gene_all_TSS_count_merged.txt
+
+
+
+# 7. how many ubi-rDHS overlapped genes are bidirectional?
+## 1) GRCh38 overlapped
+## get plus&minus gene with TSS.
+awk '{FS=OFS="\t"}{if($15==0){print $11,$13,$14}}' ./closest_gene/GRCh38_ubi-rOCR_closest_gene.bed | sort -u > ss.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){if($2=="+"){b[$1]=1}}else{if(b[$4]){print $1,$2,$3,$8,$5,$6,$7}}}' ss.txt TSS.Filtered.uniqID.bed | \
+sort -u | sort -k1,1 -k2,2n > GRCh38_ubi-rOCR_overlapped_plus_TSSID_gene.bed
+awk '{FS=OFS="\t"}{if(NR==FNR){if($2=="-"){b[$1]=1}}else{if(b[$4]){print $1,$2,$3,$8,$5,$6,$7}}}' ss.txt TSS.Filtered.uniqID.bed | \
+sort -u | sort -k1,1 -k2,2n > GRCh38_ubi-rOCR_overlapped_minus_TSSID_gene.bed
+rm ss.txt
+
+## find bidirectional
+bedtools window -a GRCh38_ubi-rOCR_overlapped_plus_TSSID_gene.bed -b GRCh38_ubi-rOCR_overlapped_minus_TSSID_gene.bed -l 1000 -r 300 | \
+awk '{FS=OFS="\t"}{print $7,$14}' | sort -u | sort -k1,1 -k2,2 > GRCh38_ubi-rOCR_overlapped_bidirectional_gene.txt
+
+## 2) How many bidirectional pairs in genome?
+awk '{FS=OFS="\t"}{if($6=="+"){print $1,$2,$3,$8,$7}}' TSS.Filtered.uniqID.bed | sort -u | sort -k1,1 -k2,2n > TSS.Filtered.uniqID_plus.bed
+awk '{FS=OFS="\t"}{if($6=="-"){print $1,$2,$3,$8,$7}}' TSS.Filtered.uniqID.bed | sort -u | sort -k1,1 -k2,2n > TSS.Filtered.uniqID_minus.bed
+bedtools window -a TSS.Filtered.uniqID_plus.bed -b TSS.Filtered.uniqID_minus.bed -l 1000 -r 300 | awk '{FS=OFS="\t"}{print $5,$10}' | sort -u \
+| sort -k1,1 -k2,2 > GRCh38_bidireactional_gene.txt
