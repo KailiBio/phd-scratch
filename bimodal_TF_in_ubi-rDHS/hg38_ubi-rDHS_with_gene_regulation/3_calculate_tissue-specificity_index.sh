@@ -106,7 +106,9 @@ rm tmp.txt
 ### remove duplicate TSSs
 awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=1}else{if(FNR==1){print $0}else if(a[$1]){print $0}}}' TSS.Filtered.uniq.bed \
 hg38_tissue_TSS_exp_TSscore0.txt > hg38_tissue_TSS_exp_TSscore.txt
-
+# change to TSS uniqID
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$2}else{print $8,a[$4]}}' hg38_tissue_TSS_exp_TSscore0.txt TSS.Filtered.uniqID.bed | sort -u > \
+hg38_tissue_TSS_exp_TSscore_uniqID.txt
 
 ## 3) histogram and get cutoff
 # Rscript find_TSscore_cutoff.R

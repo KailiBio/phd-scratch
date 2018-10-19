@@ -31,3 +31,6 @@ if __name__ == "__main__":
             output = open("/data/zusers/fankaili/ccre/hg38_ubi-rDHS/temp.bed","w")
             a = line.rstrip().split("\t")
             print >> output, "\t".join([a[0], a[1], a[2], a[6], a[4], a[5], a[6]])
+
+    subprocess.call("rm /data/zusers/fankaili/ccre/hg38_ubi-rDHS/temp.bed", shell=True)
+    subprocess.call("rm /data/zusers/fankaili/ccre/hg38_ubi-rDHS/temp2.bed", shell=True)

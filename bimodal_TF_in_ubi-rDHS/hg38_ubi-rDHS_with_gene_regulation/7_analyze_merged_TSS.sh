@@ -1,0 +1,142 @@
+#!/bin/bash
+
+# -- Kaili
+# This script is for analysing merged TSS.
+# 0. get merged TSS
+# 1. RAMPAGE signal in each tissue
+# 2. boxplot of rampage signal
+# 3. histogram: TSS overlapped with ubi-rOCRs/rOCRs
+
+
+scriptDir="/data/zusers/fankaili/github/weng-lab/Kaili/bimodal_TF_in_ubi-rDHS/hg38_ubi-rDHS_with_gene_regulation/"
+workDir="/data/zusers/fankaili/ccre/hg38_ubi-rDHS/merged-TSS/"
+
+# 0. get merged TSS
+sort -k7,7 -k1,1 -k2,2n TSS.Filtered.bed > TSS.Filtered_sorted_gene.bed
+python ${scriptDir}merge_TSS_50bp.py
+sort -k1,1 -k2,2n hg38_merged_TSS_gene.bed > hg38_merged_TSS_gene_sorted.bed
+## used to be 194,897 TSSs in 56,516 genes
+## now we have 133,609 merged TSSs.
+
+cd ${workDir}
+## 1) length histogram of merged-TSSs.
+awk '{FS=OFS="\t"}{print $0,$3-$2}' /data/zusers/fankaili/ccre/hg38_ubi-rDHS/hg38_merged_TSS_gene_sorted.bed > GRCh38_merged-TSS_gene_length.txt
+# only overlapped ubi-rOCR
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$14]=1}else{if(a[$7]){print $0}}}' /data/zusers/fankaili/ccre/hg38_ubi-rDHS/closest_gene/GRCh38_ubi-rOCR_closest_gene.bed \
+GRCh38_merged-TSS_gene_length.txt > GRCh38_ubi-rOCR_overlapped_merged-TSS_gene_length.txt
+# make histogram
+# locally
+# Rscript make_merged-TSS_length_histogram.R
+
+## 2) merged-TSSs overlapped with ubi-rOCRs
+intersectBed -a /data/zusers/fankaili/ccre/hg38_ubi-rDHS/hg38_merged_TSS_gene_sorted.bed \
+-b /data/zusers/fankaili/ccre/hg38_ubi-rDHS/GRCh38_ubi-rOCRs_EDGEid.bed -wa -wb > GRCh38_ubi-rOCR_overlapped_merged-TSS.bed
+
+## 3) tissue-specificity index of merged-TSSs
+### get merged-TSS tissue RAMPAGE signal matrix
+echo "mergedTSS_id" > hg38_tissue_mergedTSS_exp_matrix.txt
+cut -f 1 /data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_tissue_mergedTSS/A172_rampage.txt >> hg38_tissue_mergedTSS_exp_matrix.txt
+#
+while read line
+do
+    id=`awk '{print $1}' <<< ${line}`
+    biosample=`awk '{print $4}' <<< ${line}`
+    echo ${id} > temp.txt
+    awk '{print $2}' /data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_tissue_mergedTSS/${biosample}_rampage.txt >> temp.txt
+    paste hg38_tissue_mergedTSS_exp_matrix.txt temp.txt > temp2.txt
+    mv temp2.txt hg38_tissue_mergedTSS_exp_matrix.txt
+done < /data/zusers/fankaili/ccre/hg38_ubi-rDHS/hg38_tissue_TSS_exp_list2.txt
+rm temp.txt
+
+### calculate tissue-specificity index
+awk '{if(NR>1){print $0}}' hg38_tissue_mergedTSS_exp_matrix.txt > tmp.txt
+python ${scriptDir}ts_all.py tmp.txt hg38_tissue_mergedTSS_exp_TSscore.txt
+sed -i 's/-0.100000/NA/g' hg38_tissue_mergedTSS_exp_TSscore.txt
+rm tmp.txt
+
+
+
+#-----------------------------------------------------------
+# 1. scatterplot of RAMPAGE signal in each tissue
+
+## 1) calculate RAMPAGE signal
+awk '{FS=OFS="\t"}{if($6=="+"){print $0}}' GRCh38_merged-TSS_gene_length.txt > GRCh38_merged-TSS_gene_length_plus.txt
+awk '{FS=OFS="\t"}{if($6=="-"){print $0}}' GRCh38_merged-TSS_gene_length.txt > GRCh38_merged-TSS_gene_length_minus.txt
+#
+awk '{FS=OFS="\t"}{print $1,$2-50,$3+50,$4,1,$6}' GRCh38_merged-TSS_gene_length.txt > GRCh38_merged-TSS_gene_50bp_bed6.bed
+#
+bash ${scriptDir}calculate_RAMPAGE_signal_merged-TSS.sh
+
+## 2) make figures
+Rscript ${scriptDir}make_rampage_signal_scatter_between_tissue_separate.R "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_tissue_mergedTSS/" \
+"A172" "K562" "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_between_tissue/"
+#
+Rscript ${scriptDir}make_rampage_signal_scatter_between_tissue_separate.R "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_tissue_mergedTSS/" \
+"A172" "liver_32_year" "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_between_tissue/"
+#
+Rscript ${scriptDir}make_rampage_signal_scatter_between_tissue_separate.R "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_tissue_mergedTSS/" \
+"A172" "GM12878" "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_between_tissue/"
+#
+Rscript ${scriptDir}make_rampage_signal_scatter_between_tissue_separate.R "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_tissue_mergedTSS/" \
+"A172" "H7-hESC_NA" "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_between_tissue/"
+#
+Rscript ${scriptDir}make_rampage_signal_scatter_between_tissue_separate.R "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_tissue_mergedTSS/" \
+"A172" "stomach_40_week" "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_between_tissue/"
+#
+Rscript ${scriptDir}make_rampage_signal_scatter_between_tissue_separate.R "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_tissue_mergedTSS/" \
+"A172" "lung_24_week" "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_between_tissue/"
+#
+Rscript ${scriptDir}make_rampage_signal_scatter_between_tissue_separate.R "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_tissue_mergedTSS/" \
+"A172" "spleen_53_year" "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_between_tissue/"
+
+
+
+#-----------------------------------------------------------
+# 2. boxplot of rampage signal
+Rscript ${scriptDir}make_rampage_signal_boxplot_overlapped_merged-TSS.R "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_tissue_mergedTSS/" \
+"A172" "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_between_tissue/"
+#
+Rscript ${scriptDir}make_rampage_signal_boxplot_overlapped_merged-TSS.R "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_tissue_mergedTSS/" \
+"K562" "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_between_tissue/"
+#
+Rscript ${scriptDir}make_rampage_signal_boxplot_overlapped_merged-TSS.R "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_tissue_mergedTSS/" \
+"liver_32_year" "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_between_tissue/"
+#
+Rscript ${scriptDir}make_rampage_signal_boxplot_overlapped_merged-TSS.R "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_tissue_mergedTSS/" \
+"GM12878" "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_between_tissue/"
+#
+Rscript ${scriptDir}make_rampage_signal_boxplot_overlapped_merged-TSS.R "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_tissue_mergedTSS/" \
+"H7-hESC_NA" "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_between_tissue/"
+#
+Rscript ${scriptDir}make_rampage_signal_boxplot_overlapped_merged-TSS.R "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_tissue_mergedTSS/" \
+"stomach_40_week" "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_between_tissue/"
+#
+Rscript ${scriptDir}make_rampage_signal_boxplot_overlapped_merged-TSS.R "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_tissue_mergedTSS/" \
+"lung_24_week" "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_between_tissue/"
+#
+Rscript ${scriptDir}make_rampage_signal_boxplot_overlapped_merged-TSS.R "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_tissue_mergedTSS/" \
+"spleen_53_year" "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage_between_tissue/"
+
+
+
+#-----------------------------------------------------------
+# 3. histogram: TSS overlapped with ubi-rOCRs/rOCRs
+awk '{FS=OFS="\t"}{print $11,$4}' GRCh38_ubi-rOCR_overlapped_merged-TSS.bed | sort -u | cut -f 1 | uniq -c | \
+awk '{FS=" ";OFS="\t"}{print $2,$1}' > GRCh38_ubi-rOCR_overlapped_merged-TSS_count.txt
+#
+intersectBed -a /data/zusers/fankaili/ccre/hg38_ubi-rDHS/GRCh38-rOCRs.bed \
+-b /data/zusers/fankaili/ccre/hg38_ubi-rDHS/hg38_merged_TSS_gene_sorted.bed -wa -wb | awk '{FS=OFS="\t"}{print $4,$8}' | sort -u | \
+cut -f 1 | uniq -c | awk '{FS=" ";OFS="\t"}{print $2,$1}' > GRCh38_rOCR_overlapped_merged-TSS_count.txt
+#
+# locally
+# Rscript make_overlapped_mergedTSS_count_histogram.R
+
+
+
+#-----------------------------------------------------------
+# 4. histogram: TS index of merged-TSS
+## get merged-TSS of housekeeping genes
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$7]){print $4}}}' /home/fankaili/genome/hg38_housekeeping_geneID_geneType_geneSymbol.txt \
+GRCh38_ubi-rOCR_overlapped_merged-TSS.bed | sort -u > GRCh38_HK_mergedTSS_list.txt
+
+# Rscript analyze_mergedTSS_TSindex.R

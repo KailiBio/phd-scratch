@@ -43,22 +43,31 @@ dev.off()
 #      main = "number of TSSs overlapped for each ubi-rOCR", col = "grey")
 # dev.off()
 
-tss_count_all = read.table("GRCh38_rOCR_overlapped_TSS_count.txt", row.names = 2)
-ubi.rOCR = as.vector(read.table("GRCh38_ubi-rOCR_overlapped_TSS_count.txt")[,2])
+tss_count_all = read.table("GRCh38_rOCR_overlapped_TSS_count.txt")
+ubi.rOCR = read.table("GRCh38_ubi-rOCR_overlapped_TSS_count.txt")
 
-matrix = transform(tss_count_all, type = "rOCR")
-colnames(matrix) = c("num", "type")
-matrix$type = as.vector(matrix$type)
-matrix[ubi.rOCR,]$type = "ubi-rOCR"
+# matrix = transform(tss_count_all, type = "rOCR")
+# colnames(matrix) = c("num", "type")
+# matrix$type = as.vector(matrix$type)
+# matrix[ubi.rOCR,]$type = "ubi-rOCR"
+# 
+# library(ggplot2)
+# 
+# ggplot(matrix, aes(num, fill = type)) + 
+#   geom_histogram(alpha = 0.5, aes(y = ..count..), position = 'identity', binwidth = 1) + 
+#   xlab("number of overlapped TSSs") + scale_fill_manual(values = c("#67a9cf", "#ef8a62")) + 
+#   labs(title="number of TSSs overlapped for each rOCR/ubi-rOCR")
+# ggsave("ubi-rOCRs_overlapped_TSS_count.pdf")
 
-library(ggplot2)
+summary(tss_count_all[,1])
+summary(ubi.rOCR[,1])
 
-ggplot(matrix, aes(num, fill = type)) + 
-  geom_histogram(alpha = 0.5, aes(y = ..count..), position = 'identity', binwidth = 1) + 
-  xlab("number of overlapped TSSs") + scale_fill_manual(values = c("#67a9cf", "#ef8a62")) + 
-  labs(title="number of TSSs overlapped for each rOCR/ubi-rOCR")
-ggsave("ubi-rOCRs_overlapped_TSS_count.pdf")
-
+pdf("ubi-rOCRs_overlapped_TSS_count.pdf")
+hist(tss_count_all[,1], breaks = c(0.5:26.5), col = "grey", border = "grey", 
+     xlab = "number of overlapped 2TSS", 
+     main = "number of TSS overlapped for each ubi-rOCR/rOCR")
+hist(ubi.rOCR[,1], breaks = c(0.5:26.5), col = "red", add=T)
+dev.off()
 
 
 

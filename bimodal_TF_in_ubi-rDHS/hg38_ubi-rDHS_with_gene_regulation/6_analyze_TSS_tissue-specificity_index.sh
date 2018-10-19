@@ -88,7 +88,7 @@ awk '{FS=OFS="\t"}{if(NR==1){id=$1;sum=$3;n=1}else{if(id!=$1){print id,sum/n;id=
 hg38_gene_TSS_TSindex.txt > hg38_gene_TSS_TSindex_average.txt
 
 ## plot
-# Rscript make_TSindex_scatterplot.R
+# Rscript compare_TSindex.R
 
 
 # 4. Scatter plot for TS index of overlapped TSS in a gene and rest TSS.
@@ -100,7 +100,7 @@ awk '{FS=OFS="\t"}{if(NR==1){id=$1;sum=$3;n=1}else{if(id!=$1){print id,sum/n;id=
 hg38_non_overlapped_gene_TSS_TSindex.txt > hg38_non_overlapped_gene_TSS_TSindex_average.txt
 
 ## plot
-# Rscript make_TSindex_scatterplot.R
+# Rscript compare_TSindex.R
 
 
 
@@ -109,4 +109,4 @@ awk '{FS=OFS="\t"}{if(NR==1){id=$1;max=$3}else{if(id!=$1){print id,max;id=$1;max
 hg38_gene_TSS_TSindex.txt > hg38_gene_TSS_TSindex_max.txt
 
 ## plot
-# Rscript make_TSindex_scatterplot.R
+# Rscript compare_TSindex.R
