@@ -34,8 +34,6 @@ dev.off()
 data2 = data.frame(cbind(overlapped, rest[rownames(overlapped),]))
 colnames(data2) = c("overlapped", "non_overlapped")
 data2 = na.omit(data2)
-# data2 = data2[- which(rownames(data2)=="ENSG00000133980.4"),]
-# data2 = data2[- which(rownames(data2)=="ENSG00000259867.5"),]
 
 
 pdf("hg38_mergedTSS_TSindex_overlapped_rest_gene.pdf")
@@ -53,7 +51,7 @@ dev.off()
 pdf("hg38_mergedTSS_meanTSindex_in_gene_boxplot.pdf")
 boxplot(data$overlapped, data2$non_overlapped, data$all, ylab = "mean tissue-specificity index",
         names = c("overlapped", "non-overlapped", "all"), col = brewer.pal(3, "Set1"),
-        main = "mean of mergedTSS tissue-specificity index comparison")
+        main = "mean of mergedTSS tissue-specificity index comparison", ylim=c(0.5,1))
 dev.off()
 
 t.test(data2[,1], data2[,2])$p.value

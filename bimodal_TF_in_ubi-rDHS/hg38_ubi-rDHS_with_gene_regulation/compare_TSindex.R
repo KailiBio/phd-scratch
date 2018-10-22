@@ -41,7 +41,6 @@ data2 = na.omit(data2)
 data2 = data2[- which(rownames(data2)=="ENSG00000133980.4"),]
 data2 = data2[- which(rownames(data2)=="ENSG00000259867.5"),]
 
-data2 = data2["ENSG00000133980.4",]
 
 pdf("hg38_TSS_TSindex_overlapped_rest_gene.pdf")
 smoothScatter(data2[,1], data2[,2], xlim=c(0.4,1), ylim=c(0.4,1), nrpoints=0,
@@ -59,7 +58,7 @@ dev.off()
 pdf("hg38_TSS_meanTSindex_in_gene_boxplot.pdf")
 boxplot(data$overlapped, data2$non_overlapped, data$all, ylab = "mean tissue-specificity index",
         names = c("overlapped", "non-overlapped", "all"), col = brewer.pal(3, "Set1"),
-        main = "mean TSS tissue-specificity index comparison")
+        main = "mean TSS tissue-specificity index comparison", ylim=c(0.7,1))
 dev.off()
 
 t.test(data2[,1], data2[,2])$p.value
