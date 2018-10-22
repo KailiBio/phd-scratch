@@ -24,3 +24,10 @@ smoothScatter(dat$ts1, dat$ts2, xlim = c(0.4,1), ylim = c(0.4,1),
               main = "tissue-specificity index between\nubi-rOCR overlapped TSSs and genes")
 dev.off()
 
+
+
+
+
+
+
+

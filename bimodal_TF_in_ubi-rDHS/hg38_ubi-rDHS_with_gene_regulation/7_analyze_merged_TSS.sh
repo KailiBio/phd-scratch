@@ -6,6 +6,8 @@
 # 1. RAMPAGE signal in each tissue
 # 2. boxplot of rampage signal
 # 3. histogram: TSS overlapped with ubi-rOCRs/rOCRs
+# 4. histogram: TS index of merged-TSS
+# 5.
 
 
 scriptDir="/data/zusers/fankaili/github/weng-lab/Kaili/bimodal_TF_in_ubi-rDHS/hg38_ubi-rDHS_with_gene_regulation/"
@@ -140,3 +142,30 @@ awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$7]){print $4}}}' /home/fankail
 GRCh38_ubi-rOCR_overlapped_merged-TSS.bed | sort -u > GRCh38_HK_mergedTSS_list.txt
 
 # Rscript analyze_mergedTSS_TSindex.R
+
+#-----------------------------------------------------------
+# 5. gene TS index calculation
+## 1) mean of overlapped merged-TSS
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=$7;b[$4]=1}else{if(b[$1]){print a[$1],$1,$2}}}' GRCh38_ubi-rOCR_overlapped_merged-TSS.bed \
+hg38_tissue_mergedTSS_exp_TSscore.txt | sort -k1,1 > GRCh38_ubi-rOCR_overlapped_mergedTSS_TSindex.txt
+# calculate mean for each gene
+awk '{FS=OFS="\t"}{if(NR==1){id=$1;sum=$3;n=1}else{if(id!=$1){print id,sum/n;id=$1;sum=$3;n=1}else{sum+=$3;n+=1}}}END{print id,sum/n}' \
+GRCh38_ubi-rOCR_overlapped_mergedTSS_TSindex.txt > GRCh38_ubi-rOCR_overlapped_mergedTSS_TSindex_average.txt
+
+## 2) mean of all merged-TSS
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=$7}else{if(FNR!=1){print a[$1],$1,$2}}}' /data/zusers/fankaili/ccre/hg38_ubi-rDHS/hg38_merged_TSS_gene.bed \
+hg38_tissue_mergedTSS_exp_TSscore.txt | sort -k1,1 > GRCh38_mergedTSS_TSindex.txt
+# calculate mean for each gene
+awk '{FS=OFS="\t"}{if(NR==1){id=$1;sum=$3;n=1}else{if(id!=$1){print id,sum/n;id=$1;sum=$3;n=1}else{sum+=$3;n+=1}}}END{print id,sum/n}' \
+GRCh38_mergedTSS_TSindex.txt > GRCh38_mergedTSS_TSindex_average.txt
+
+
+## 3) mean of rest merged-TSS
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=$7;b[$4]=1}else{if(b[$1]!=1){print a[$1],$1,$2}}}' GRCh38_ubi-rOCR_overlapped_merged-TSS.bed \
+hg38_tissue_mergedTSS_exp_TSscore.txt | sort -k1,1 > GRCh38_non_ubi-rOCR_overlapped_mergedTSS_TSindex.txt
+# calculate mean for each gene
+awk '{FS=OFS="\t"}{if(NR==1){id=$1;sum=$3;n=1}else{if(id!=$1){print id,sum/n;id=$1;sum=$3;n=1}else{sum+=$3;n+=1}}}END{print id,sum/n}' \
+GRCh38_non_ubi-rOCR_overlapped_mergedTSS_TSindex.txt > GRCh38_non_ubi-rOCR_overlapped_mergedTSS_TSindex_average.txt
+
+## 4) make figures
+# Rscript compare_mergedTSS_TSindex.R

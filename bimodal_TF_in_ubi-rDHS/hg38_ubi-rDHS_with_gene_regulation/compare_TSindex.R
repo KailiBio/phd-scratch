@@ -21,13 +21,13 @@ all_max = read.table("hg38_gene_TSS_TSindex_max.txt", row.names = 1, header = TR
 data = data.frame(cbind(overlapped, all[rownames(overlapped),]))
 colnames(data) = c("overlapped", "all")
 
-# ggplot(data, aes(x=overlapped, y=all)) + 
-#   stat_density2d(aes(fill = ..density..^0.25), geom = "tile", contour = FALSE, n = 200) + 
+# ggplot(data, aes(x=overlapped, y=all)) +
+#   stat_density2d(aes(fill = ..density..^0.25), geom = "tile", contour = FALSE, n = 200) +
 #   scale_fill_continuous(low = "white", high = "red") +
 #   theme(legend.position = "none")
 pdf("hg38_TSS_TSindex_overlapped_all_gene.pdf")
-smoothScatter(data[,1], data[,2], xlim=c(0.4,1), ylim=c(0.4,1), nrpoints=0, 
-              xlab = "mean TS index for ubi-rOCR overlapped TSSs in gene", 
+smoothScatter(data[,1], data[,2], xlim=c(0.4,1), ylim=c(0.4,1), nrpoints=0,
+              xlab = "mean TS index for ubi-rOCR overlapped TSSs in gene",
               ylab = "mean TS index for all TSSs in gene",
               main = "mean TS index in ubi-rOCR overlapped genes")
 abline(c(0,0), c(1,1), col="red", lwd=2, lty=2)
@@ -44,8 +44,8 @@ data2 = data2[- which(rownames(data2)=="ENSG00000259867.5"),]
 data2 = data2["ENSG00000133980.4",]
 
 pdf("hg38_TSS_TSindex_overlapped_rest_gene.pdf")
-smoothScatter(data2[,1], data2[,2], xlim=c(0.4,1), ylim=c(0.4,1), nrpoints=0, 
-              xlab = "mean TS index for ubi-rOCR overlapped TSSs in gene", 
+smoothScatter(data2[,1], data2[,2], xlim=c(0.4,1), ylim=c(0.4,1), nrpoints=0,
+              xlab = "mean TS index for ubi-rOCR overlapped TSSs in gene",
               ylab = "mean TS index for non-overlapped TSSs in gene",
               main = "mean TS index in ubi-rOCR overlapped genes")
 abline(c(0,0), c(1,1), col="red", lwd=2, lty=2)
@@ -72,8 +72,8 @@ data3 = data.frame(cbind(overlapped, gene[rownames(overlapped),]))
 colnames(data3) = c("overlapped", "gene")
 
 pdf("hg38_TSindex_overlapped_gene.pdf")
-smoothScatter(data3[,1], data3[,2], xlim=c(0.4,1), ylim=c(0.4,1), nrpoints=0, 
-              xlab = "mean TS index for ubi-rOCR overlapped TSSs in gene", 
+smoothScatter(data3[,1], data3[,2], xlim=c(0.4,1), ylim=c(0.4,1), nrpoints=0,
+              xlab = "mean TS index for ubi-rOCR overlapped TSSs in gene",
               ylab = "TS index of gene (RNA-seq)",
               main = "TS index in ubi-rOCR overlapped genes")
 abline(c(0,0), c(1,1), col="red", lwd=2, lty=2)
@@ -86,8 +86,8 @@ data4 = data.frame(cbind(all[rownames(overlapped),], gene[rownames(overlapped),]
 colnames(data4) = c("all", "gene")
 
 pdf("hg38_TSindex_meanTSS_gene.pdf")
-smoothScatter(data4[,1], data4[,2], xlim=c(0.4,1), ylim=c(0.4,1), nrpoints=0, 
-              xlab = "mean TS index for all TSSs in gene (RAMPAGE)", 
+smoothScatter(data4[,1], data4[,2], xlim=c(0.4,1), ylim=c(0.4,1), nrpoints=0,
+              xlab = "mean TS index for all TSSs in gene (RAMPAGE)",
               ylab = "TS index of gene (RNA-seq)",
               main = "TS index in ubi-rOCR overlapped genes")
 abline(c(0,0), c(1,1), col="red", lwd=2, lty=2)
@@ -99,9 +99,9 @@ dev.off()
 #################
 
 pdf("hg38_TSindex_maxTSS_gene.pdf")
-smoothScatter(all_max[rownames(overlapped),], gene[rownames(overlapped),], xlim=c(0.4,1), ylim=c(0.4,1), 
-              nrpoints=0, 
-              xlab = "max TS index for all TSSs in gene (RAMPAGE)", 
+smoothScatter(all_max[rownames(overlapped),], gene[rownames(overlapped),], xlim=c(0.4,1), ylim=c(0.4,1),
+              nrpoints=0,
+              xlab = "max TS index for all TSSs in gene (RAMPAGE)",
               ylab = "TS index of gene (RNA-seq)",
               main = "TS index in ubi-rOCR overlapped genes")
 abline(c(0,0), c(1,1), col="red", lwd=2, lty=2)
@@ -120,4 +120,3 @@ boxplot(gene[hk,1], all[hk,1], all_max[hk,1], gene[,1], all[,1], all_max[,1],
 dev.off()
 
 #################
-

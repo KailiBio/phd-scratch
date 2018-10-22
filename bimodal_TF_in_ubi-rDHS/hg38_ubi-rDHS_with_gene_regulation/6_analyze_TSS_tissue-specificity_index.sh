@@ -55,6 +55,16 @@ getRampageSignal ENCFF417AXI ENCFF355LSJ spleen_53_year
 getRampageSignal ENCFF043KVG ENCFF058KLC A172
 getRampageSignal ENCFF783EAC ENCFF518WII K562
 
+while read line
+do
+    id=`awk '{print $1}' <<< ${line}`
+    plus=`awk '{print $2}' <<< ${line}`
+    minus=`awk '{print $3}' <<< ${line}`
+    biosample=`awk '{print $4}' <<< ${line}`
+    #
+    getRampageSignal ${plus} ${minus} ${biosample}
+done < /data/zusers/fankaili/ccre/hg38_ubi-rDHS/hg38_RAMPAGE_list.txt
+
 ## get ubi-rOCR overlapped gene with TSS file
 awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1;b[$2]=1}else{if(a[$7]){if(b[$8]){print $7,$8,"overlapped"}else{print $7,$8,"non_overlapped"}}}}' \
 ./closest_gene/GRCh38_ubi-rOCR_overlapped_gene_TSS_uniqID.txt TSS.Filtered.uniqID.bed | sort -u > hg38_ubi-rOCR_overlapped_gene_all_TSS_uniqID.txt

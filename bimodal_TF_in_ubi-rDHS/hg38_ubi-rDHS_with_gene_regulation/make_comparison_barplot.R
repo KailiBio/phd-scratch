@@ -3,14 +3,19 @@
 # This scirpt is for making barplot for comparison genes overlappe with ubi-rDHS or active-DHS.
 
 # setwd("/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/closest_gene/")
-setwd("/data/zusers/fankaili/ccre/hg38_ubi-rDHS/gene_exp_comparison_file/")
+# setwd("/data/zusers/fankaili/ccre/hg38_ubi-rDHS/gene_exp_comparison_file/")
 
 library("ggplot2")
 
 args <- commandArgs(trailingOnly=TRUE);
 filename = args[1]
+inputDir = args[2]
+outputDir = args[3]
 #filename = "GM12878"
 #filename = "A172_53_year"
+
+setwd(inputDir)
+
 data = read.table(paste(filename,".txt", sep=""))
 a = data[data$V3=="ubi-rOCR_overlapped",]$V2
 b = data[data$V3=="active-rOCR_overlapped",]$V2
@@ -20,5 +25,4 @@ t = paste(filename," (n=",as.character(length(a)),":",as.character(length(b)),
 
 ggplot(data, aes(x=V3, y=log10(V2+0.1), fill=V3)) + geom_boxplot() +
   labs(title=t, x="", y="TPM (log10)")
-ggsave(paste("/data/zusers/fankaili/ccre/hg38_ubi-rDHS/gene_exp_comparison_pdf/",filename, ".pdf", sep=""))
-
+ggsave(paste(outputDir,filename, ".pdf", sep=""))
