@@ -20,19 +20,36 @@ sort -k1,1 -k2,2n hg38_merged_TSS_gene.bed > hg38_merged_TSS_gene_sorted.bed
 ## used to be 194,897 TSSs in 56,516 genes
 ## now we have 133,609 merged TSSs.
 
+
+############################
+# Nov 01
+# assign merged-TSS to ubi-rOCRs overlapped or not based on percentage of overlapped ubi-rOCRs/rOCRs.
+# 1） overlapped with ubi-rOCRs
+intersectBed -a hg38_merged_TSS_gene_sorted.bed -b GRCh38_ubi-rOCRs_EDGEid.bed -wa -c | awk '{if($8>0){print $0}}' > \
+./merged-TSS/GRC38_merged-TSS_num_overlapped_ubi-rOCR.txt
+# 2) overlapped with rOCRs
+intersectBed -a hg38_merged_TSS_gene_sorted.bed -b GRCh38-rOCRs.bed -wa -c | awk '{if($8>0){print $0}}' > \
+./merged-TSS/GRC38_merged-TSS_num_overlapped_rOCR.txt
+# 3) assign more ubi-rOCR overlapped merged-TSS as ubi-rOCR overlapped merged-TSS
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=1;b[$4]=$8}else{if(a[$4]){if((b[$4]/$8)>=0.5){print $4,b[$4],$8,(b[$4]/$8)}}}}' \
+./merged-TSS/GRC38_merged-TSS_num_overlapped_ubi-rOCR.txt ./merged-TSS/GRC38_merged-TSS_num_overlapped_rOCR.txt > \
+./merged-TSS/GRCh38_merged-TSS_overlapped_count.txt
+#
+cut -f 1 ./merged-TSS/GRCh38_merged-TSS_overlapped_count.txt | sort -k1,1 > ./merged-TSS/GRCh38_ubi-rOCR_overlapped_merged-TSS_list.txt
+
+############################
+
+
 cd ${workDir}
 ## 1) length histogram of merged-TSSs.
 awk '{FS=OFS="\t"}{print $0,$3-$2}' /data/zusers/fankaili/ccre/hg38_ubi-rDHS/hg38_merged_TSS_gene_sorted.bed > GRCh38_merged-TSS_gene_length.txt
 # only overlapped ubi-rOCR
-awk '{FS=OFS="\t"}{if(NR==FNR){a[$14]=1}else{if(a[$7]){print $0}}}' /data/zusers/fankaili/ccre/hg38_ubi-rDHS/closest_gene/GRCh38_ubi-rOCR_closest_gene.bed \
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$4]){print $0}}}' GRCh38_ubi-rOCR_overlapped_merged-TSS_list.txt \
 GRCh38_merged-TSS_gene_length.txt > GRCh38_ubi-rOCR_overlapped_merged-TSS_gene_length.txt
 # make histogram
 # locally
 # Rscript make_merged-TSS_length_histogram.R
 
-## 2) merged-TSSs overlapped with ubi-rOCRs
-intersectBed -a /data/zusers/fankaili/ccre/hg38_ubi-rDHS/hg38_merged_TSS_gene_sorted.bed \
--b /data/zusers/fankaili/ccre/hg38_ubi-rDHS/GRCh38_ubi-rOCRs_EDGEid.bed -wa -wb > GRCh38_ubi-rOCR_overlapped_merged-TSS.bed
 
 ## 3) tissue-specificity index of merged-TSSs
 ### get merged-TSS tissue RAMPAGE signal matrix
@@ -123,9 +140,13 @@ Rscript ${scriptDir}make_rampage_signal_boxplot_overlapped_merged-TSS.R "/data/z
 
 #-----------------------------------------------------------
 # 3. histogram: TSS overlapped with ubi-rOCRs/rOCRs
-awk '{FS=OFS="\t"}{print $11,$4}' GRCh38_ubi-rOCR_overlapped_merged-TSS.bed | sort -u | cut -f 1 | uniq -c | \
-awk '{FS=" ";OFS="\t"}{print $2,$1}' > GRCh38_ubi-rOCR_overlapped_merged-TSS_count.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$4]){print $0}}}' GRCh38_ubi-rOCR_overlapped_merged-TSS_list.txt \
+../hg38_merged_TSS_gene.bed > GRCh38_ubi-rOCR_overlapped_merged-TSS.bed
 #
+intersectBed -a /data/zusers/fankaili/ccre/hg38_ubi-rDHS/GRCh38_ubi-rOCRs_EDGEid.bed \
+-b /data/zusers/fankaili/ccre/hg38_ubi-rDHS/hg38_merged_TSS_gene_sorted.bed -wa -wb | awk '{FS=OFS="\t"}{print $4,$11}' | sort -u | \
+cut -f 1 | uniq -c | awk '{FS=" ";OFS="\t"}{print $2,$1}' > GRCh38_ubi-rOCR_overlapped_merged-TSS_count.txt
+# rOCRs
 intersectBed -a /data/zusers/fankaili/ccre/hg38_ubi-rDHS/GRCh38-rOCRs.bed \
 -b /data/zusers/fankaili/ccre/hg38_ubi-rDHS/hg38_merged_TSS_gene_sorted.bed -wa -wb | awk '{FS=OFS="\t"}{print $4,$8}' | sort -u | \
 cut -f 1 | uniq -c | awk '{FS=" ";OFS="\t"}{print $2,$1}' > GRCh38_rOCR_overlapped_merged-TSS_count.txt
@@ -140,6 +161,21 @@ cut -f 1 | uniq -c | awk '{FS=" ";OFS="\t"}{print $2,$1}' > GRCh38_rOCR_overlapp
 ## get merged-TSS of housekeeping genes
 awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$7]){print $4}}}' /home/fankaili/genome/hg38_housekeeping_geneID_geneType_geneSymbol.txt \
 GRCh38_ubi-rOCR_overlapped_merged-TSS.bed | sort -u > GRCh38_HK_mergedTSS_list.txt
+
+
+## overlapped
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=$7}else{print a[$1],$1,$2}}' /data/zusers/fankaili/ccre/hg38_ubi-rDHS/hg38_merged_TSS_gene.bed \
+hg38_tissue_mergedTSS_exp_TSscore.txt | sort -u > hg38_tissue_mergedTSS_exp_TSscore_withGene.txt
+#
+cut -f 7 GRCh38_ubi-rOCR_overlapped_merged-TSS.bed | sort -u > GRCh38_ubi-rOCR_overlapped_gene_list.txt
+cut -f 4 GRCh38_ubi-rOCR_overlapped_merged-TSS.bed | sort -u > GRCh38_ubi-rOCR_overlapped_mergedTSS_list.txt
+#
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$1]){print $0}}}' GRCh38_ubi-rOCR_overlapped_gene_list.txt \
+hg38_tissue_mergedTSS_exp_TSscore_withGene.txt | sort -u > hg38_tissue_ubi-rOCR_overlapped_mergedTSS_exp_TSscore_withGene.txt
+#
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$2]){print $0,"overlapped"}else{print $0,"not_overlapped"}}}' \
+GRCh38_ubi-rOCR_overlapped_mergedTSS_list.txt hg38_tissue_ubi-rOCR_overlapped_mergedTSS_exp_TSscore_withGene.txt > \
+hg38_tissue_ubi-rOCR_overlapped_gene_mergedTSS_TSscore.txt
 
 # Rscript analyze_mergedTSS_TSindex.R
 

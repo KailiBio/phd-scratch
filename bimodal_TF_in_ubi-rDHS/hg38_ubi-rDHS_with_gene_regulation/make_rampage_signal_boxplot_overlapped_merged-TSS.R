@@ -19,14 +19,14 @@ setwd(file_dir)
 library(ggplot2)
 
 data = read.table(paste(tissue, "_rampage.txt", sep=""), row.names = 1)
-overlapped = as.vector(read.table("/data/zusers/fankaili/ccre/hg38_ubi-rDHS/merged-TSS/GRCh38_ubi-rOCR_overlapped_merged-TSS.bed")[,4])
+overlapped = as.vector(read.table("/data/zusers/fankaili/ccre/hg38_ubi-rDHS/merged-TSS/GRCh38_ubi-rOCR_overlapped_merged-TSS_list.txt")[,1])
 matrix = transform(data, type = "no_overlapped")
 colnames(matrix) = c("signal", "type")
 matrix$type = as.vector(matrix$type)
 matrix[overlapped,]$type = "overlapped"
 
 pdf(paste(out_dir,"RAMPAGE_merged-TSS_",tissue,"_boxplot.pdf",sep=""))
-ggplot(matrix, aes(y=log10(signal+0.1), x=type, fill=type)) +geom_boxplot() + 
+ggplot(matrix, aes(y=log10(signal+0.1), x=type, fill=type)) +geom_boxplot() +
   labs(title=paste("RAMPAGE signal of merged-TSSs in ", tissue, sep="")) + ylab(tissue)
 dev.off()
 

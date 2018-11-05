@@ -31,13 +31,10 @@ hg38_closest_gene_exp_list_donor.txt hg38_DNase_file_list_donor.txt > hg38_RNA_D
 
 # 2. gene expression comparison
 
-## 1) get non ubi-rOCRs overlapped TSS and non ubi rOCRs
-### get non ubi-rOCRs overlapped TSS
-awk '{FS=OFS="\t"}{if($15==0){print $8,$9,$10,$11,$12,$13,$14}}' ./closest_gene/GRCh38_ubi-rOCR_closest_gene.bed | sort -u | cut -f 4 \
-> hg38_ubi-rOCR_overlapped_TSS_list.txt
-#
-awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$4]!=1){print $0}}}' hg38_ubi-rOCR_overlapped_TSS_list.txt TSS.Filtered.bed \
-> hg38_ubi-rOCR_non_overlapped_TSS_list.txt
+## 1) get TSS in non ubi-rOCRs overlapped gene and non ubi rOCRs
+### get TSS in non ubi-rOCRs overlapped gene
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$7]!=1){print $0}}}' GRCh38_ubi-rOCR_overlapped_gene_id.txt TSS.Filtered.bed \
+> hg38_TSS_in_non_ubi-rOCR_overlapped_gene.bed
 
 ### get non ubi rOCRs
 awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=1}else{if(a[$4]!=1){print $0}}}' GRCh38_ubi-rOCRs.bed GRCh38-rOCRs.bed > \
@@ -63,15 +60,41 @@ do
     /data/projects/psychencode/Registry/V1/GRCh38/Signal-Files/${dnase_exp_id}"-"${dnase_file_id}.txt hg38_non_ubi-rOCRs.bed \
     > ./non_ubi_active_OCR/${dnase_exp_id}_OCR.bed ;
     #
-    bedtools intersect -a ./non_ubi_active_OCR/${dnase_exp_id}_OCR.bed -b hg38_ubi-rOCR_non_overlapped_TSS_list.txt -wa -wb \
+    bedtools intersect -a ./non_ubi_active_OCR/${dnase_exp_id}_OCR.bed -b hg38_TSS_in_non_ubi-rOCR_overlapped_gene.bed -wa -wb \
     | cut -f 11 | sort -u > temp.txt ;
     #
     awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$1]==1){print $1,$2,"ubi-rOCR_overlapped"}}}' \
-    ./closest_gene/GRCh38_ubi-rOCR_closest_gene_list.txt ./all_gene_exp/${rna_exp_id}.txt > ./gene_exp_comparison_file/${sample}.txt ;
+    GRCh38_ubi-rOCR_overlapped_gene_id.txt ./all_gene_exp/${rna_exp_id}.txt > ./gene_exp_comparison_file/${sample}.txt ;
     #
     awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$1]==1){print $1,$2,"active-rOCR_overlapped"}}}' \
     temp.txt ./all_gene_exp/${rna_exp_id}.txt >> ./gene_exp_comparison_file/${sample}.txt ;
     #
-    Rscript ${scriptDir}make_comparison_barplot.R ${sample} ;
+    Rscript ${scriptDir}make_comparison_barplot.R ${sample} "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/gene_exp_comparison_file/" \
+    "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/gene_exp_comparison_pdf/";
 done < hg38_RNA_DNase_matched_list.txt
 rm temp.txt
+
+
+
+#########################
+# Nov 02
+# DNase level between ubi-rOCRs vs. rest active-rOCRs
+mkdir dnase_comparison_file
+mkdir dnase_comparison_pdf
+#
+for file in `ls /data/zusers/fankaili/ccre/hg38_ubi-rDHS/non_ubi_active_OCR/`
+do
+    id=${file%_OCR.bed}
+    echo ${id}
+    signal_file=`ls /data/projects/psychencode/Registry/V1/GRCh38/Signal-Files/ | grep ${id}`
+    sample=`grep ${id} hg38_RNA_DNase_matched_list.txt | cut -f 3`
+    # ubi-rOCR
+    awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=1}else{if(a[$1]){print $1,$2,"ubi-rOCR"}}}' GRCh38_ubi-rOCRs_EDGEid.bed \
+    /data/projects/psychencode/Registry/V1/GRCh38/Signal-Files/${signal_file} > ./dnase_comparison_file/${sample}.txt
+    # rest active-rOCR
+    awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=1}else{if(a[$1]){print $1,$2,"active-rOCR"}}}' /data/zusers/fankaili/ccre/hg38_ubi-rDHS/non_ubi_active_OCR/${file} \
+    /data/projects/psychencode/Registry/V1/GRCh38/Signal-Files/${signal_file} >> ./dnase_comparison_file/${sample}.txt
+    #
+    Rscript ${scriptDir}make_comparison_barplot_DNase.R ${sample}.txt "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/dnase_comparison_file/" \
+    "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/dnase_comparison_pdf/";
+done

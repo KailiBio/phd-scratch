@@ -22,7 +22,7 @@ library(ggplot2)
 
 data1 = read.table(paste(tissue1, "_rampage.txt", sep=""), row.names = 1)
 data2 = read.table(paste(tissue2, "_rampage.txt", sep=""), row.names = 1)
-overlapped = as.vector(read.table("/data/zusers/fankaili/ccre/hg38_ubi-rDHS/merged-TSS/GRCh38_ubi-rOCR_overlapped_merged-TSS.bed")[,4])
+overlapped = as.vector(read.table("/data/zusers/fankaili/ccre/hg38_ubi-rDHS/merged-TSS/GRCh38_ubi-rOCR_overlapped_merged-TSS_list.txt")[,1])
 
 matrix = cbind(data1, data2)
 matrix = transform(matrix, type="no-overlapped")

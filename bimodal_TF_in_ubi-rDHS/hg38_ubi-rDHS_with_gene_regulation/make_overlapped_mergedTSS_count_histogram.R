@@ -12,10 +12,10 @@ summary(ubi[,2])
 summary(ocr[,2])
 
 pdf("ubi-rOCRs_overlapped_mergedTSS_count.pdf")
-hist(ocr[,2], breaks = c(0.5:6.5), col = "grey", border = "grey", 
+hist(ocr[,2], breaks = c(0.5:6.5), col = "grey", border = "grey", freq = F,
      xlab = "number of overlapped merged-TSS", 
      main = "number of merged-TSSs overlapped for each ubi-rOCR/rOCR")
-hist(ubi[,2], breaks = c(0.5:6.5), col = "red", add=T)
+hist(ubi[,2], breaks = c(0.5:6.5), col = "red", freq = F, add=T)
 dev.off()
 
 

@@ -38,25 +38,42 @@ matrix[hk,]$type = "HK_published"
 
 library(ggplot2)
 
+hk_v = matrix[matrix$type == "HK_published", ]$all
+nonhk_v = matrix[matrix$type == "nonHK", ]$all
+t.test(hk_v, nonhk_v)$p.value
+# p-value < 2.2e-16
+wilcox.test(hk_v, nonhk_v)$p.value
+
 ggplot(matrix, aes(all, fill = type)) + 
   geom_histogram(alpha = 0.5, aes(y = ..count..), position = 'identity') +
-  xlab("tissue_specificity_index") + scale_fill_manual(values = c("#ef8a62", "#67a9cf")) +
-  labs(title="Tissue-specificity index for genes")
-ggsave("tissue_specificity_index.pdf")
+  xlab("tissue_specificity_index") + scale_fill_manual(values =c("#af8dc3", "#7fbf7b") ) +
+  labs(title="gene Tissue-Specificity index (RNA-seq)", 
+       subtitle="t-test: p-value < 2.2e-16\nwilcoxon: p-value < 2.2e-16")
+ggsave("hg38_gene_TSindex_HK.pdf")
 
 
+##########
 overlapped = as.vector(read.table("GRCh38_ubi-rOCR_closest_gene_list.bed")[,1])
 matrix = transform(matrix, ubi.rOCR = "non-overlapped")
 matrix$ubi.rOCR = as.vector(matrix$ubi.rOCR)
 matrix[overlapped,]$ubi.rOCR = "overlapped"
 
+overlapped_v = matrix[matrix$ubi.rOCR == "overlapped", ]$all
+non_overlapped_v = matrix[matrix$ubi.rOCR == "non-overlapped", ]$all
+t.test(overlapped_v, non_overlapped_v)$p.value
+# p-value < 2.2e-16
+wilcox.test(overlapped_v, non_overlapped_v)$p.value
+
 library(ggplot2)
 
 ggplot(matrix, aes(all, fill = ubi.rOCR)) + 
   geom_histogram(alpha = 0.5, aes(y = ..count..), position = 'identity') +
-  xlab("tissue_specificity_index") + scale_fill_manual(values = c("#af8dc3", "#7fbf7b")) +
-  labs(title="Tissue-specificity index for genes")
-ggsave("tissue_specificity_index2.pdf")
+  xlab("tissue_specificity_index") + scale_fill_manual(values = c("#67a9cf","#ef8a62")) +
+  labs(title="gene Tissue-Specificity index (RNA-seq)",
+       subtitle="t-test: p-value < 2.2e-16\nwilcoxon: p-value < 2.2e-16")
+ggsave("hg38_gene_TSindex_overlapped.pdf")
+
+
 
 
 ######################
