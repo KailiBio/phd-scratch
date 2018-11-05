@@ -136,3 +136,8 @@ Rscript make_state_correlation.R "e14.5p0_8hm_ATAC_DNAme.para0" "e14.5p0_8hm_ATA
 ## 2) 66 samples without CTCF & 21 samples with CTCF
 Rscript make_state_correlation.R "run_IDEAS_8hm_atac_dname_pvalue.para0" "e14.5p0_8hm_ATAC_DNAme_CTCF_1.para0" \
 "66_biosamples_without_CTCF" "21_biosamples_with_CTCF" "states comparison(38 states vs. 37 states)" "66samples_21samplesCTCF_correlation.pdf" "CTCF"
+
+## 3) spearman
+
+## 4) hcluster
+# Rscript compare_state_euclidean_Hierarchical.R

@@ -6,7 +6,7 @@
 #		 output path.
 # OUTPUT: code file and input file
 # EXP: python get_66samples_10marks_signal_pvalue.py /data/zusers/fankaili/ideas/dhs_bins/mm10_OCR-center_bins_v1.bed
-#	   /data/zusers/fankaili/ideas/dhs_bins/v1_100_300bp/
+#	   /data/zusers/fankaili/ideas/dhs_bins/v1_100_300bp
 
 import json
 import os,sys

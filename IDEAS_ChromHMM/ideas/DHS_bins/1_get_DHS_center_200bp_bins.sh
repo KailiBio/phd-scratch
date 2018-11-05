@@ -29,6 +29,6 @@ python ${scriptDir}DHS-center_bins_v1.py /data/zusers/fankaili/ideas/dhs_bins/mm
 /data/zusers/fankaili/ideas/dhs_bins/mm10_OCR-center_bins_v1.bed
 
 
-# 3. version 2: all regions
+# 3. version 2: all regions, 1-300bp bins
 python ${scriptDir}DHS-center_bins_v2.py /data/zusers/fankaili/ideas/dhs_bins/mm10-rOCRs.bed /data/zusers/fankaili/ideas/dhs_bins/mm10_rOCR_gap.bed \
 /data/zusers/fankaili/ideas/dhs_bins/mm10_OCR-center_bins_v2.bed

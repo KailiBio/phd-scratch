@@ -1,9 +1,6 @@
 
 # -- Kaili
-# This script is for making correlation between mean_siganl states between two IDEAS runs.
-# EXP: Rscript make_state_correlation.R "e14.5p0_8hm_ATAC_DNAme.para0" "e14.5p0_8hm_ATAC_DNAme_CTCF_1.para0"
-#      "21_biosamples_without_CTCF" "21_biosamples_with_CTCF" "21 biosamples in e14.5&p0, 8HM+ATAC+DNAme"
-#      "e14.5p0_correlation.pdf" "CTCF"
+# This script is for compareing state files by doing cos correlation.
 
 setwd("/Users/kaili/Dropbox (UMass Medical School)/Project/chr_status/ideas/data_figures/")
 
@@ -25,19 +22,6 @@ read_para_file <- function(file){
   return(m_sort)
 }
 
-# calculate state correlation between two IDEAS runs
-calculate_correlation <- function(matrix1, matrix2){
-  cor_matrix = matrix(0, nrow = nrow(matrix1), ncol = nrow(matrix2))
-  #
-  for(i in 1:nrow(matrix1)){
-    for(j in 1:nrow(matrix2)){
-      cor_matrix[i,j] = cor(as.numeric(matrix1[i,]), as.numeric(matrix2[j,]), method = "speaman")
-    }
-  }
-  rownames(cor_matrix) = rownames(matrix1)
-  colnames(cor_matrix) = rownames(matrix2)
-  return(cor_matrix)
-}
 
 #####################
 # file1 = "e14.5p0_8hm_ATAC_DNAme.para0"
@@ -55,6 +39,7 @@ calculate_correlation <- function(matrix1, matrix2){
 # title = "states comparison(38 states vs. 37 states)"
 # output = "66samples_21samplesCTCF_correlation_spearman.pdf"
 # type = "CTCF"
+
 
 args<-commandArgs(TRUE)
 file1 = args[1]
@@ -74,21 +59,3 @@ if(is.na(type)){
   matrix0 = read_para_file(file2)
   matrix2 = data.frame(matrix0[, colnames(matrix0)!=type])
 }
-
-# calculate correlation
-cor_matrix = calculate_correlation(matrix1, matrix2)
-
-# make heatmap
-pdf(output)
-library(pheatmap)
-library(RColorBrewer)
-library(grid)
-setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.92, height=0.92, name="vp", just=c("right","top"))), action="prepend")
-pheatmap(cor_matrix, cluster_rows=T, cluster_cols=F, breaks = c(-1,seq(0,0.8,0.1),0.9,1), 
-         col = c(colorRampPalette(brewer.pal(7, "Greys")[7:2])(10), "#FFFF00FF"), main = title)
-setHook("grid.newpage", NULL, "replace")
-grid.text(name1, y=-0.04, gp=gpar(fontsize=12))
-grid.text(name2, x=-0.04, rot=90, gp=gpar(fontsize=12))
-dev.off()
-
-#####################

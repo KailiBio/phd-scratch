@@ -2,6 +2,9 @@
 
 # -- Kaili
 # This script is for record ideas imputation runs.
+# 1. using E14.5&P0, run IDEAS on 8HM+ATAC+DNAme+CTCF
+## 1) with all tissues in e14.5&P0
+## 2) Only use tissues with CTCF in e14.5&P0
 
 scriptDir="/data/zusers/fankaili/github/weng-lab/Kaili/IDEAS_ChromHMM/ideas/mouse_tissue/"
 workDir="/data/zusers/fankaili/ideas/"
@@ -63,3 +66,19 @@ cp /data/zusers/fankaili/ideas/mouse_tissue_8hm_ATAC_WGBS/mouse_tissue_8hm_ATAC_
 vim ./e14.5p0_8hm_ATAC_DNAme_CTCF_2/e14.5p0_8hm_ATAC_DNAme_CTCF_2.parafile
 
 nohup bash ./e14.5p0_8hm_ATAC_DNAme_CTCF_2/e14.5p0_8hm_ATAC_DNAme_CTCF_2.sh > ./e14.5p0_8hm_ATAC_DNAme_CTCF_2/nohup.e14.5p0_8hm_ATAC_DNAme_CTCF_2.out 2>&1&
+
+
+# datafile="DHS_v2_1-300bp.input"
+# parafile="DHS_v2_1-300bp.parafile"
+# tmpfolder="/data/zusers/fankaili/ideas/dhs_bins/v1_100_300bp/DHS_v2_1-300bp_result/"
+#
+#
+#
+# datafile="DHS_v1_100-300bp.input"
+# parafile="DHS_v1_100-300bp.parafile"
+# tmpfolder="/data/zusers/fankaili/ideas/dhs_bins/v1_100_300bp/DHS_v1_100-300bp_result/"
+#
+#
+# datafile="run_IDEAS_8hm_atac_dname_pvalue.input"
+# parafile="run_IDEAS_8hm_atac_dname_pvalue.parafile"
+# tmpfolder="/data/zusers/fankaili/ideas/run_ideas_p_value/IDEAS_8hm_atac_dname_pvalue_result/"
