@@ -99,3 +99,70 @@ vim DHS_v2_1-300bp_nor.sh
 
 # 3. run IDEAS
 nohup bash DHS_v2_1_300bp_nor.sh > ./nohup.DHS_v2_1_300bp_nor.out 2>&1&
+
+
+
+
+#--------------------------------------------------------------------
+## for v3_150-350bp_bins
+cd ${workDir}v3_150_350bp/
+
+# 1. do Normalization
+if [ -f /data/zusers/fankaili/ideas/dhs_bins/v3_150_350bp/DHS_v3_150-350bp_nor.input ]
+then
+    rm /data/zusers/fankaili/ideas/dhs_bins/v3_150_350bp/DHS_v3_150-350bp_nor.input
+else
+    touch /data/zusers/fankaili/ideas/dhs_bins/v3_150_350bp/DHS_v3_150-350bp_nor.input
+fi
+#
+while read line
+do
+    echo ${line}
+    sample=`awk '{print $1}' <<< ${line}`
+    mark=`awk '{print $2}' <<< ${line}`
+    path=`awk '{print $3}' <<< ${line}`
+    tab_path=${path//txt/tab}
+    #
+    if [ mark == "DNAme" ]
+    then
+        echo "python "${scriptDir}"zscore-normalization_norByLength.py "${tab_path}" 6 > /data/zusers/fankaili/ideas/dhs_bins/v3_150_350bp/signal_nor/"${sample}"_"${mark}".tab" >> v3_zscore_length_code.txt
+    else
+        echo "python "${scriptDir}"zscore-normalization_norByLength.py "${tab_path}" 5 > /data/zusers/fankaili/ideas/dhs_bins/v3_150_350bp/signal_nor/"${sample}"_"${mark}".tab" >> v3_zscore_length_code.txt
+    fi
+    echo "sed -i 's/ \t/\t/g' /data/zusers/fankaili/ideas/dhs_bins/v3_150_350bp/signal_nor/"${sample}"_"${mark}".tab" >> v3_zscore_length_code.txt
+    #
+    echo "cut -f 2 /data/zusers/fankaili/ideas/dhs_bins/v3_150_350bp/signal_nor/"${sample}"_"${mark}".tab > /data/zusers/fankaili/ideas/dhs_bins/v3_150_350bp/signal_nor/"${sample}"_"${mark}".txt" >> v3_zscore_length_code.txt
+    echo ${sample}" "${mark}" /data/zusers/fankaili/ideas/dhs_bins/v3_150_350bp/signal_nor/"${sample}"_"${mark}".txt" >> \
+    /data/zusers/fankaili/ideas/dhs_bins/v3_150_350bp/DHS_v3_150-350bp_nor.input
+done < /data/zusers/fankaili/ideas/dhs_bins/v3_150_3500bp/DHS_v3_150-350bp.input
+
+
+awk '{if(NR<=220){print $0}}' v3_zscore_length_code.txt > ./code/v3_zscore_length_code_1.txt
+awk '{if(NR>220 && NR<=(220*2)){print $0}}' v3_zscore_length_code.txt > ./code/v3_zscore_length_code_2.txt
+awk '{if(NR>220*2 && NR<=(220*3)){print $0}}' v3_zscore_length_code.txt > ./code/v3_zscore_length_code_3.txt
+awk '{if(NR>220*3 && NR<=(220*4)){print $0}}' v3_zscore_length_code.txt > ./code/v3_zscore_length_code_4.txt
+awk '{if(NR>220*4 && NR<=(220*5)){print $0}}' v3_zscore_length_code.txt > ./code/v3_zscore_length_code_5.txt
+awk '{if(NR>220*5 && NR<=(220*6)){print $0}}' v3_zscore_length_code.txt > ./code/v3_zscore_length_code_6.txt
+awk '{if(NR>220*6 && NR<=(220*7)){print $0}}' v3_zscore_length_code.txt > ./code/v3_zscore_length_code_7.txt
+awk '{if(NR>220*7 && NR<=(220*8)){print $0}}' v3_zscore_length_code.txt > ./code/v3_zscore_length_code_8.txt
+awk '{if(NR>220*8 && NR<=(220*9)){print $0}}' v3_zscore_length_code.txt > ./code/v3_zscore_length_code_9.txt
+
+nohup bash ./code/v3_zscore_length_code_1.txt > ./code/nohup.v3_zscore_length_code_1.out 2>&1&
+nohup bash ./code/v3_zscore_length_code_2.txt > ./code/nohup.v3_zscore_length_code_2.out 2>&1&
+nohup bash ./code/v3_zscore_length_code_3.txt > ./code/nohup.v3_zscore_length_code_3.out 2>&1&
+nohup bash ./code/v3_zscore_length_code_4.txt > ./code/nohup.v3_zscore_length_code_4.out 2>&1&
+nohup bash ./code/v3_zscore_length_code_5.txt > ./code/nohup.v3_zscore_length_code_5.out 2>&1&
+nohup bash ./code/v3_zscore_length_code_6.txt > ./code/nohup.v3_zscore_length_code_6.out 2>&1&
+nohup bash ./code/v3_zscore_length_code_7.txt > ./code/nohup.v3_zscore_length_code_7.out 2>&1&
+nohup bash ./code/v3_zscore_length_code_8.txt > ./code/nohup.v3_zscore_length_code_8.out 2>&1&
+nohup bash ./code/v3_zscore_length_code_9.txt > ./code/nohup.v3_zscore_length_code_9.out 2>&1&
+
+
+# 2. get all files
+cp DHS_v3_150-350bp.parafile DHS_v3_150-350bp_nor.parafile
+vim DHS_v3_150-350bp_nor.parafile
+cp DHS_v3_150-350bp.sh DHS_v3_150-350bp_nor.sh
+vim DHS_v3_150-350bp_nor.sh
+
+# 3. run IDEAS
+nohup bash DHS_v3_150-350bp_nor.sh > ./nohup.DHS_v3_150-350bp_nor.out 2>&1&
