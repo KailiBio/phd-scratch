@@ -75,4 +75,9 @@ pheatmap(t(matrix), cluster_cols=T, cluster_rows = F, annotation_col=col_bar, an
 dev.off()
 
 
+###########
+# states color
+plot.new()
+legend("topright",legend=c("promoter", "enhancer","CTCF", "bivalent TSS","poised Enhancer", "Quies", "Enhancer in gene/Transcription", "H3K36me3+H3K9me3"), 
+       col=c("red","yellow", "purple","blue","black","gray92", "green4", "bisque"), pch=15, cex=1, bty="n")
 
