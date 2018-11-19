@@ -2,7 +2,7 @@
 # -- Kaili
 # This script is for making histogram of mm10 DHSs.
 
-setwd("/Users/kaili/Dropbox (UMass Medical School)/Project/chr_status/ideas/dns_bins/")
+setwd("/Users/kaili/Dropbox (UMass Medical School)/Project/chr_status/ideas/dhs_bins/")
 
 ####
 data = read.table("mm10-rOCRs.bed")
@@ -31,3 +31,9 @@ pdf("histogram_length_mm10_rOCRs_gap_100.pdf")
 hist(b, breaks = 0.5:99.5, xlab = "length of rOCR gaps", 
      main = "histogram of length of GRCh38 rCOR gaps")
 dev.off()
+
+c=dat2[dat2<10]
+hist(c, breaks = 0.5:9.5, col="grey", xlim=c(0,10),xlab = "length of rOCR gaps", 
+     main = "histogram of length of GRCh38 rCOR gaps")
+
+hist(dat2, xlim=c(0,100))

@@ -111,12 +111,12 @@ nohup bash DHS_v2_1-300bp.sh > ./nohup.DHS_v2_1-300bp.out 2>&1&
 
 
 
-# 3. v3_150_350bp
+# 3. v3_100_400bp
 sort -k1,1 mm10_OCR-center_bins_v3.bed > mm10_OCR-center_bins_v3.sorted.bed
 python ${scriptDir}get_66samples_10marks_signal_pvalue.py /data/zusers/fankaili/ideas/dhs_bins/mm10_OCR-center_bins_v3.sorted.bed \
-/data/zusers/fankaili/ideas/dhs_bins/v3_150_350bp/
+/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/
 #
-cd ${workDir}v3_150_350bp/
+cd ${workDir}v3_100_400bp/
 mkdir signal
 mkdir code
 # divide code file
@@ -143,22 +143,22 @@ nohup bash ./code/codes_for_getting_signal_pvalue_9.sh > ./code/nohup.codes_for_
 nohup bash ./code/codes_for_getting_signal_pvalue_10.sh > ./code/nohup.codes_for_getting_signal_pvalue_10.out 2>&1&
 
 # .bed file
-awk '{FS="\t";OFS=" "}{print $1,$2,$3,$4}' ${workDir}mm10_OCR-center_bins_v3.sorted.bed > mm10_OCR-center_bins_v3.sorted_space.bed
+#awk '{FS="\t";OFS=" "}{print $1,$2,$3,$4}' ${workDir}mm10_OCR-center_bins_v3.sorted.bed > mm10_OCR-center_bins_v3.sorted_space.bed
 awk '{FS="\t";OFS=" "}{if(NR==FNR){a[$4]=$0}else{print a[$1]}}' /data/zusers/fankaili/ideas/dhs_bins/mm10_OCR-center_bins_v3.bed \
-/data/zusers/fankaili/ideas/dhs_bins/v3_150_350bp/signal/forebrain_11.5_ATAC.tab > mm10_OCR-center_bins_v3_signal_based.bed
+/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/signal/forebrain_11.5_ATAC.tab > mm10_OCR-center_bins_v3_signal_based.bed
 awk '{FS="\t";OFS=" "}{print $1,$2,$3,$4}' mm10_OCR-center_bins_v3_signal_based.bed > mm10_OCR-center_bins_v3_signal_based_space.bed
 # .input file
-cp signal_pvalue.input DHS_v3_150-350bp.input
+cp signal_pvalue.input DHS_v3_100-400bp.input
 # .sh file
-cp /data/zusers/fankaili/ideas/run_ideas_p_value/run_IDEAS_8hm_atac_dname_pvalue.sh DHS_v3_150-350bp.sh
-vim DHS_v3_150-350bp.sh
+cp /data/zusers/fankaili/ideas/run_ideas_p_value/run_IDEAS_8hm_atac_dname_pvalue.sh DHS_v3_100-400bp.sh
+vim DHS_v3_100-400bp.sh
 # .parafile file
-cp /data/zusers/fankaili/ideas/run_ideas_p_value/run_IDEAS_8hm_atac_dname_pvalue.parafile DHS_v3_150-350bp.parafile
-vim DHS_v3_150-350bp.parafile
+cp /data/zusers/fankaili/ideas/run_ideas_p_value/run_IDEAS_8hm_atac_dname_pvalue.parafile DHS_v3_100-400bp.parafile
+vim DHS_v3_100-400bp.parafile
 
 # ./bin ./data folder
 cp -r /data/zusers/fankaili/ideas/dhs_bins/v1_100_300bp/bin ./
 cp -r /data/zusers/fankaili/ideas/dhs_bins/v1_100_300bp/data ./
 
 # run IDEAS
-nohup bash DHS_v3_150-350bp.sh > ./nohup.DHS_v3_150-350bp.out 2>&1&
+nohup bash DHS_v3_100-400bp.sh > ./nohup.DHS_v3_100-400bp.out 2>&1&

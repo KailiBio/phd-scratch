@@ -13,3 +13,4 @@
 
 #--------------------------------------------------------------------
 # 2. correlation between states in two runs.
+# Rscript compare_state_dhs_bins_euclidean_Hierarchical.R

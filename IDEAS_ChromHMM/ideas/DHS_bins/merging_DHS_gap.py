@@ -17,7 +17,7 @@ for line in open(ocr).readlines():
 
 for line in open(ocr).readlines():
     gap_length = int(line.rstrip().split("\t")[6])
-    if gap_length <= 100:
+    if gap_length < 100:
         id = line.rstrip().split("\t")[4]
         id_0 = str(int(id)-1)
         #
