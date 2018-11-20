@@ -19,17 +19,7 @@ cd ${workDir}all_samples
 
 # .input file
 cp /data/zusers/fankaili/ideas/run_ideas_p_value/run_IDEAS_8hm_atac_dname_pvalue.input all_samples_CTCF.input
-sed -i 's/run_ideas_p_value\/signal/signal\/macs2_pvalue/g' all_samples_CTCF.input
-sed -i 's/.txt/_macs2_pvalue.txt/g' all_samples_CTCF.input
-sed -i 's/neural-tube/neural_tube/g' all_samples_CTCF.input
-sed -i 's/embryonic-facial-prominence/embryonic_facial_prominence/g' all_samples_CTCF.input
-sed -i 's/.5_/.5_day_/g' all_samples_CTCF.input
-sed -i 's/.5\ /.5_day\ /g' all_samples_CTCF.input
-sed -i 's/_0_/_0_day_/g' all_samples_CTCF.input
-sed -i 's/_0\ /_0_day\ /g' all_samples_CTCF.input
-#
-grep "CTCF" /data/zusers/fankaili/ideas/mm10_tissue_used_list.txt | grep "_0_day" | awk '{FS="\t";OFS=" "}{print $1,$2,$3}' >> all_samples_CTCF.input
-grep "CTCF" /data/zusers/fankaili/ideas/mm10_tissue_used_list.txt | grep "_14.5_day" | awk '{FS="\t";OFS=" "}{print $1,$2,$3}' >> all_samples_CTCF.input
+grep "CTCF" /data/zusers/fankaili/ideas/e14.5p0_8hm_ATAC_DNAme_CTCF/e14.5p0_8hm_ATAC_DNAme_CTCF_1/e14.5p0_8hm_ATAC_DNAme_CTCF_1.input >> all_samples_CTCF.input
 
 # .sh file
 cp /data/zusers/fankaili/ideas/e14.5p0_8hm_ATAC_DNAme_CTCF/e14.5p0_8hm_ATAC_DNAme/e14.5p0_8hm_ATAC_DNAme.sh all_samples_CTCF.sh
@@ -53,9 +43,11 @@ mkdir ${workDir}ctcf_samples
 cd ${workDir}ctcf_samples
 
 # .input file
-grep "CTCF" /data/zusers/fankaili/ideas/mm10_tissue_used_list.txt | grep "_0_day" | awk '{FS=" "}{print $1}' > CTCF_sample_list.txt
-grep "CTCF" /data/zusers/fankaili/ideas/mm10_tissue_used_list.txt | grep "_14.5_day" | awk '{FS=" "}{print $1}' >> CTCF_sample_list.txt
-awk '{FS=OFS=" "}{if(NR==FNR){a[$1]=1}else{if(a[$1]){print $0}}}' CTCF_sample_list.txt ${workDir}all_samples/all_samples_CTCF.input > ctcf_samples.input
+grep "CTCF" /data/zusers/fankaili/ideas/e14.5p0_8hm_ATAC_DNAme_CTCF/e14.5p0_8hm_ATAC_DNAme_CTCF_1/e14.5p0_8hm_ATAC_DNAme_CTCF_1.input | \
+awk '{FS=OFS=" "}{print $1}' > CTCF_sample_list.txt
+#
+awk '{FS=OFS=" "}{if(NR==FNR){a[$1]=1}else{if(a[$1]){print $0}}}' CTCF_sample_list.txt \
+/data/zusers/fankaili/ideas/e14.5p0_8hm_ATAC_DNAme_CTCF/e14.5p0_8hm_ATAC_DNAme_CTCF_1/e14.5p0_8hm_ATAC_DNAme_CTCF_1.input > ctcf_samples.input
 
 # .sh file
 cp ${workDir}all_samples/all_samples_CTCF.sh ctcf_samples.sh
