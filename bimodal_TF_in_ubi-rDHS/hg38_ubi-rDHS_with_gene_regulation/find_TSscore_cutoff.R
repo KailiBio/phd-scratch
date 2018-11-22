@@ -2,6 +2,9 @@
 # -- Kaili
 # This script is for plotting tissue specificity index and finding the cut-off.
 
+# Update at Nov21
+# make density line plot
+
 setwd("/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/hg38_rOCR/")
 
 calculate_TSindex = function(x){
@@ -32,14 +35,14 @@ ts_score = read.table("hg38_tissue_gene_exp_TSscore.txt", header = TRUE, row.nam
 exp = read.table("hg38_tissue_gene_exp_matrix.txt", header = TRUE, row.names = 1)
 hk = as.vector(read.table("hg38_housekeeping_geneID_geneType_geneSymbol.txt")[,1])
 
-matrix = transform(ts_score, type="nonHK")
+matrix = transform(ts_score, type="rest genes")
 matrix$type = as.vector(matrix$type)
-matrix[hk,]$type = "HK_published"
+matrix[hk,]$type = "housekeeping genes"
 
 library(ggplot2)
 
-hk_v = matrix[matrix$type == "HK_published", ]$all
-nonhk_v = matrix[matrix$type == "nonHK", ]$all
+hk_v = matrix[matrix$type == "housekeeping genes", ]$all
+nonhk_v = matrix[matrix$type == "rest genes", ]$all
 t.test(hk_v, nonhk_v)$p.value
 # p-value < 2.2e-16
 wilcox.test(hk_v, nonhk_v)$p.value
@@ -51,15 +54,22 @@ ggplot(matrix, aes(all, fill = type)) +
        subtitle="t-test: p-value < 2.2e-16\nwilcoxon: p-value < 2.2e-16")
 ggsave("hg38_gene_TSindex_HK.pdf")
 
+# density line
+ggplot(matrix, aes(all, color=type)) +
+  geom_density(size=1.5) + xlab("Tissue-Specificity index") + 
+  scale_color_manual(values = c("#984ea3", "#4daf4a")) +
+  labs(title="Tissue-Specificity index of gene", 
+       subtitle="t-test: p-value < 2.2e-16\nwilcoxon: p-value < 2.2e-16")
+ggsave("hg38_gene_TSindex_HK_densityLine.pdf")
 
 ##########
 overlapped = as.vector(read.table("GRCh38_ubi-rOCR_closest_gene_list.bed")[,1])
-matrix = transform(matrix, ubi.rOCR = "non-overlapped")
+matrix = transform(matrix, ubi.rOCR = "rest genes")
 matrix$ubi.rOCR = as.vector(matrix$ubi.rOCR)
-matrix[overlapped,]$ubi.rOCR = "overlapped"
+matrix[overlapped,]$ubi.rOCR = "overlapped genes"
 
-overlapped_v = matrix[matrix$ubi.rOCR == "overlapped", ]$all
-non_overlapped_v = matrix[matrix$ubi.rOCR == "non-overlapped", ]$all
+overlapped_v = matrix[matrix$ubi.rOCR == "overlapped genes", ]$all
+non_overlapped_v = matrix[matrix$ubi.rOCR == "rest genes", ]$all
 t.test(overlapped_v, non_overlapped_v)$p.value
 # p-value < 2.2e-16
 wilcox.test(overlapped_v, non_overlapped_v)$p.value
@@ -73,7 +83,13 @@ ggplot(matrix, aes(all, fill = ubi.rOCR)) +
        subtitle="t-test: p-value < 2.2e-16\nwilcoxon: p-value < 2.2e-16")
 ggsave("hg38_gene_TSindex_overlapped.pdf")
 
-
+# density line
+ggplot(matrix, aes(all, color=ubi.rOCR)) +
+  geom_density(size=1.5) + xlab("Tissue-Specificity index") + 
+  scale_color_manual(values = c("#e41a1c","#4daf4a")) +
+  labs(title="Tissue-Specificity index of genes", 
+       subtitle="t-test: p-value < 2.2e-16\nwilcoxon: p-value < 2.2e-16")
+ggsave("hg38_gene_TSindex_overlapped_densityLine.pdf")
 
 
 ######################
