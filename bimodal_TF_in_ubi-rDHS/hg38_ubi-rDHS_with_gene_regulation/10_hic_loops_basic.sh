@@ -7,6 +7,8 @@
 # 2. loops overlapped with rOCRs
 # 3. loops overlapped with CTCF peak
 # 4. loop anchors overlapped with CTCF motif
+# 5. loops overlapped with GM12878 specific active-rOCRs
+# 6. CTCF singal between ubi-rOCRs overlapped peaks loci and remaining active rOCRs
 
 scriptDir="/data/zusers/fankaili/github/weng-lab/Kaili/bimodal_TF_in_ubi-rDHS/hg38_ubi-rDHS_with_gene_regulation/"
 workDir="/data/zusers/fankaili/ccre/hg38_ubi-rDHS/loop/"
@@ -93,6 +95,7 @@ awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=$9}else{print a[$4]}}' GRCh38_loop_peak_loc
 GRCh38_loop_overlapped_CTCF_peaks.txt | sort -u | wc -l
 # 11327 peak loci
 
+
 # 4. loop anchors overlapped with CTCF motif
 ## get CTCF motif file
 cp /data/zusers/fankaili/ideas/CTCF_impute/ctcf_samples/mm10_ctcf_motif_file.motif ./CTCF_motif_file.motif
@@ -130,3 +133,62 @@ cut -f 4,5 GRCh38_loop_overlapped_CTCF_motif_2.txt | sort -u | cut -f 2 | sort |
 awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=$9}else{print a[$4]}}' GRCh38_loop_peak_loci_ID.txt \
 GRCh38_loop_overlapped_CTCF_motif_2.txt | sort -u | wc -l
 # 8947 peak loci
+
+
+# 5. loops overlapped with GM12878 specific active-rOCRs
+## 1) get GM12878 specific active rOCRs
+bigWigAverageOverBed /data/projects/encode/data/ENCSR000EMT/ENCFF915DFR.bigWig \
+/data/zusers/fankaili/ccre/hg38_ubi-rDHS/GRCh38-rOCRs.bed GRCh38_GM12878_rOCRs_DNase_signal.txt
+## calculate z-score
+python ${scriptDir}zscore-normalization.py GRCh38_GM12878_rOCRs_DNase_signal.txt 5 > \
+GRCh38_GM12878_rOCRs_DNase_z-score.txt
+sed -i 's/ \t/\t/g' GRCh38_GM12878_rOCRs_DNase_z-score.txt
+#
+awk '{FS=OFS="\t"}{if(NR==FNR){if($2>1.64){a[$1]=1}}else{if(a[$4]){print $0}}}' \
+GRCh38_GM12878_rOCRs_DNase_z-score.txt /data/zusers/fankaili/ccre/hg38_ubi-rDHS/GRCh38-rOCRs.bed > \
+GRCh38_GM12878_active_rOCRs.bed
+
+## 2)
+intersectBed -a hg38_GM12878_loop_a.bed -b GRCh38_GM12878_active_rOCRs.bed -wa -wb > GRCh38_loop_a_overlapped_GM12878_active_rOCRs.txt
+intersectBed -a hg38_GM12878_loop_b.bed -b GRCh38_GM12878_active_rOCRs.bed -wa -wb > GRCh38_loop_b_overlapped_GM12878_active_rOCRs.txt
+#
+cat GRCh38_loop_a_overlapped_GM12878_active_rOCRs.txt GRCh38_loop_b_overlapped_GM12878_active_rOCRs.txt \
+> GRCh38_loop_overlapped_GM12878_active_rOCRs.txt
+#
+cut -f 5 GRCh38_loop_overlapped_GM12878_active_rOCRs.txt | sort -u | wc -l
+# 7175 loops with at least one side overlapped with GM12878 active-rOCRs
+cut -f 9 GRCh38_loop_overlapped_GM12878_active_rOCRs.txt | sort -u | wc -l
+# 18,010 active-rOCRs overlapped with loop anchors
+cut -f 4,5 GRCh38_loop_overlapped_GM12878_active_rOCRs.txt | sort -u | cut -f 2 | sort | uniq -d | wc -l
+# 3560 loops both end overlapped with active-rOCRs
+
+
+# 6. CTCF singal between ubi-rOCRs overlapped peaks loci and remaining active rOCRs
+## 1) get peak loci CTCF z-score
+bigWigAverageOverBed /data/projects/encode/data/ENCSR000DRZ/ENCFF852CRG.bigWig GRCh38_loop_peak_loci.txt \
+GRCh38_peakLoci_GM12878_CTCF_signal.txt
+## calculate z-score
+python ${scriptDir}zscore-normalization.py GRCh38_peakLoci_GM12878_CTCF_signal.txt 5 > \
+GRCh38_peakLoci_GM12878_CTCF_z-score.txt
+sed -i 's/ \t/\t/g' GRCh38_peakLoci_GM12878_CTCF_z-score.txt
+
+## 2) mark peak loci
+awk '{FS=OFS="\t"}{print $0,"remaining"}' GRCh38_loop_peak_loci.txt > GRCh38_loop_peak_loci_marked.txt
+## active rOCRs
+intersectBed -a GRCh38_loop_peak_loci.txt -b GRCh38_GM12878_active_rOCRs.bed -wa > \
+GRCh38_peakLoci_overlapped_active_rOCRs.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=1}else{if(a[$4]){print $1,$2,$3,$4,"active-rOCR"}else{print $0}}}' \
+GRCh38_peakLoci_overlapped_active_rOCRs.txt GRCh38_loop_peak_loci_marked.txt > temp.txt
+## ubi-rOCRs
+intersectBed -a GRCh38_loop_peak_loci.txt -b /data/zusers/fankaili/ccre/hg38_ubi-rDHS/GRCh38_ubi-rOCRs_EDGEid.bed -wa > \
+GRCh38_peakLoci_overlapped_ubi-rOCRs.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=1}else{if(a[$4]){print $1,$2,$3,$4,"ubi-rOCR"}else{print $0}}}' \
+GRCh38_peakLoci_overlapped_ubi-rOCRs.txt temp.txt > GRCh38_loop_peak_loci_marked.txt
+
+## 3) get peak loci mark with z-zscore, make figures
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$2}else{print $0,a[$4]}}' GRCh38_peakLoci_GM12878_CTCF_z-score.txt \
+GRCh38_loop_peak_loci_marked.txt >  GRCh38_peakLoci_GM12878_CTCF_z-score_marked.txt
+#
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$5}else{print $0,a[$4]}}' GRCh38_peakLoci_GM12878_CTCF_signal.txt \
+GRCh38_loop_peak_loci_marked.txt >  GRCh38_peakLoci_GM12878_CTCF_signal_marked.txt
+# Rscript make_histgram_CTCF_hic_peakLoci.R
