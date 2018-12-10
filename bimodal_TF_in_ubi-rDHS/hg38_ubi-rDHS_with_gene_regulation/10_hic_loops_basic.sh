@@ -59,7 +59,7 @@ cut -f 10,11 GRCh38_loop_overlapped_ubi-rOCRs.txt | sort -u | wc -l
 cut -f 10,11 GRCh38_loop_overlapped_ubi-rOCRs.txt | sort -u | cut -f 2 | sort | uniq -c
 # 1781 PLS, 376 ELS, 8 CTCF-only
 cut -f 4,5 GRCh38_loop_overlapped_ubi-rOCRs.txt | sort -u | cut -f 2 | sort | uniq -d | wc -l
-#
+# 288 loops overlapped in both end
 
 # 2. loops overlapped with rOCRs
 intersectBed -a hg38_GM12878_loop_a.bed -b /data/zusers/fankaili/ccre/hg38_ubi-rDHS/GRCh38-rOCRs.bed -wa -wb > GRCh38_loop_a_overlapped_rOCRs.txt
