@@ -67,6 +67,41 @@ rm tmp.txt
 ## 3) histogram and get cutoff
 # Rscript find_TSscore_cutoff.R
 
+### Dec 09
+# get TS-index for quantile normalized signal
+awk '{if(NR>1){print $0}}' hg38_tissue_gene_exp_matrix_quantile.txt > tmp.txt
+python ${scriptDir}ts_all.py tmp.txt hg38_tissue_gene_exp_TSscore_quantile.txt
+sed -i 's/-0.100000/NA/g' hg38_tissue_gene_exp_TSscore_quantile.txt
+rm tmp.txt
+
+awk '{FS=OFS="\t"}{if(NR==1){print $0}else{printf $1;for(i=2;i<=NF;i++){if($i>100){$i=100};printf "\t"$i};printf "\n"}}' \
+hg38_tissue_gene_exp_matrix_quantile.txt > hg38_tissue_gene_exp_matrix_quantile_max100.txt
+awk '{if(NR>1){print $0}}' hg38_tissue_gene_exp_matrix_quantile_max100.txt > tmp.txt
+python ${scriptDir}ts_all.py tmp.txt hg38_tissue_gene_exp_TSscore_quantile_max100.txt
+sed -i 's/-0.100000/NA/g' hg38_tissue_gene_exp_TSscore_quantile_max100.txt
+rm tmp.txt
+
+awk '{FS=OFS="\t"}{if(NR==1){print $0}else{printf $1;for(i=2;i<=NF;i++){if($i>20){$i=20};printf "\t"$i};printf "\n"}}' \
+hg38_tissue_gene_exp_matrix_quantile.txt > hg38_tissue_gene_exp_matrix_quantile_max20.txt
+awk '{if(NR>1){print $0}}' hg38_tissue_gene_exp_matrix_quantile_max20.txt > tmp.txt
+python ${scriptDir}ts_all.py tmp.txt hg38_tissue_gene_exp_TSscore_quantile_max20.txt
+sed -i 's/-0.100000/NA/g' hg38_tissue_gene_exp_TSscore_quantile_max20.txt
+rm tmp.txt
+
+## only maximum
+awk '{FS=OFS="\t"}{if(NR==1){print $0}else{printf $1;for(i=2;i<=NF;i++){if($i>100){$i=100};printf "\t"$i};printf "\n"}}' \
+hg38_tissue_gene_exp_matrix.txt > hg38_tissue_gene_exp_matrix_max100.txt
+awk '{if(NR>1){print $0}}' hg38_tissue_gene_exp_matrix_max100.txt > tmp.txt
+python ${scriptDir}ts_all.py tmp.txt hg38_tissue_gene_exp_TSscore_max100.txt
+sed -i 's/-0.100000/NA/g' hg38_tissue_gene_exp_TSscore_max100.txt
+rm tmp.txt
+
+awk '{FS=OFS="\t"}{if(NR==1){print $0}else{printf $1;for(i=2;i<=NF;i++){if($i>20){$i=20};printf "\t"$i};printf "\n"}}' \
+hg38_tissue_gene_exp_matrix.txt > hg38_tissue_gene_exp_matrix_max20.txt
+awk '{if(NR>1){print $0}}' hg38_tissue_gene_exp_matrix_max20.txt > tmp.txt
+python ${scriptDir}ts_all.py tmp.txt hg38_tissue_gene_exp_TSscore_max20.txt
+sed -i 's/-0.100000/NA/g' hg38_tissue_gene_exp_TSscore_max20.txt
+rm tmp.txt
 
 #--------------------------------------------------------------------------------
 # 2. get tissue-specificity index for TSS

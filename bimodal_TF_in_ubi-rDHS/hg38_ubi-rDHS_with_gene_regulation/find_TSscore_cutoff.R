@@ -188,7 +188,7 @@ ggsave("hg38_gene_TSindex_overlapped_densityLine_quantile_max100.pdf")
 ggsave("hg38_gene_TSindex_overlapped_densityLine_quantile_max100.png")
 
 ### max 20
-tx_max100 = read.table("hg38_tissue_gene_exp_TSscore_quantile_max20.txt", header = TRUE, row.names = 1)
+tx_max20 = read.table("hg38_tissue_gene_exp_TSscore_quantile_max20.txt", header = TRUE, row.names = 1)
 hk = as.vector(read.table("hg38_housekeeping_geneID_geneType_geneSymbol.txt")[,1])
 matrix = transform(tx_max20, type="rest genes")
 matrix$type = as.vector(matrix$type)
@@ -214,3 +214,57 @@ ggplot(matrix, aes(all, color=ubi.rOCR)) +
 ggsave("hg38_gene_TSindex_overlapped_densityLine_quantile_max20.pdf")
 ggsave("hg38_gene_TSindex_overlapped_densityLine_quantile_max20.png")
 #######################
+## only maximum
+### max 100
+tx_max100 = read.table("hg38_tissue_gene_exp_TSscore_max100.txt", header = TRUE, row.names = 1)
+hk = as.vector(read.table("hg38_housekeeping_geneID_geneType_geneSymbol.txt")[,1])
+matrix = transform(tx_max100, type="rest genes")
+matrix$type = as.vector(matrix$type)
+matrix[hk,]$type = "housekeeping genes"
+# density line
+ggplot(matrix, aes(all, color=type)) +
+  geom_density(size=1.5) + xlab("Tissue-Specificity index") + 
+  scale_color_manual(values = c("#984ea3", "#4daf4a")) +
+  labs(title="Tissue-Specificity index of gene", 
+       subtitle="quantile & max signal=100")
+ggsave("hg38_gene_TSindex_HK_densityLine_max100.pdf")
+ggsave("hg38_gene_TSindex_HK_densityLine_max100.png")
+####
+overlapped = as.vector(read.table("GRCh38_ubi-rOCR_closest_gene_list.bed")[,1])
+matrix = transform(matrix, ubi.rOCR = "rest genes")
+matrix$ubi.rOCR = as.vector(matrix$ubi.rOCR)
+matrix[overlapped,]$ubi.rOCR = "overlapped genes"
+ggplot(matrix, aes(all, color=ubi.rOCR)) +
+  geom_density(size=1.5) + xlab("Tissue-Specificity index") + 
+  scale_color_manual(values = c("#e41a1c","#4daf4a")) +
+  labs(title="Tissue-Specificity index of genes", 
+       subtitle="quantile & max signal=100")
+ggsave("hg38_gene_TSindex_overlapped_densityLine_max100.pdf")
+ggsave("hg38_gene_TSindex_overlapped_densityLine_max100.png")
+
+### max 20
+tx_max100 = read.table("hg38_tissue_gene_exp_TSscore_max20.txt", header = TRUE, row.names = 1)
+hk = as.vector(read.table("hg38_housekeeping_geneID_geneType_geneSymbol.txt")[,1])
+matrix = transform(tx_max20, type="rest genes")
+matrix$type = as.vector(matrix$type)
+matrix[hk,]$type = "housekeeping genes"
+# density line
+ggplot(matrix, aes(all, color=type)) +
+  geom_density(size=1.5) + xlab("Tissue-Specificity index") + 
+  scale_color_manual(values = c("#984ea3", "#4daf4a")) +
+  labs(title="Tissue-Specificity index of gene", 
+       subtitle="quantile & max signal=20")
+ggsave("hg38_gene_TSindex_HK_densityLine_max20.pdf")
+ggsave("hg38_gene_TSindex_HK_densityLine_max20.png")
+####
+overlapped = as.vector(read.table("GRCh38_ubi-rOCR_closest_gene_list.bed")[,1])
+matrix = transform(matrix, ubi.rOCR = "rest genes")
+matrix$ubi.rOCR = as.vector(matrix$ubi.rOCR)
+matrix[overlapped,]$ubi.rOCR = "overlapped genes"
+ggplot(matrix, aes(all, color=ubi.rOCR)) +
+  geom_density(size=1.5) + xlab("Tissue-Specificity index") + 
+  scale_color_manual(values = c("#e41a1c","#4daf4a")) +
+  labs(title="Tissue-Specificity index of genes", 
+       subtitle="quantile & max signal=20")
+ggsave("hg38_gene_TSindex_overlapped_densityLine_max20.pdf")
+ggsave("hg38_gene_TSindex_overlapped_densityLine_max20.png")
