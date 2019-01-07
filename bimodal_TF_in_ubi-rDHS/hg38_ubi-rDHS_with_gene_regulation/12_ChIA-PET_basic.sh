@@ -5,6 +5,7 @@
 # 0. pre-processing
 # 1. tag overlapped with ubi-rOCRs
 # 2. tag overlapped with GM-active rOCRs
+# 3. tag overlapped with rOCRs
 
 
 mkdir /data/zusers/fankaili/ccre/hg38_ubi-rDHS/chiapet
@@ -65,11 +66,41 @@ cat GRCh38_GM12878_PET_ubi-rOCR_a.txt GRCh38_GM12878_PET_ubi-rOCR_b.txt > \
 GRCh38_GM12878_PET_ubi-rOCR.txt
 cut -f 5 GRCh38_GM12878_PET_ubi-rOCR.txt | sort -u | wc -l
 # 16,498 loops overlapped
-cut -f 9 GRCh38_GM12878_PET_ubi-rOCR.txt | sort -u | wc -l
-# 5628 rOCRs
-cut -f 9,11 GRCh38_GM12878_PET_ubi-rOCR.txt | sort -u | cut -f 2 | sort | uniq -c
-# 11 CTCF-only, 753 ELS, 4864 PLS
 cut -f 4,5 GRCh38_GM12878_PET_ubi-rOCR.txt | sort -u | cut -f 2 | sort | uniq -d | wc -l
 # 1730 loops both ends
+cut -f 9 GRCh38_GM12878_PET_ubi-rOCR.txt | sort -u | wc -l
+# 5628 ubi-rOCRs
+cut -f 9,11 GRCh38_GM12878_PET_ubi-rOCR.txt | sort -u | cut -f 2 | sort | uniq -c
+# 11 CTCF-only, 753 ELS, 4864 PLS
+
 
 # 2. tag overlapped with GM-active rOCRs
+intersectBed -a GRCh38_GM12878_loop_a_matched.bed -b ../loop/GRCh38_GM12878_active_rOCRs.bed \
+-wa -wb > GRCh38_GM12878_PET_active-rOCR_a.txt
+intersectBed -a GRCh38_GM12878_loop_b_matched.bed -b ../loop/GRCh38_GM12878_active_rOCRs.bed \
+-wa -wb > GRCh38_GM12878_PET_active-rOCR_b.txt
+#
+cat GRCh38_GM12878_PET_active-rOCR_a.txt GRCh38_GM12878_PET_active-rOCR_b.txt > \
+GRCh38_GM12878_PET_active-rOCR.txt
+cut -f 5 GRCh38_GM12878_PET_active-rOCR.txt | sort -u | wc -l
+# 71,742 loops
+cut -f 4-5 GRCh38_GM12878_PET_active-rOCR.txt | sort -u | cut -f 2 | sort | uniq -d | wc -l
+# 31,478 loops both ends overlapped
+cut -f 9 GRCh38_GM12878_PET_active-rOCR.txt | sort -u | wc -l
+# 40,520 active rOCRs
+
+
+# 3. tag overlapped with rOCRs
+intersectBed -a GRCh38_GM12878_loop_a_matched.bed -b ../GRCh38-rOCRs.bed \
+-wa -wb > GRCh38_GM12878_PET_rOCR_a.txt
+intersectBed -a GRCh38_GM12878_loop_b_matched.bed -b ../GRCh38-rOCRs.bed \
+-wa -wb > GRCh38_GM12878_PET_rOCR_b.txt
+#
+cat GRCh38_GM12878_PET_rOCR_a.txt GRCh38_GM12878_PET_rOCR_b.txt > \
+GRCh38_GM12878_PET_rOCR.txt
+cut -f 5 GRCh38_GM12878_PET_rOCR.txt | sort -u | wc -l
+# 92,407 loops
+cut -f 4-5 GRCh38_GM12878_PET_rOCR.txt | sort -u | cut -f 2 | sort | uniq -d | wc -l
+# 86,147 loops both ends overlapped
+cut -f 9 GRCh38_GM12878_PET_rOCR.txt | sort -u | wc -l
+# 152,534 rOCRs
