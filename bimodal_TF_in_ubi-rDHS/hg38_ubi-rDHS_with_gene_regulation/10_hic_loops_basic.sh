@@ -9,6 +9,7 @@
 # 4. loop anchors overlapped with CTCF motif
 # 5. loops overlapped with GM12878 specific active-rOCRs
 # 6. CTCF singal between ubi-rOCRs overlapped peaks loci and remaining active rOCRs
+# 7. get loops with fdr cut-off
 
 scriptDir="/data/zusers/fankaili/github/weng-lab/Kaili/bimodal_TF_in_ubi-rDHS/hg38_ubi-rDHS_with_gene_regulation/"
 workDir="/data/zusers/fankaili/ccre/hg38_ubi-rDHS/loop/"
@@ -60,6 +61,8 @@ cut -f 10,11 GRCh38_loop_overlapped_ubi-rOCRs.txt | sort -u | cut -f 2 | sort | 
 # 1781 PLS, 376 ELS, 8 CTCF-only
 cut -f 4,5 GRCh38_loop_overlapped_ubi-rOCRs.txt | sort -u | cut -f 2 | sort | uniq -d | wc -l
 # 288 loops overlapped in both end
+#### Jan06
+intersectBed -a GRCh38_loop_peak_loci.txt -b GRCh38_loop_overlapped_ubi-rOCRs.txt -wa | sort -u | wc -l
 
 # 2. loops overlapped with rOCRs
 intersectBed -a hg38_GM12878_loop_a.bed -b /data/zusers/fankaili/ccre/hg38_ubi-rDHS/GRCh38-rOCRs.bed -wa -wb > GRCh38_loop_a_overlapped_rOCRs.txt
@@ -72,7 +75,8 @@ cut -f 9 GRCh38_loop_overlapped_rOCRs.txt | sort -u | wc -l
 # 99,167 rOCRs overlapped with loop anchors
 cut -f 4,5 GRCh38_loop_overlapped_rOCRs.txt | sort -u | cut -f 2 | sort | uniq -d | wc -l
 # 9262 loops both end overlapped with rOCRs
-
+#### Jan06
+intersectBed -a GRCh38_loop_peak_loci.txt -b GRCh38_loop_overlapped_rOCRs.txt -wa | sort -u | wc -l
 
 # 3. loops overlapped with CTCF peak
 ## get CTCF peak file
@@ -94,6 +98,12 @@ cut -f 4,5 GRCh38_loop_overlapped_CTCF_peaks.txt | sort -u | cut -f 2 | sort | u
 awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=$9}else{print a[$4]}}' GRCh38_loop_peak_loci_ID.txt \
 GRCh38_loop_overlapped_CTCF_peaks.txt | sort -u | wc -l
 # 11327 peak loci
+###
+# Jan 06
+# CTCF peaks be called in Hi-C loops
+intersectBed -a GM12878_CTCF_peaks_ENCSR000DRZ.bed -b GRCh38_loop_peak_loci.txt -wa | sort -u \
+ > GRCh38_CTCF_peaks_overlapped_loops.txt
+intersectBed -a GM12878_CTCF_peaks_ENCSR000DRZ_top30000.bed -b GRCh38_loop_peak_loci.txt -wa | sort -u | wc -l
 
 
 # 4. loop anchors overlapped with CTCF motif
@@ -161,7 +171,8 @@ cut -f 9 GRCh38_loop_overlapped_GM12878_active_rOCRs.txt | sort -u | wc -l
 # 18,010 active-rOCRs overlapped with loop anchors
 cut -f 4,5 GRCh38_loop_overlapped_GM12878_active_rOCRs.txt | sort -u | cut -f 2 | sort | uniq -d | wc -l
 # 3560 loops both end overlapped with active-rOCRs
-
+#### Jan06
+intersectBed -a GRCh38_loop_peak_loci.txt -b GRCh38_loop_overlapped_GM12878_active_rOCRs.txt -wa | sort -u | wc -l
 
 # 6. CTCF singal between ubi-rOCRs overlapped peaks loci and remaining active rOCRs
 ## 1) get peak loci CTCF z-score
@@ -192,3 +203,52 @@ GRCh38_loop_peak_loci_marked.txt >  GRCh38_peakLoci_GM12878_CTCF_z-score_marked.
 awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$5}else{print $0,a[$4]}}' GRCh38_peakLoci_GM12878_CTCF_signal.txt \
 GRCh38_loop_peak_loci_marked.txt >  GRCh38_peakLoci_GM12878_CTCF_signal_marked.txt
 # Rscript make_histgram_CTCF_hic_peakLoci.R
+
+#### Jan06
+## 4) get peak loci overlapped rOCRs, get CTCF signal, make figures
+intersectBed -a /data/zusers/fankaili/ccre/hg38_ubi-rDHS/GRCh38-rOCRs.bed -b GRCh38_loop_peak_loci.txt -wa \
+| sort -u > GRCh38_GM12878_peakloci_overlapped_rOCR.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=1}else{if(a[$4]){print $0,"active-rOCR"}else{print $0,"rest_OCR"}}}' \
+GRCh38_GM12878_active_rOCRs.bed GRCh38_GM12878_peakloci_overlapped_rOCR.txt > \
+tmp.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=1}else{if(a[$4]){print $1,$2,$3,$4,"ubi-rOCR"}else{print $0}}}' \
+/data/zusers/fankaili/ccre/hg38_ubi-rDHS/GRCh38_ubi-rOCRs_EDGEid.bed tmp.txt \
+> GRCh38_GM12878_peakloci_overlapped_rOCR_marked.txt
+## get signal
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$2}else{print $0,a[$4]}}' \
+/data/projects/psychencode/Registry/V1/GRCh38/Signal-Files/ENCSR000DRZ-ENCFF852CRG.txt \
+GRCh38_GM12878_peakloci_overlapped_rOCR_marked.txt > GRCh38_GM12878_peakloci_overlapped_rOCR_marked_signal.txt
+# Rscript make_histgram_CTCF_hic_peakLoci.R
+
+# 7. get loops with fdr cut-off
+awk '{FS=OFS="\t"}{if(NR>1){print $0,"loop_"(NR-1)}}' \
+GSE63525_GM12878_primary+replicate_HiCCUPS_looplist.txt | sort -gk13 > GSE63525_GM12878_primary+replicate_HiCCUPS_looplist_sorted.txt
+#
+if [ -f GRCh38_GM12878_ubi-rOCRs_overlapped_runing_cutoff.txt ]
+then
+    rm GRCh38_GM12878_ubi-rOCRs_overlapped_runing_cutoff.txt
+fi
+#
+for num in 100 200 500 1000 2000 3000 4000 5000 6000 7000 8000 9000 9448
+do
+    echo $num;
+    cut -f 21 GSE63525_GM12878_primary+replicate_HiCCUPS_looplist_sorted.txt | head -${num} > tmp_top_loop_id.txt
+    awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$5]){print $0}}}' tmp_top_loop_id.txt hg38_GM12878_loop.txt \
+    > tmp_GM12878_top_loop.txt
+    num_hg38=`wc -l tmp_GM12878_top_loop.txt | awk '{print $1}'`
+    cut -f 1-5 tmp_GM12878_top_loop.txt > tmp_a.bed
+    cut -f 6-10 tmp_GM12878_top_loop.txt > tmp_b.bed
+    #
+    intersectBed -a tmp_a.bed -b /data/zusers/fankaili/ccre/hg38_ubi-rDHS/GRCh38_ubi-rOCRs_EDGEid.bed -wa -wb > tmp_intersect_a.txt
+    intersectBed -a tmp_b.bed -b /data/zusers/fankaili/ccre/hg38_ubi-rDHS/GRCh38_ubi-rOCRs_EDGEid.bed -wa -wb > tmp_intersect_b.txt
+    cat tmp_intersect_a.txt tmp_intersect_b.txt > tmp_intersect.txt
+    # how many ubi-rOCRs?
+    num_ubi_OCRs=`cut -f 10 tmp_intersect.txt | sort -u | wc -l`
+    # how many single end overlapped loops?
+    num_single=`cut -f 4-5 tmp_intersect.txt | sort -u | cut -f 2 | sort | uniq -u | wc -l`
+    # how many both end overlapped loops?
+    num_both=`cut -f 4-5 tmp_intersect.txt | sort -u | cut -f 2 | sort | uniq -d | wc -l`
+    echo -e ${num}"\t"${num_hg38}"\t"${num_ubi_OCRs}"\t"${num_single}"\t"${num_both} >> GRCh38_GM12878_ubi-rOCRs_overlapped_runing_cutoff.txt
+done
+rm tmp_*.txt
+# Rscript get_ubi-rOCRs_overlapped_loops_figure_cutoff.R
