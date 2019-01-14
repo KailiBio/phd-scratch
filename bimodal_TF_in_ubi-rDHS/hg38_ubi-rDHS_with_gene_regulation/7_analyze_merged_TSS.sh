@@ -7,18 +7,22 @@
 # 2. boxplot of rampage signal
 # 3. histogram: TSS overlapped with ubi-rOCRs/rOCRs
 # 4. histogram: TS index of merged-TSS
-# 5.
+# 5. gene TS index calculation
+# 6. comparing TS index of singular TSS and TSS-clusters
+# 7. each TSS in TSS-clusters
 
 
 scriptDir="/data/zusers/fankaili/github/weng-lab/Kaili/bimodal_TF_in_ubi-rDHS/hg38_ubi-rDHS_with_gene_regulation/"
 workDir="/data/zusers/fankaili/ccre/hg38_ubi-rDHS/merged-TSS/"
 
 # 0. get merged TSS
-sort -k7,7 -k1,1 -k2,2n TSS.Filtered.bed > TSS.Filtered_sorted_gene.bed
+# sort -k7,7 -k1,1 -k2,2n TSS.Filtered.bed > TSS.Filtered_sorted_gene.bed
+awk '{FS=OFS="\t"}{print $1,$2,$3,$8,$5,$6,$7}' /data/zusers/fankaili/ccre/hg38_ubi-rDHS/TSS.Filtered.uniq.bed \
+| sort -k7,7 -k1,1 -k2,2n > /data/zusers/fankaili/ccre/hg38_ubi-rDHS/TSS.Filtered.uniq_sorted.bed
 python ${scriptDir}merge_TSS_50bp.py
 sort -k1,1 -k2,2n hg38_merged_TSS_gene.bed > hg38_merged_TSS_gene_sorted.bed
 ## used to be 194,897 TSSs in 56,516 genes
-## now we have 133,609 merged TSSs.
+## now we have 133,485 merged TSSs.
 
 
 ############################
@@ -197,11 +201,38 @@ GRCh38_mergedTSS_TSindex.txt > GRCh38_mergedTSS_TSindex_average.txt
 
 
 ## 3) mean of rest merged-TSS
-awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=$7;b[$4]=1}else{if(b[$1]!=1){print a[$1],$1,$2}}}' GRCh38_ubi-rOCR_overlapped_merged-TSS.bed \
-hg38_tissue_mergedTSS_exp_TSscore.txt | sort -k1,1 > GRCh38_non_ubi-rOCR_overlapped_mergedTSS_TSindex.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=$7;b[$4]=1}else{if(b[$1]!=1){print $1,$2}}}' GRCh38_ubi-rOCR_overlapped_merged-TSS.bed \
+hg38_tissue_mergedTSS_exp_TSscore.txt | sort -k1,1 > tmp.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$2;b[$1]=1}else{if(b[$4]){print $7,$4,a[$4]}}}' tmp.txt \
+/data/zusers/fankaili/ccre/hg38_ubi-rDHS/hg38_merged_TSS_gene.bed | sort -k1,1 \
+> GRCh38_non_ubi-rOCR_overlapped_mergedTSS_TSindex.txt
 # calculate mean for each gene
 awk '{FS=OFS="\t"}{if(NR==1){id=$1;sum=$3;n=1}else{if(id!=$1){print id,sum/n;id=$1;sum=$3;n=1}else{sum+=$3;n+=1}}}END{print id,sum/n}' \
 GRCh38_non_ubi-rOCR_overlapped_mergedTSS_TSindex.txt > GRCh38_non_ubi-rOCR_overlapped_mergedTSS_TSindex_average.txt
 
 ## 4) make figures
 # Rscript compare_mergedTSS_TSindex.R
+
+#-----------------------------------------------------------
+# 6. comparing TS index of singular TSS and TSS-clusters
+bash compare_TSindex_TSS_cluster_singular.sh
+# Rscript compare_TSS_TSindex_cluster_singular.R
+
+
+#-----------------------------------------------------------
+# 7. each TSS in TSS-clusters
+# Jan13
+## 1) get each TSS in TSS-clusters
+intersectBed -a /data/zusers/fankaili/ccre/hg38_ubi-rDHS/TSS.Filtered.uniq.bed -b hg38_mergedTSS_cluster.bed -wa -wb \
+| awk '{if($7==$15){print $0}}' | cut -f 1-3,8,5-6,9-15 | sort -k10 > hg38_each_TSS_in_mergedTSS_cluster.bed
+## 2) get each TSS TS-index
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$2}else{print $6,a[$6],$10,$13}}' \
+/data/zusers/fankaili/ccre/hg38_ubi-rDHS/hg38_tissue_TSS_exp_TSscore_uniqID.txt \
+hg38_each_TSS_in_mergedTSS_cluster.bed > temp.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$2]=$3}else{print $1,$2,$3,a[$3],$4}}' GRCh38_mergedTSS_TSindex.txt \
+temp.txt > hg38_each_TSS_in_mergedTSS_cluster_TSindex.bed
+## 3) max TSindex of each TSS in TSS-cluster
+awk '{FS=OFS="\t"}{if(NR==1){name=$3;TSS=$1;ts=$2}else{if(name==$3){if(ts>$2){TSS=$1;ts=$2}}else{print name,TSS,ts;name=$3;TSS=$1;ts=$2}}}END{print name,TSS,ts;name=$3}' \
+hg38_each_TSS_in_mergedTSS_cluster_TSindex.bed > hg38_each_TSS_in_mergedTSS_cluster_TSindex_max.bed
+## 4) figures
+# Rscript compare_TSS_TSindex_cluster_singular.R

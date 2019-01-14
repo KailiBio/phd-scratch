@@ -14,7 +14,7 @@ if __name__ == "__main__":
     subprocess.call("touch /data/zusers/fankaili/ccre/hg38_ubi-rDHS/hg38_merged_TSS_gene.bed", shell=True)
     subprocess.call("touch /data/zusers/fankaili/ccre/hg38_ubi-rDHS/temp2.bed", shell=True)
 
-    for line in open("/data/zusers/fankaili/ccre/hg38_ubi-rDHS/TSS.Filtered_sorted_gene.bed").readlines():
+    for line in open("/data/zusers/fankaili/ccre/hg38_ubi-rDHS/TSS.Filtered.uniq_sorted.bed").readlines():
         if gene == "":
             gene = line.rstrip().split("\t")[6]
             output = open("/data/zusers/fankaili/ccre/hg38_ubi-rDHS/temp.bed","w")
