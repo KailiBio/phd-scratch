@@ -57,15 +57,15 @@ do
     #
     echo "cp "${encode_data_path}${expID}"/"${fileID}".bigWig /tmp/" >> ENCODE_rep1_signal_code.sh
     #
-    echo "/home/fankaili/bigWigAverageOverBed /tmp/"${fileID}".bigWig /data/zusers/fankaili/ideas/dhs_bins/mm10_OCR-center_bins_v3.sorted.bed /tmp/"${sample}"_"${assay}".tab" >> ENCODE_rep1_signal_code.sh
-    echo "awk '{print ""\$""5}' /tmp/"${sample}"_"${assay}".tab > /tmp/"${sample}"_"${assay}".txt" >> ENCODE_rep1_signal_code.sh
-    echo "mv /tmp/"${sample}"_"${assay}".tab" ${normal_bins_signal_path} >> ENCODE_rep1_signal_code.sh
-    echo "mv /tmp/"${sample}"_"${assay}".txt" ${normal_bins_signal_path} >> ENCODE_rep1_signal_code.sh
+    echo "/home/fankaili/bigWigAverageOverBed /tmp/"${fileID}".bigWig /data/zusers/fankaili/ideas/run_ideas_p_value/mm10_tab.bed /tmp/"${sample}"_"${assay}"_normal.tab" >> ENCODE_rep1_signal_code.sh
+    echo "awk '{print ""\$""5}' /tmp/"${sample}"_"${assay}"_normal.tab > /tmp/"${sample}"_"${assay}"_normal.txt" >> ENCODE_rep1_signal_code.sh
+    echo "mv /tmp/"${sample}"_"${assay}"_normal.tab" ${normal_bins_signal_path} >> ENCODE_rep1_signal_code.sh
+    echo "mv /tmp/"${sample}"_"${assay}"_normal.txt" ${normal_bins_signal_path} >> ENCODE_rep1_signal_code.sh
     #
-    echo "/home/fankaili/bigWigAverageOverBed /tmp/"${fileID}".bigWig /data/zusers/fankaili/ideas/dhs_bins/mm10_OCR-center_bins_v3.sorted.bed /tmp/"${sample}"_"${assay}".tab" >> ENCODE_rep1_signal_code.sh
-    echo "awk '{print ""\$""5}' /tmp/"${sample}"_"${assay}".tab > /tmp/"${sample}"_"${assay}".txt" >> ENCODE_rep1_signal_code.sh
-    echo "mv /tmp/"${sample}"_"${assay}".tab" ${dhs_bins_signal_path} >> ENCODE_rep1_signal_code.sh
-    echo "mv /tmp/"${sample}"_"${assay}".txt" ${dhs_bins_signal_path} >> ENCODE_rep1_signal_code.sh
+    echo "/home/fankaili/bigWigAverageOverBed /tmp/"${fileID}".bigWig /data/zusers/fankaili/ideas/dhs_bins/mm10_OCR-center_bins_v3.sorted.bed /tmp/"${sample}"_"${assay}"_dhs.tab" >> ENCODE_rep1_signal_code.sh
+    echo "awk '{print ""\$""5}' /tmp/"${sample}"_"${assay}"_dhs.tab > /tmp/"${sample}"_"${assay}"_dhs.txt" >> ENCODE_rep1_signal_code.sh
+    echo "mv /tmp/"${sample}"_"${assay}"_dhs.tab" ${dhs_bins_signal_path} >> ENCODE_rep1_signal_code.sh
+    echo "mv /tmp/"${sample}"_"${assay}"_dhs.txt" ${dhs_bins_signal_path} >> ENCODE_rep1_signal_code.sh
     #
     echo "rm /tmp/"${fileID}".bigWig" >> ENCODE_rep1_signal_code.sh
 done < tmp_ENCODE_mouse_rep1_filelist.txt
@@ -79,15 +79,15 @@ do
     #
     echo "cp "${encode_data_path}${expID}"/"${fileID}".bigWig /tmp/" >> ENCODE_rep1_signal_code.sh
     #
-    echo "/home/fankaili/bigWigAverageOverBed /tmp/"${fileID}".bigWig /data/zusers/fankaili/ideas/dhs_bins/mm10_OCR-center_bins_v3.sorted.bed /tmp/"${sample}"_"${assay}".tab" >> ENCODE_rep1_signal_code.sh
-    echo "awk '{print ""\$""6}' /tmp/"${sample}"_"${assay}".tab > /tmp/"${sample}"_"${assay}".txt" >> ENCODE_rep1_signal_code.sh
-    echo "mv /tmp/"${sample}"_"${assay}".tab" ${normal_bins_signal_path} >> ENCODE_rep1_signal_code.sh
-    echo "mv /tmp/"${sample}"_"${assay}".txt" ${normal_bins_signal_path} >> ENCODE_rep1_signal_code.sh
+    echo "/home/fankaili/bigWigAverageOverBed /tmp/"${fileID}".bigWig /data/zusers/fankaili/ideas/run_ideas_p_value/mm10_tab.bed /tmp/"${sample}"_"${assay}"_normal.tab" >> ENCODE_rep1_signal_code.sh
+    echo "awk '{print ""\$""6}' /tmp/"${sample}"_"${assay}"_normal.tab > /tmp/"${sample}"_"${assay}"_normal.txt" >> ENCODE_rep1_signal_code.sh
+    echo "mv /tmp/"${sample}"_"${assay}"_normal.tab" ${normal_bins_signal_path} >> ENCODE_rep1_signal_code.sh
+    echo "mv /tmp/"${sample}"_"${assay}"_normal.txt" ${normal_bins_signal_path} >> ENCODE_rep1_signal_code.sh
     #
-    echo "/home/fankaili/bigWigAverageOverBed /tmp/"${fileID}".bigWig /data/zusers/fankaili/ideas/dhs_bins/mm10_OCR-center_bins_v3.sorted.bed /tmp/"${sample}"_"${assay}".tab" >> ENCODE_rep1_signal_code.sh
-    echo "awk '{print ""\$""6}' /tmp/"${sample}"_"${assay}".tab > /tmp/"${sample}"_"${assay}".txt" >> ENCODE_rep1_signal_code.sh
-    echo "mv /tmp/"${sample}"_"${assay}".tab" ${dhs_bins_signal_path} >> ENCODE_rep1_signal_code.sh
-    echo "mv /tmp/"${sample}"_"${assay}".txt" ${dhs_bins_signal_path} >> ENCODE_rep1_signal_code.sh
+    echo "/home/fankaili/bigWigAverageOverBed /tmp/"${fileID}".bigWig /data/zusers/fankaili/ideas/dhs_bins/mm10_OCR-center_bins_v3.sorted.bed /tmp/"${sample}"_"${assay}"_dhs.tab" >> ENCODE_rep1_signal_code.sh
+    echo "awk '{print ""\$""6}' /tmp/"${sample}"_"${assay}"_dhs.tab > /tmp/"${sample}"_"${assay}"_dhs.txt" >> ENCODE_rep1_signal_code.sh
+    echo "mv /tmp/"${sample}"_"${assay}"_dhs.tab" ${dhs_bins_signal_path} >> ENCODE_rep1_signal_code.sh
+    echo "mv /tmp/"${sample}"_"${assay}"_dhs.txt" ${dhs_bins_signal_path} >> ENCODE_rep1_signal_code.sh
     #
     echo "rm /tmp/"${fileID}".bigWig" >> ENCODE_rep1_signal_code.sh
 done < ENCODE_mouse_rep1_DNAme_filelist.txt
