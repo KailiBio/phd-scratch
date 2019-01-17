@@ -7,6 +7,7 @@
 # 3. CTCF states overlapped with CTCF high-signal peaks
 # 4. CTCF states with CTCF motifs
 # 5. running cut-off for CTCF signal in CTCF peaks
+# 6. use state as unit.
 
 scriptDir="/data/zusers/fankaili/github/weng-lab/Kaili/IDEAS_ChromHMM/ideas/mouse_tissue/"
 workDir="/data/zusers/fankaili/ideas/CTCF_impute/ctcf_samples/"
@@ -29,7 +30,7 @@ bigWigAverageOverBed /data/projects/encode/data/ENCSR397RHW/ENCFF900YUX.bigWig \
 liver_14.5_day_CTCF_peak_sorted.bed liver_14.5_day_CTCF_peak_signal.txt
 # Rscript figs_statistic_CTCF.R
 
-# get a cut-off 50
+# get a cut-off 32
 # 2. pick CTCF peaks with signal over 50, intersect with CTCF motif
 awk '{FS=OFS="\t"}{if(NR==FNR && $5>32){a[$1]=1}else{if(a[$4]){print $0}}}' liver_14.5_day_CTCF_peak_signal.txt \
 liver_14.5_day_CTCF_peak_sorted.bed > liver_14.5_day_CTCF_peak_over32.bed
@@ -41,8 +42,8 @@ liver_14.5_day_CTCF_peak_withMotif.txt
 # 3. CTCF states overlapped with CTCF high-signal peaks
 # only use CTCF states in liver_14.5 here
 ## peaks
-intersectBed -a liver_14.5_day_CTCF_peak_over32.bed -b mm10_ctcf_state_liver14.5_sorted.bed -wa | sort -u | wc -l
-intersectBed -a liver_14.5_day_CTCF_peak_sorted.bed -b mm10_ctcf_state_liver14.5_sorted.bed -wa | sort -u | wc -l
+intersectBed -a liver_14.5_day_CTCF_peak_over32.bed -b mm10_ctcf_state_liver14.5_sorted.bed -wa -f 0.5 -F 0.5 -e | sort -u | wc -l
+intersectBed -a liver_14.5_day_CTCF_peak_sorted.bed -b mm10_ctcf_state_liver14.5_sorted.bed -wa -f 0.5 -F 0.5 -e | sort -u | wc -l
 wc -l liver_14.5_day_CTCF_peak_sorted.bed
 wc -l liver_14.5_day_CTCF_peak_over32.bed
 ## states
@@ -87,9 +88,9 @@ sort -k1,1 -k2,2n > mm10_non_ctcf_state_liver14.5_ctcf_motif.bed
 ### get signal
 bigWigAverageOverBed /data/projects/encode/data/ENCSR397RHW/ENCFF900YUX.bigWig \
 mm10_ctcf_state_liver14.5_ctcf_motif.bed liver_14.5_day_ctcf_state_ctcf_motif_signal.txt
-bigWigAverageOverBed /data/projects/encode/data/ENCSR397RHW/ENCFF191NHQ.bigWig \
+bigWigAverageOverBed /data/projects/encode/data/ENCSR397RHW/ENCFF900YUX.bigWig \
 mm10_ctcf_state_liver14.5_non_ctcf_motif.bed liver_14.5_day_ctcf_state_non_ctcf_motif_signal.txt
-bigWigAverageOverBed /data/projects/encode/data/ENCSR397RHW/ENCFF191NHQ.bigWig \
+bigWigAverageOverBed /data/projects/encode/data/ENCSR397RHW/ENCFF900YUX.bigWig \
 mm10_non_ctcf_state_liver14.5_ctcf_motif.bed liver_14.5_day_non_ctcf_state_ctcf_motif_signal.txt
 #
 awk '{FS=OFS="\t"}{print $1,$5,"CTCFstate_CTCFmotif"}' liver_14.5_day_ctcf_state_ctcf_motif_signal.txt \
@@ -105,3 +106,7 @@ awk '{FS=OFS="\t"}{print $1,$5,"nonCTCFstate_CTCFmotif"}' liver_14.5_day_non_ctc
 
 # 5. running cut-off for CTCF signal in CTCF peaks
 bash ${scriptDir}running_cutoff_CTCF_peak_signal.sh
+
+
+# 6. use state as unit.
+bash ${scriptDir}analyze_CTCF_states_unit.sh
