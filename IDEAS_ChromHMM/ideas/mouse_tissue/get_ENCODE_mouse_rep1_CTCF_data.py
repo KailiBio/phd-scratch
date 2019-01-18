@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # -- Kaili
-# This script is for getting mouse rep1 ATAC data.
+# This script is for getting mouse rep1 CTCF data.
 
 import re, os, sys
 import subprocess

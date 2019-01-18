@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
 # -- Kaili
-# This script is for getting mouse rep1 histone marks data.
+# This script is for getting mouse rep1 DNAme data.
+### get CpG bedMethyl file from Bismark output here.
+### can use bedMethyl2bigWig to transform to bigWig file for signal calculation.
 
 import json
 import re, os, sys
@@ -23,7 +25,7 @@ if __name__ == "__main__":
             expID = data[i]["accession"]
             myexp = Exp.fromJsonFile(expID)
             for myfile in myexp.files:
-                if myfile.file_format=="bigWig" and myfile.bio_rep==[1] and myfile.assembly=="mm10" and myfile.file_status=="released":
+                if myfile.file_format=="bed" and myfile.output_type=="methylation state at CpG" and myfile.bio_rep==[1] and myfile.assembly=="mm10" and myfile.file_status=="released":
                     fileID = myfile.fileID
                     print >> outfile, ("\t").join([sample, "DNAme", "rep1", expID, fileID])
 
