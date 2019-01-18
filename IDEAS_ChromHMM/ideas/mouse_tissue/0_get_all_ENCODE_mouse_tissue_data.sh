@@ -23,6 +23,7 @@ python ${scriptDir}get_mouse_data_from_ENCODE_json.py
 ## 1) ATAC-seq
 python ${scriptDir}get_ENCODE_mouse_rep1_ATAC_data.py
 ## 2) make DNAme bigWig in 1bp resolution
+# fileID are CpG bedMethyl file
 python ${scriptDir}get_ENCODE_mouse_rep1_DNAme_data.py
 ## 3) get 8 histone mark ChIP-seq
 python ${scriptDir}get_ENCODE_mouse_rep1_8HM_data.py
@@ -77,7 +78,8 @@ do
     expID=`awk '{print $4}' <<< ${line}`
     fileID=`awk '{print $5}' <<< ${line}`
     #
-    echo "cp "${encode_data_path}${expID}"/"${fileID}".bigWig /tmp/" >> ENCODE_rep1_signal_code.sh
+    echo "gzip -c /data/projects/encode/data/"${expID}"/"${fileID}".bed.gz > /tmp/"${fileID}".bed" >> ENCODE_rep1_signal_code.sh
+    echo "bash /data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/bedMethyl2bigWig.sh /tmp/"${fileID}".bed /tmp/mm10.chrom.sizes /tmp/"${fileID}".bigWig" >> ENCODE_rep1_signal_code.sh
     #
     echo "/home/fankaili/bigWigAverageOverBed /tmp/"${fileID}".bigWig /data/zusers/fankaili/ideas/run_ideas_p_value/mm10_tab.bed /tmp/"${sample}"_"${assay}"_normal.tab" >> ENCODE_rep1_signal_code.sh
     echo "awk '{print ""\$""6}' /tmp/"${sample}"_"${assay}"_normal.tab > /tmp/"${sample}"_"${assay}"_normal.txt" >> ENCODE_rep1_signal_code.sh
@@ -89,7 +91,7 @@ do
     echo "mv /tmp/"${sample}"_"${assay}"_dhs.tab" ${dhs_bins_signal_path} >> ENCODE_rep1_signal_code.sh
     echo "mv /tmp/"${sample}"_"${assay}"_dhs.txt" ${dhs_bins_signal_path} >> ENCODE_rep1_signal_code.sh
     #
-    echo "rm /tmp/"${fileID}".bigWig" >> ENCODE_rep1_signal_code.sh
+    echo "rm /tmp/"${fileID}".bigWig /tmp/"${fileID}".bed" >> ENCODE_rep1_signal_code.sh
 done < ENCODE_mouse_rep1_DNAme_filelist.txt
 ##### cut code into 10 samples each
 mkdir /data/zusers/fankaili/ideas/code/get_rep1_signal/
@@ -99,3 +101,35 @@ do
     awk -v i="$i" '{if(NR>((i-1)*100) && NR<=(100*i)){print $0}}' ENCODE_rep1_signal_code.sh > \
     /data/zusers/fankaili/ideas/code/get_rep1_signal/ENCODE_rep1_signal_code_${i}.sh
 done
+
+##########################
+# rerun DNAme for new bigWig
+
+# while read line
+# do
+#     sample=`awk '{print $1}' <<< ${line}`
+#     assay=`awk '{print $2}' <<< ${line}`
+#     expID=`awk '{print $4}' <<< ${line}`
+#     fileID=`awk '{print $5}' <<< ${line}`
+#     #
+#     echo "gzip -c /data/projects/encode/data/"${expID}"/"${fileID}".bed.gz > /tmp/"${fileID}".bed" >> ENCODE_rep1_signal_code2.sh
+#     echo "bash /data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/bedMethyl2bigWig.sh /tmp/"${fileID}".bed /data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/mm10.chrom.sizes /tmp/"${fileID}".bigWig" >> ENCODE_rep1_signal_code2.sh
+#     #
+#     echo "/home/fankaili/bigWigAverageOverBed /tmp/"${fileID}".bigWig /data/zusers/fankaili/ideas/run_ideas_p_value/mm10_tab.bed /tmp/"${sample}"_"${assay}"_normal.tab" >> ENCODE_rep1_signal_code2.sh
+#     echo "awk '{print ""\$""6}' /tmp/"${sample}"_"${assay}"_normal.tab > /tmp/"${sample}"_"${assay}"_normal.txt" >> ENCODE_rep1_signal_code2.sh
+#     echo "mv /tmp/"${sample}"_"${assay}"_normal.tab" ${normal_bins_signal_path} >> ENCODE_rep1_signal_code2.sh
+#     echo "mv /tmp/"${sample}"_"${assay}"_normal.txt" ${normal_bins_signal_path} >> ENCODE_rep1_signal_code2.sh
+#     #
+#     echo "/home/fankaili/bigWigAverageOverBed /tmp/"${fileID}".bigWig /data/zusers/fankaili/ideas/dhs_bins/mm10_OCR-center_bins_v3.sorted.bed /tmp/"${sample}"_"${assay}"_dhs.tab" >> ENCODE_rep1_signal_code2.sh
+#     echo "awk '{print ""\$""6}' /tmp/"${sample}"_"${assay}"_dhs.tab > /tmp/"${sample}"_"${assay}"_dhs.txt" >> ENCODE_rep1_signal_code2.sh
+#     echo "mv /tmp/"${sample}"_"${assay}"_dhs.tab" ${dhs_bins_signal_path} >> ENCODE_rep1_signal_code2.sh
+#     echo "mv /tmp/"${sample}"_"${assay}"_dhs.txt" ${dhs_bins_signal_path} >> ENCODE_rep1_signal_code2.sh
+#     #
+#     echo "rm /tmp/"${fileID}".bigWig /tmp/"${fileID}".bed" >> ENCODE_rep1_signal_code2.sh
+# done < ENCODE_mouse_rep1_DNAme_filelist.txt
+#
+# for i in {1..11}
+# do
+#     awk -v i="$i" '{if(NR>((i-1)*66) && NR<=(66*i)){print $0}}' ENCODE_rep1_signal_code2.sh > \
+#     /data/zusers/fankaili/ideas/code/get_rep1_signal/ENCODE_rep1_signal_code2_${i}.sh
+# done
