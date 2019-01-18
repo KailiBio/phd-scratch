@@ -45,6 +45,6 @@ if __name__ == "__main__":
             file_jfile = file_response.json()
             if file_jfile["file_type"]=="bigWig" and file_jfile["biological_replicates"]==[1] and file_jfile["output_type"]=="signal p-value":
                 fileID = file_jfile["accession"]
-                print >> outfile, ("\t").join([sample,"ATAC-seq", "rep1", exp, fileID])
+                print >> outfile, ("\t").join([sample,"ATAC", "rep1", exp, fileID])
 
     outfile.close()

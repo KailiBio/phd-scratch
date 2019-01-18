@@ -166,3 +166,40 @@ vim DHS_v3_150-350bp_nor.sh
 
 # 3. run IDEAS
 nohup bash DHS_v3_150-350bp_nor.sh > ./nohup.DHS_v3_150-350bp_nor.out 2>&1&
+
+
+
+#--------------------------------------------------------------------
+# 4. rerun all using rep1
+## 1) dhs_bins
+# .input file
+cp DHS_v3_100-400bp.input DHS_v3_100-400bp_oldATAC.input
+awk '{FS=OFS=" "}{print $1,$2,"/data/zusers/fankaili/ideas/signal/rep1_signal_dhs_bins/"$1"_"$2"_dhs.txt"}' \
+DHS_v3_100-400bp_oldATAC.input > DHS_v3_100-400bp.input
+# bed file
+cut -f 1 /data/zusers/fankaili/ideas/signal/rep1_signal_dhs_bins/embryonic-facial-prominence_15.5_H3K9ac_dhs.tab > tmp.txt
+awk '{FS=OFS=" "}{if(NR==FNR){a[$4]=$0}else{print a[$1]}}' mm10_OCR-center_bins_v3_signal_based_space.bed tmp.txt > tmp2.txt
+mv tmp2.txt mm10_OCR-center_bins_v3_signal_based_space.bed
+#
+nohup bash DHS_v3_100-400bp.sh > ./nohup.DHS_v3_100-400bp_Jan17.out 2>&1&
+
+
+## 2) normal_bins
+mkdir /data/zusers/fankaili/ideas/dhs_bins/normal_bins/
+cd /data/zusers/fankaili/ideas/dhs_bins/normal_bins/
+# .input file
+awk '{FS=OFS=" "}{print $1,$2,"/data/zusers/fankaili/ideas/signal/rep1_signal_normal_bins/"$1"_"$2"_normal.txt"}' \
+/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/DHS_v3_100-400bp_oldATAC.input > \
+66samples_10marks_normal_bins.input
+# .parafile
+cp /data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/DHS_v3_100-400bp.parafile 66samples_10marks_normal_bins.parafile
+vim 66samples_10marks_normal_bins.parafile
+# .sh file
+cp /data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/DHS_v3_100-400bp.sh 66samples_10marks_normal_bins.sh
+vim 66samples_10marks_normal_bins.sh
+#
+cp /data/zusers/fankaili/ideas/CTCF_impute/ctcf_samples/mm10.bed ./
+cp -r /data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/bin ./
+cp -r /data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/data ./
+#
+nohup bash 66samples_10marks_normal_bins.sh > ./nohup.66samples_10marks_normal_bins.out 2>&1&

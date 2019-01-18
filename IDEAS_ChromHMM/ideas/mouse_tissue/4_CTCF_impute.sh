@@ -4,6 +4,7 @@
 # This script is for impuating CTCF states.
 # 1. run 66 samples: 10 marks + CTCF
 # 2. run 11 samples all with CTCF
+# 3. rerun 11 samples 11 marks only for rep1 data
 
 scriptDir="/data/zusers/fankaili/github/weng-lab/Kaili/IDEAS_ChromHMM/ideas/mouse_tissue/"
 signalDir="/data/zusers/fankaili/ideas/signal/macs2_pvalue/"
@@ -63,3 +64,17 @@ cp -r /data/zusers/fankaili/ideas/e14.5p0_8hm_ATAC_DNAme_CTCF/e14.5p0_8hm_ATAC_D
 cp -r /data/zusers/fankaili/ideas/e14.5p0_8hm_ATAC_DNAme_CTCF/e14.5p0_8hm_ATAC_DNAme/data ./
 
 nohup bash ctcf_samples.sh > ./nohup.ctcf_samples.out 2>&1&
+
+
+
+# 3. rerun 11 samples 11 marks only for rep1 data
+# .input file
+cp ctcf_samples.input ctcf_samples_old.input
+awk '{FS=OFS=" "}{print $1,$2,"/data/zusers/fankaili/ideas/signal/rep1_signal_normal_bins/"$1"_"$2"_normal.txt"}' \
+ctcf_samples_old.input > ctcf_samples.input
+# bed file
+cut -f 1 /data/zusers/fankaili/ideas/signal/rep1_signal_normal_bins/embryonic-facial-prominence_11.5_H3K36me3_normal.tab > tmp.txt
+awk '{FS=OFS=" "}{if(NR==FNR){a[$4]=$0}else{print a[$1]}}' mm10.bed tmp.txt > tmp2.txt
+mv tmp2.txt mm10.bed
+#
+nohup bash ctcf_samples.sh > ./nohup.ctcf_samples_Jan17.out 2>&1&
