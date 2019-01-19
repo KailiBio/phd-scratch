@@ -34,9 +34,8 @@ normal_data = transform(normal_data, type="normal_bins", loci = 1:150)
 matrix = rbind(dhs_ocr_data, normal_data)
 colnames(matrix) = c("signal", "type", "loci")
 #
-title = paste(sample, assay, sep="_")
 p1 = ggplot(matrix, aes(x=loci, y=signal, group=type, col = type)) + geom_line() + geom_point() +
-  labs(title = title) + 
+  labs(title = assay) + 
   annotate("text", x=25, y=max(matrix$signal)+0.1, label='bold("upstream")', color = "black", size=5, parse = TRUE) +
   annotate("text", x=75, y=max(matrix$signal)+0.1, label='bold("bin")', color = "black", size=5, parse = TRUE) +
   annotate("text", x=125, y=max(matrix$signal)+0.1, label='bold("downstream")', color = "black", size=5, parse = TRUE) +
@@ -55,11 +54,10 @@ dhs_ocr_data = transform(dhs_ocr_data, type="dhs_OCR", loci = 1:150)
 normal_data = read.table(normal)
 normal_data = transform(normal_data, type="normal_bins", loci = 1:150)
 matrix = rbind(dhs_ocr_data, normal_data)
-colnames(matrix) = c("signal", "type", "loci")
+colnames(matrix) = c("percentage", "type", "loci")
 #
-title = paste(sample, assay, sep="_")
 p2 = ggplot(matrix, aes(x=loci, y=signal, group=type, col = type)) + geom_line() + geom_point() +
-  labs(title = title) + 
+  labs(title = assay) + 
   annotate("text", x=25, y=max(matrix$signal)+0.1, label='bold("upstream")', color = "black", size=5, parse = TRUE) +
   annotate("text", x=75, y=max(matrix$signal)+0.1, label='bold("bin")', color = "black", size=5, parse = TRUE) +
   annotate("text", x=125, y=max(matrix$signal)+0.1, label='bold("downstream")', color = "black", size=5, parse = TRUE) +
@@ -80,9 +78,8 @@ normal_data = transform(normal_data, type="normal_bins", loci = 1:150)
 matrix = rbind(dhs_ocr_data, normal_data)
 colnames(matrix) = c("signal", "type", "loci")
 #
-title = paste(sample, assay, sep="_")
 p3 = ggplot(matrix, aes(x=loci, y=signal, group=type, col = type)) + geom_line() + geom_point() +
-  labs(title = title) + 
+  labs(title = assay) + 
   annotate("text", x=25, y=max(matrix$signal)+0.1, label='bold("upstream")', color = "black", size=5, parse = TRUE) +
   annotate("text", x=75, y=max(matrix$signal)+0.1, label='bold("bin")', color = "black", size=5, parse = TRUE) +
   annotate("text", x=125, y=max(matrix$signal)+0.1, label='bold("downstream")', color = "black", size=5, parse = TRUE) +
@@ -103,9 +100,8 @@ normal_data = transform(normal_data, type="normal_bins", loci = 1:150)
 matrix = rbind(dhs_ocr_data, normal_data)
 colnames(matrix) = c("signal", "type", "loci")
 #
-title = paste(sample, assay, sep="_")
 p4 = ggplot(matrix, aes(x=loci, y=signal, group=type, col = type)) + geom_line() + geom_point() +
-  labs(title = title) + 
+  labs(title = assay) + 
   annotate("text", x=25, y=max(matrix$signal)+0.1, label='bold("upstream")', color = "black", size=5, parse = TRUE) +
   annotate("text", x=75, y=max(matrix$signal)+0.1, label='bold("bin")', color = "black", size=5, parse = TRUE) +
   annotate("text", x=125, y=max(matrix$signal)+0.1, label='bold("downstream")', color = "black", size=5, parse = TRUE) +
@@ -126,9 +122,8 @@ normal_data = transform(normal_data, type="normal_bins", loci = 1:150)
 matrix = rbind(dhs_ocr_data, normal_data)
 colnames(matrix) = c("signal", "type", "loci")
 #
-title = paste(sample, assay, sep="_")
 p5 = ggplot(matrix, aes(x=loci, y=signal, group=type, col = type)) + geom_line() + geom_point() +
-  labs(title = title) + 
+  labs(title = assay) + 
   annotate("text", x=25, y=max(matrix$signal)+0.1, label='bold("upstream")', color = "black", size=5, parse = TRUE) +
   annotate("text", x=75, y=max(matrix$signal)+0.1, label='bold("bin")', color = "black", size=5, parse = TRUE) +
   annotate("text", x=125, y=max(matrix$signal)+0.1, label='bold("downstream")', color = "black", size=5, parse = TRUE) +
@@ -149,9 +144,8 @@ normal_data = transform(normal_data, type="normal_bins", loci = 1:150)
 matrix = rbind(dhs_ocr_data, normal_data)
 colnames(matrix) = c("signal", "type", "loci")
 #
-title = paste(sample, assay, sep="_")
 p6 = ggplot(matrix, aes(x=loci, y=signal, group=type, col = type)) + geom_line() + geom_point() +
-  labs(title = title) + 
+  labs(title = assay) + 
   annotate("text", x=25, y=max(matrix$signal)+0.1, label='bold("upstream")', color = "black", size=5, parse = TRUE) +
   annotate("text", x=75, y=max(matrix$signal)+0.1, label='bold("bin")', color = "black", size=5, parse = TRUE) +
   annotate("text", x=125, y=max(matrix$signal)+0.1, label='bold("downstream")', color = "black", size=5, parse = TRUE) +
@@ -172,9 +166,8 @@ normal_data = transform(normal_data, type="normal_bins", loci = 1:150)
 matrix = rbind(dhs_ocr_data, normal_data)
 colnames(matrix) = c("signal", "type", "loci")
 #
-title = paste(sample, assay, sep="_")
 p7 = ggplot(matrix, aes(x=loci, y=signal, group=type, col = type)) + geom_line() + geom_point() +
-  labs(title = title) + 
+  labs(title = assay) + 
   annotate("text", x=25, y=max(matrix$signal)+0.1, label='bold("upstream")', color = "black", size=5, parse = TRUE) +
   annotate("text", x=75, y=max(matrix$signal)+0.1, label='bold("bin")', color = "black", size=5, parse = TRUE) +
   annotate("text", x=125, y=max(matrix$signal)+0.1, label='bold("downstream")', color = "black", size=5, parse = TRUE) +
@@ -195,9 +188,8 @@ normal_data = transform(normal_data, type="normal_bins", loci = 1:150)
 matrix = rbind(dhs_ocr_data, normal_data)
 colnames(matrix) = c("signal", "type", "loci")
 #
-title = paste(sample, assay, sep="_")
 p8 = ggplot(matrix, aes(x=loci, y=signal, group=type, col = type)) + geom_line() + geom_point() +
-  labs(title = title) + 
+  labs(title = assay) + 
   annotate("text", x=25, y=max(matrix$signal)+0.1, label='bold("upstream")', color = "black", size=5, parse = TRUE) +
   annotate("text", x=75, y=max(matrix$signal)+0.1, label='bold("bin")', color = "black", size=5, parse = TRUE) +
   annotate("text", x=125, y=max(matrix$signal)+0.1, label='bold("downstream")', color = "black", size=5, parse = TRUE) +
@@ -218,9 +210,8 @@ normal_data = transform(normal_data, type="normal_bins", loci = 1:150)
 matrix = rbind(dhs_ocr_data, normal_data)
 colnames(matrix) = c("signal", "type", "loci")
 #
-title = paste(sample, assay, sep="_")
 p9 = ggplot(matrix, aes(x=loci, y=signal, group=type, col = type)) + geom_line() + geom_point() +
-  labs(title = title) + 
+  labs(title = assay) + 
   annotate("text", x=25, y=max(matrix$signal)+0.1, label='bold("upstream")', color = "black", size=5, parse = TRUE) +
   annotate("text", x=75, y=max(matrix$signal)+0.1, label='bold("bin")', color = "black", size=5, parse = TRUE) +
   annotate("text", x=125, y=max(matrix$signal)+0.1, label='bold("downstream")', color = "black", size=5, parse = TRUE) +
@@ -241,16 +232,21 @@ normal_data = transform(normal_data, type="normal_bins", loci = 1:150)
 matrix = rbind(dhs_ocr_data, normal_data)
 colnames(matrix) = c("signal", "type", "loci")
 #
-title = paste(sample, assay, sep="_")
 p10 = ggplot(matrix, aes(x=loci, y=signal, group=type, col = type)) + geom_line() + geom_point() +
-  labs(title = title) + 
-  annotate("text", x=25, y=max(matrix$signal)+0.1, label='bold("upstream")', color = "black", size=5, parse = TRUE) +
-  annotate("text", x=75, y=max(matrix$signal)+0.1, label='bold("bin")', color = "black", size=5, parse = TRUE) +
-  annotate("text", x=125, y=max(matrix$signal)+0.1, label='bold("downstream")', color = "black", size=5, parse = TRUE) +
+  labs(title = assay) + 
+  annotate("text", x=25, y=max(matrix$signal)+0.1, label='bold("upstream")', color = "black", size=3, parse = TRUE) +
+  annotate("text", x=75, y=max(matrix$signal)+0.1, label='bold("bin")', color = "black", size=3, parse = TRUE) +
+  annotate("text", x=125, y=max(matrix$signal)+0.1, label='bold("downstream")', color = "black", size=3, parse = TRUE) +
   theme(axis.text.x = element_blank())
 
 ##################
 outfile = paste(sample, "_matched_aggregation.pdf", sep="")
-p = grid.arrange(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, ncol=3)
+lay = rbind(c(1,1,2,2,3,3),
+            c(4,4,5,5,6,6),
+            c(7,7,8,8,9,9),
+            c(10,10,10,11,11,11))
+p = grid.arrange(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, ncol=3,
+                 textGrob(sample,gp=gpar(fontsize=15,font=2)),
+                 layout_matrix = lay)
 ggsave(outfile,p, width = 12, height = 15)
 ##################

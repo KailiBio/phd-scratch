@@ -24,19 +24,22 @@ if __name__ == "__main__":
     outDir = "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/hg38_RAMPAGE_list.txt"
 
     q = QueryDCC(auth=False)
+    expID = []
     out = []
     for exp in q.getExps(url):
         for f in exp.files:
-            myexp = Exp.fromJsonFile(f.expID)
-            sample = ("_").join([myexp.biosample_term_name.replace(" ","_"), myexp.age_display.replace(" ","_")])
-            for myfile in myexp.files:
-                if myfile.bio_rep==[1] and myfile.tech_rep==['1_1'] and myfile.file_format=="bigWig" and myfile.output_type=="plus strand signal of unique reads" and myfile.assembly=="GRCh38":
-					plus = myfile.accession
-					print(plus)
-					subprocess.call("bigWigAverageOverBed /data/projects/encode/data/"+f.expID+"/"+plus+".bigWig /data/zusers/fankaili/ccre/hg38_ubi-rDHS/TSS.Filtered.sorted.bed /data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage/"+plus+".tab", shell=True)
-				elif myfile.bio_rep==[1] and myfile.tech_rep==['1_1'] and myfile.file_format=="bigWig" and myfile.output_type=="minus strand signal of unique reads" and myfile.assembly=="GRCh38":
-					minus = myfile.accession
-					print(minus)
-					subprocess.call("bigWigAverageOverBed /data/projects/encode/data/"+f.expID+"/"+minus+".bigWig /data/zusers/fankaili/ccre/hg38_ubi-rDHS/TSS.Filtered.sorted.bed /data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage/"+minus+".tab", shell=True)
-			out.append(("\t").join([f.expID, plus, minus, sample])+"\n")
-	write_file(out,outDir)
+	    if not f.expID in expID:
+		expID.append(f.expID)
+            	myexp = Exp.fromJsonFile(f.expID)
+            	sample = ("_").join([myexp.biosample_term_name.replace(" ","_"), myexp.age_display.replace(" ","_")])
+            	for myfile in myexp.files:
+                    if myfile.bio_rep==[1] and myfile.tech_rep==['1_1'] and myfile.file_format=="bigWig" and myfile.output_type=="plus strand signal of unique reads" and myfile.assembly=="GRCh38":
+		    	plus = myfile.accession
+			print(plus)
+			subprocess.call("bigWigAverageOverBed /data/projects/encode/data/"+f.expID+"/"+plus+".bigWig /data/zusers/fankaili/ccre/hg38_ubi-rDHS/TSS.Filtered_sorted.bed /data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage/"+plus+".tab", shell=True)
+		    elif myfile.bio_rep==[1] and myfile.tech_rep==['1_1'] and myfile.file_format=="bigWig" and myfile.output_type=="minus strand signal of unique reads" and myfile.assembly=="GRCh38":
+			minus = myfile.accession
+			print(minus)
+			subprocess.call("bigWigAverageOverBed /data/projects/encode/data/"+f.expID+"/"+minus+".bigWig /data/zusers/fankaili/ccre/hg38_ubi-rDHS/TSS.Filtered_sorted.bed /data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage/"+minus+".tab", shell=True)
+	        out.append(("\t").join([f.expID, plus, minus, sample])+"\n")
+    write_file(out,outDir)
