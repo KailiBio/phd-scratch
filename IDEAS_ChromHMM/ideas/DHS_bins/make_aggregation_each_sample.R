@@ -24,8 +24,8 @@ assay_list = c("ATAC", "DNAme", "H3K4me1", "H3K4me2", "H3K4me3", "H3K9me3", "H3K
 assay=assay_list[1]
 dhs_ocr = paste("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/signal_OCR/", 
                 sample, "_", assay, "_OCR.txt", sep="")
-normal = paste("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/signal_matched_normal/", 
-               sample, "_", assay, "_matched_normal.txt", sep="")
+normal = paste("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/signal_normal/", 
+               sample, "_", assay, "_normal.txt", sep="")
 #
 dhs_ocr_data = read.table(dhs_ocr)
 dhs_ocr_data = transform(dhs_ocr_data, type="dhs_OCR", loci = 1:150)
@@ -46,8 +46,8 @@ p1 = ggplot(matrix, aes(x=loci, y=signal, group=type, col = type)) + geom_line()
 assay=assay_list[2]
 dhs_ocr = paste("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/signal_OCR/", 
                 sample, "_", assay, "_OCR.txt", sep="")
-normal = paste("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/signal_matched_normal/", 
-               sample, "_", assay, "_matched_normal.txt", sep="")
+normal = paste("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/signal_normal/", 
+               sample, "_", assay, "_normal.txt", sep="")
 #
 dhs_ocr_data = read.table(dhs_ocr)
 dhs_ocr_data = transform(dhs_ocr_data, type="dhs_OCR", loci = 1:150)
@@ -56,11 +56,11 @@ normal_data = transform(normal_data, type="normal_bins", loci = 1:150)
 matrix = rbind(dhs_ocr_data, normal_data)
 colnames(matrix) = c("percentage", "type", "loci")
 #
-p2 = ggplot(matrix, aes(x=loci, y=signal, group=type, col = type)) + geom_line() + geom_point() +
+p2 = ggplot(matrix, aes(x=loci, y=percentage, group=type, col = type)) + geom_line() + geom_point() +
   labs(title = assay) + 
-  annotate("text", x=25, y=max(matrix$signal)+0.1, label='bold("upstream")', color = "black", size=5, parse = TRUE) +
-  annotate("text", x=75, y=max(matrix$signal)+0.1, label='bold("bin")', color = "black", size=5, parse = TRUE) +
-  annotate("text", x=125, y=max(matrix$signal)+0.1, label='bold("downstream")', color = "black", size=5, parse = TRUE) +
+  annotate("text", x=25, y=max(matrix$percentage)+0.1, label='bold("upstream")', color = "black", size=5, parse = TRUE) +
+  annotate("text", x=75, y=max(matrix$percentage)+0.1, label='bold("bin")', color = "black", size=5, parse = TRUE) +
+  annotate("text", x=125, y=max(matrix$percentage)+0.1, label='bold("downstream")', color = "black", size=5, parse = TRUE) +
   theme(axis.text.x = element_blank(), legend.position="none")
 ##################
 # H3K4me1
@@ -68,8 +68,8 @@ p2 = ggplot(matrix, aes(x=loci, y=signal, group=type, col = type)) + geom_line()
 assay=assay_list[3]
 dhs_ocr = paste("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/signal_OCR/", 
                 sample, "_", assay, "_OCR.txt", sep="")
-normal = paste("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/signal_matched_normal/", 
-               sample, "_", assay, "_matched_normal.txt", sep="")
+normal = paste("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/signal_normal/", 
+               sample, "_", assay, "_normal.txt", sep="")
 #
 dhs_ocr_data = read.table(dhs_ocr)
 dhs_ocr_data = transform(dhs_ocr_data, type="dhs_OCR", loci = 1:150)
@@ -90,8 +90,8 @@ p3 = ggplot(matrix, aes(x=loci, y=signal, group=type, col = type)) + geom_line()
 assay=assay_list[4]
 dhs_ocr = paste("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/signal_OCR/", 
                 sample, "_", assay, "_OCR.txt", sep="")
-normal = paste("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/signal_matched_normal/", 
-               sample, "_", assay, "_matched_normal.txt", sep="")
+normal = paste("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/signal_normal/", 
+               sample, "_", assay, "_normal.txt", sep="")
 #
 dhs_ocr_data = read.table(dhs_ocr)
 dhs_ocr_data = transform(dhs_ocr_data, type="dhs_OCR", loci = 1:150)
@@ -112,8 +112,8 @@ p4 = ggplot(matrix, aes(x=loci, y=signal, group=type, col = type)) + geom_line()
 assay=assay_list[5]
 dhs_ocr = paste("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/signal_OCR/", 
                 sample, "_", assay, "_OCR.txt", sep="")
-normal = paste("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/signal_matched_normal/", 
-               sample, "_", assay, "_matched_normal.txt", sep="")
+normal = paste("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/signal_normal/", 
+               sample, "_", assay, "_normal.txt", sep="")
 #
 dhs_ocr_data = read.table(dhs_ocr)
 dhs_ocr_data = transform(dhs_ocr_data, type="dhs_OCR", loci = 1:150)
@@ -134,8 +134,8 @@ p5 = ggplot(matrix, aes(x=loci, y=signal, group=type, col = type)) + geom_line()
 assay=assay_list[6]
 dhs_ocr = paste("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/signal_OCR/", 
                 sample, "_", assay, "_OCR.txt", sep="")
-normal = paste("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/signal_matched_normal/", 
-               sample, "_", assay, "_matched_normal.txt", sep="")
+normal = paste("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/signal_normal/", 
+               sample, "_", assay, "_normal.txt", sep="")
 #
 dhs_ocr_data = read.table(dhs_ocr)
 dhs_ocr_data = transform(dhs_ocr_data, type="dhs_OCR", loci = 1:150)
@@ -156,8 +156,8 @@ p6 = ggplot(matrix, aes(x=loci, y=signal, group=type, col = type)) + geom_line()
 assay=assay_list[7]
 dhs_ocr = paste("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/signal_OCR/", 
                 sample, "_", assay, "_OCR.txt", sep="")
-normal = paste("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/signal_matched_normal/", 
-               sample, "_", assay, "_matched_normal.txt", sep="")
+normal = paste("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/signal_normal/", 
+               sample, "_", assay, "_normal.txt", sep="")
 #
 dhs_ocr_data = read.table(dhs_ocr)
 dhs_ocr_data = transform(dhs_ocr_data, type="dhs_OCR", loci = 1:150)
@@ -178,8 +178,8 @@ p7 = ggplot(matrix, aes(x=loci, y=signal, group=type, col = type)) + geom_line()
 assay=assay_list[8]
 dhs_ocr = paste("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/signal_OCR/", 
                 sample, "_", assay, "_OCR.txt", sep="")
-normal = paste("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/signal_matched_normal/", 
-               sample, "_", assay, "_matched_normal.txt", sep="")
+normal = paste("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/signal_normal/", 
+               sample, "_", assay, "_normal.txt", sep="")
 #
 dhs_ocr_data = read.table(dhs_ocr)
 dhs_ocr_data = transform(dhs_ocr_data, type="dhs_OCR", loci = 1:150)
@@ -200,8 +200,8 @@ p8 = ggplot(matrix, aes(x=loci, y=signal, group=type, col = type)) + geom_line()
 assay=assay_list[9]
 dhs_ocr = paste("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/signal_OCR/", 
                 sample, "_", assay, "_OCR.txt", sep="")
-normal = paste("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/signal_matched_normal/", 
-               sample, "_", assay, "_matched_normal.txt", sep="")
+normal = paste("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/signal_normal/", 
+               sample, "_", assay, "_normal.txt", sep="")
 #
 dhs_ocr_data = read.table(dhs_ocr)
 dhs_ocr_data = transform(dhs_ocr_data, type="dhs_OCR", loci = 1:150)
@@ -222,8 +222,8 @@ p9 = ggplot(matrix, aes(x=loci, y=signal, group=type, col = type)) + geom_line()
 assay=assay_list[10]
 dhs_ocr = paste("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/signal_OCR/", 
                 sample, "_", assay, "_OCR.txt", sep="")
-normal = paste("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/signal_matched_normal/", 
-               sample, "_", assay, "_matched_normal.txt", sep="")
+normal = paste("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/aggregation_rep1/signal_normal/", 
+               sample, "_", assay, "_normal.txt", sep="")
 #
 dhs_ocr_data = read.table(dhs_ocr)
 dhs_ocr_data = transform(dhs_ocr_data, type="dhs_OCR", loci = 1:150)
