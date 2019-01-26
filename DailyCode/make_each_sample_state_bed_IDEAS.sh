@@ -16,6 +16,7 @@ prefix=$2
 stateBedDir=$3
 num=$4
 
+sample=`head -1 DHS_v3_100-400bp.chr10.state | awk -v n="$i" '{print $(n+4)}'`
 #################
 for ((i=1; i<=num; i++))
 do
@@ -23,11 +24,13 @@ do
     sample=`head -1 ${stateDir}${prefix}chr1.state | awk -v n="$i" '{print $(n+4)}'`
     if [ -f ${stateBedDir}${sample}_state.bed ]; then rm ${stateBedDir}${sample}_state.bed; fi
     # for each chromosome
-    ## get chromosome ID
+
     for j in {1..21}
     do
-        if [ ${j} -eq 20 ]; then c="X"; elif [ ${j} -eq 21 ]; then c="Y"; else c=${i}; fi
-        #
+        ## get chromosome ID
+        if [ ${j} -eq 20 ]; then c="X"; elif [ ${j} -eq 21 ]; then c="Y"; else c=${j}; fi
+        echo "chr"$c
+        ## get state lines
         awk -v n="$i" '{FS=" ";OFS="\t"}{if(NR>1){print $2,$3,$4,$1,$(n+4)}}' ${stateDir}${prefix}chr${c}.state >> \
         ${stateBedDir}${sample}_state.bed
     done
