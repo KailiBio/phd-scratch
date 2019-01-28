@@ -16,7 +16,6 @@ prefix=$2
 stateBedDir=$3
 num=$4
 
-sample=`head -1 DHS_v3_100-400bp.chr10.state | awk -v n="$i" '{print $(n+4)}'`
 #################
 for ((i=1; i<=num; i++))
 do
