@@ -6,8 +6,12 @@
 # INPUT:
 # OUTPUT:
 # EXP: bash 0_preprocess_gene_TSS_files.sh hg38_v28_basic_TSS_filtered.bed hg38_v28_basic_TSS_protein_coding.bed \
-#           hg38_v28_basic_gene_protein_coding.txt /data/zusers/fankaili/ccre/hg38_ubi-rDHS/basic_annotation
+#           hg38_v28_basic_gene_protein_coding.txt /data/zusers/fankaili/ccre/hg38_ubi-rDHS/basic_annotation/
 
+original_tss_file="hg38_v28_basic_TSS_filtered.bed"
+protein_coding_tss_file="hg38_v28_basic_TSS_protein_coding.bed"
+protein_coding_gene_file="hg38_v28_basic_gene_protein_coding.txt"
+workDir="/data/zusers/fankaili/ccre/hg38_ubi-rDHS/basic_annotation/"
 
 original_tss_file=$1
 protein_coding_tss_file=$2
@@ -33,7 +37,7 @@ bash ${autoScriptDir}get_uniq_TSS.sh ${original_tss_file} ${genome_path} ${workD
 ### overlap_with_ubi-rOCRs, overlap_with_not-ubi_active-rOCRs, no_overlap
 ### overlap_with_ubi-rOCRs, in_gene_overlapping_ubi-rOCRs, no_overlap
 #
-bash ${autoScriptDir}mark_TSS.sh ${name}_uniq.bed ${hg38_rOCRs} ${hg38_ubi_rOCRs} ${workDir}
+bash ${autoScriptDir}mark_TSS.sh ${name}_uniq.bed ${workDir}
 
 ## 3) get merged-TSSs
 #### this steps take longer.
