@@ -9,8 +9,8 @@
 #           /data/zusers/fankaili/ccre/hg38_ubi-rDHS/basic_annotation/hg38_v28_basic_TSS_filtered_uniq_labeled.bed
 #           /data/zusers/fankaili/ccre/hg38_ubi-rDHS/basic_annotation/
 
-tss_labeled_file="/data/zusers/fankaili/ccre/hg38_ubi-rDHS/basic_annotation/hg38_v28_basic_TSS_filtered_uniq_labeled.bed"
-outPath="/data/zusers/fankaili/ccre/hg38_ubi-rDHS/basic_annotation/"
+# tss_labeled_file="/data/zusers/fankaili/ccre/hg38_ubi-rDHS/basic_annotation/hg38_v28_basic_TSS_filtered_uniq_labeled.bed"
+# outPath="/data/zusers/fankaili/ccre/hg38_ubi-rDHS/basic_annotation/"
 
 tss_labeled_file=$1
 outPath=$2

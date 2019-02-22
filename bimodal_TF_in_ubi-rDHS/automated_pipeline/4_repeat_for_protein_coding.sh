@@ -43,7 +43,9 @@ matched_file_list="/data/zusers/fankaili/ccre/hg38_ubi-rDHS/hg38_matched_DNase_R
 # 1. fig1
 bash ${autoScriptDir}get_RNAseq_signal_two_groups.sh ${gene_labeled_file} ${tss_labeled_file} ${exp_signal_path} ${non_ubi_outPath} ${outPath}
 #
-bash ${autoScriptDir}get_RAMPAGE_signal_two_groups.sh ${tss_labeled_file} ${tss_signal_path} ${non_ubi_outPath} ${outPath}
+bash ${autoScriptDir}get_RAMPAGE_signal_two_groups.sh ${tss_labeled_file} ${tss_with_id_file} ${tss_signal_path} ${non_ubi_outPath} ${outPath}
+#
+echo "finish figure1 data."
 
 # 2. fig2
 awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$1]){print $0}}}' ${gene_labeled_file} ${gene_exp_matrix} > ${outPath}tmp.gene_matrix.txt
@@ -68,6 +70,7 @@ sed -i 's/-0.100000/NA/g' ${outPath}tss_exp_TSindex.txt
 awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=$9}else{if(FNR>1){print $0,a[$1]}}}' ${tss_labeled_file} ${outPath}tss_exp_TSindex.txt > ${outPath}tss_exp_TSindex_labeled.txt
 #
 rm ${outPath}tmp.tss_matrix.txt ${outPath}tmp.tss_matrix_quantile.txt
+echo "finish figure2 data."
 
 # 3. fig3
 cut -f 7 ${tss_labeled_file} | sort | uniq -u > ${outPath}gene_singular_TSS_list.txt
@@ -76,4 +79,6 @@ awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$7]!=1){print $0}}}' ${outPath}
 # calculate distance
 awk 'BEGIN{FS=OFS="\t";gene="";tss="";end="";distance=1000000}{if(gene==""){gene=$7;tss=$4;end=$3}else{if(gene==$7){if(distance>($2-end)){print gene,tss,$2-end}else{print gene,tss,distance};tss=$4;distance=$2-end;end=$3}else{print gene,tss,distance;gene=$7;tss=$4;end=$3;distance=1000000}}}END{print gene,tss,distance}' ${outPath}TSSs_in_multiple_TSSs_genes.txt > ${outPath}tmp.txt
 awk '{FS=OFS="\t"}{if(NR==FNR){a[$2]=$3;b[$2]=1}else{if(b[$4]){print $0,a[$4]}}}' ${outPath}tmp.txt ${tss_labeled_file} | sort -u > ${outPath}nearest_TSS_distance_in_multiple_TSS_genes.txt
+#
 rm ${outPath}tmp.txt
+echo "finish figure3 data."

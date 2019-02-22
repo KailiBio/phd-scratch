@@ -51,7 +51,10 @@ if __name__ == "__main__":
 
     # initiation
     subprocess.call("if [ -f "+workDir+outFile+" ]; then rm "+workDir+outFile+"; fi", shell=True)
-    subprocess.call("touch "+workDir+outFile, shell=True)
+    #subprocess.call("touch "+workDir+outFile, shell=True)
 
     # merge
+    print(tss_file)
+    print(outFile)
+    print(workDir)
     merge_TSS(tss_file, outFile, workDir)
