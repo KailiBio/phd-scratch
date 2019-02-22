@@ -39,11 +39,16 @@ intersectBed -a GRCh38-rOCRs.bed -b TSS.uniq.bed -wa -c > GRCh38_rOCRs_TSS_count
 awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=1}else{if(a[$4]){print $4,$5,"ubi-rOCRs"}else{print $4,$5,"non_ubi-rOCRs"}}}' \
 GRCh38_ubi-rOCRs_EDGEid.bed GRCh38_rOCRs_TSS_count.txt > GRCh38_rOCRs_TSS_count_annotated.txt
 ## for clusters: ubi-rOCRs overlapped TSSs percentage in each gene
+cut -f 7 hg38_merged_TSS_gene.bed | sort | uniq -c | awk '{OFS="\t"}{print $2,$1}' > \
+hg38_gene_merged-TSS_num.txt
 cut -f 7 ./merged-TSS/GRCh38_ubi-rOCR_overlapped_merged-TSS.bed | sort | uniq -c | \
 awk '{FS=" ";OFS="\t"}{print $2,$1}' > ./closest_gene/hg38_gene_overlapped_TSS_count_merged2.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$2}else{if(a[$1]){print $0,a[$1]}}}' \
+hg38_gene_merged-TSS_num.txt GRCh38_coding-gene_ubi-rOCR_TSS_percentage.txt > tmp.txt
 awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$2}else{if(a[$1]){print $0,a[$1]}else{print $0,0}}}' \
-./closest_gene/hg38_gene_overlapped_TSS_count_merged2.txt GRCh38_coding-gene_ubi-rOCR_TSS_percentage.txt \
+./closest_gene/hg38_gene_overlapped_TSS_count_merged2.txt tmp.txt \
 > GRCh38_coding-gene_ubi-rOCR_TSS_percentage_with_cluster.txt
+
 # num of TSS in a gene vs singular&cluster
 awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$2;b[$1]=1}else{if(b[$7]){if($3==$2){print $7,$4,a[$7],"singular"}else{print $7,$4,a[$7],"cluster"}}}}' \
 GRCh38_coding-gene_ubi-rOCR_TSS_percentage.txt ./merged-TSS/GRCh38_ubi-rOCR_overlapped_merged-TSS.bed \
@@ -89,8 +94,26 @@ GRCh38_ubi-rOCR_overlapped_TSS_uniqID.txt tmp.txt > TSS_nearest_TSS_forHist_anno
 
 ## 5. distance to nearby TSS in the same gene
 sort -k7,7 -k2,2n TSS.Filtered.uniq.bed > TSS.Filtered.uniq_sortedByGene.bed
+## 1) get uniq TSS genes
+cut -f 7 TSS.Filtered.uniq_sortedByGene.bed | sort | uniq -u > GRCh38_gene_with_uniq_TSS_list.txt
+### 35,159 singular TSS genes out of total 56,448 genes
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$1]){print $0}}}' \
+GRCh38_gene_with_uniq_TSS_list.txt GRCh38_ubi-rOCR_overlapped_gene_id.txt | sort -u | wc -l
+### 1025 overlapping ubi-rOCRs
+## 2) for multiple TSS genes
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$7]!=1){print $0}}}' \
+GRCh38_gene_with_uniq_TSS_list.txt TSS.Filtered.uniq_sortedByGene.bed > TSS.Filtered.uniq_sortedByGene_multiple.bed
 awk 'BEGIN{FS=OFS="\t";gene="";tss="";end="";distance=1000000}{if(gene==""){gene=$7;tss=$8;end=$3}else{if(gene==$7){if(distance>($2-end)){print gene,tss,$2-end}else{print gene,tss,distance};tss=$8;distance=$2-end;end=$3}else{print gene,tss,distance;gene=$7;tss=$8;end=$3;distance=1000000}}}END{print gene,tss,distance}' \
-TSS.Filtered.uniq_sortedByGene.bed > TSS_nearest_TSS_distance_sameGene.bed
-awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$2]){print $0,"ubi-rOCRs_overlapped_TSS"}else{print $0,"remaining_TSS"}}}' \
-GRCh38_ubi-rOCR_overlapped_TSS_uniqID.txt TSS_nearest_TSS_distance_sameGene.bed > \
-TSS_nearest_TSS_distance_sameGene_annotated.bed
+TSS.Filtered.uniq_sortedByGene_multiple.bed > TSS_nearest_TSS_distance_sameGene.bed
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$7]=1}else{if(a[$1]){print $0,"TSSs_overlapping_rOCRs"}else{print $0,"TSSs_not_overlapping_rOCRs"}}}' \
+GRCh38_TSS_overlapping_non_ubi_rOCRs.bed TSS_nearest_TSS_distance_sameGene.bed > tmp.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$2]){print $1,$2,$3,"TSSs_overlapping_ubi-rOCRs"}else{print $0}}}' \
+GRCh38_ubi-rOCR_overlapped_TSS_uniqID.txt tmp.txt > TSS_nearest_TSS_distance_sameGene_annotated.bed
+
+
+
+#####################
+# Feb 19
+# for v28 basic
+cut -f 7 hg38_v28_basic_TSS_filtered_uniq.bed | sort | uniq -c | awk '{OFS="\t"}{print $2,$1}' > hg38_v28_basic_gene_TSS_count.bed
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$2}else{print $0,a[$1]}}' hg38_v28_basic_gene_TSS_count.bed hg38_v28_basic_gene_labled.bed > hg38_v28_basic_gene_labled_TSScount.bed

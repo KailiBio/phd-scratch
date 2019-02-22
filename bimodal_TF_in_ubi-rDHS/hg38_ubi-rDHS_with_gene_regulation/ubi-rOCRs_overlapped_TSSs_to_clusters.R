@@ -82,7 +82,7 @@ ggsave("num_TSS_in_coding-gene_count_density.png")
 # scatter plot: TSS in gene vs. ubi-TSS in gene (percentage)
 ####################
 coding_percentage = read.table("GRCh38_coding-gene_ubi-rOCR_TSS_percentage_with_cluster.txt")
-colnames(coding_percentage) = c("gene", "TSS", "ubi_TSS", "percentage","cluster")
+colnames(coding_percentage) = c("gene", "TSS", "ubi_TSS", "percentage","cluster","ubi_cluster")
 
 ggplot(coding_percentage, aes(x=TSS, y=ubi_TSS, col="#f8766d")) + 
   geom_point(alpha = 0.1) + theme_minimal() + xlim(0,70) + ylim(0,70) +
@@ -114,6 +114,33 @@ ggplot(gene_TSS_num, aes(x=num, y=count)) + geom_bar(stat="identity", fill="#f87
 
 ggsave("number_of_gene_with_TSS_count.pdf", width = 10, height=5)
 ggsave("number_of_gene_with_TSS_count.png", width = 10, height=5)
+
+
+b=cbind(as.numeric(names(table(coding_percentage$cluster))),
+        as.vector(table(coding_percentage$cluster)))
+gene_cluster_num = cbind(1:45,rep(0,45))
+gene_cluster_num[b[,1],2] = as.vector(b[,2])
+gene_cluster_num = data.frame(gene_TSS_num)
+colnames(gene_cluster_num) = c("num","count")
+ggplot(gene_cluster_num, aes(x=num, y=count)) + geom_bar(stat="identity", fill="#f8766d") +
+  theme_minimal() + theme(title = element_text(face="bold", size=12)) +
+  xlab("number of merged-TSSs in a gene") + ylab("number of genes") +
+  labs(title="gene with different number of merged-TSSs")
+
+ggsave("number_of_gene_with_merged-TSS_count.pdf", width = 10, height=5)
+ggsave("number_of_gene_with_merged-TSS_count.png", width = 10, height=5)
+
+
+ggplot(coding_percentage, aes(x=cluster, y=ubi_cluster, group=TSS)) + 
+  geom_boxplot(width=0.7, outlier.size=0.3, fill="#f8766d", color="#bdbdbd") +
+  theme_minimal() +
+  ylab("number of merged-TSSs overlapping ubi-rOCRs") + 
+  xlab("number of merged-TSSs in a gene") +
+  labs(title="number of merged-TSSs that overlapping ubi-rOCRs\nin protein-coding genes") +
+  theme(title = element_text(face="bold",size=12))
+
+ggsave("num_merged-TSS_in_coding-gene_count_boxplot.pdf", width = 10, height=5)
+ggsave("num_merged-TSS_in_coding-gene_count_boxplot.png", width = 10, height=5)
 
 ##--------------
 
@@ -151,13 +178,14 @@ ggsave("num_TSS_in_coding-gene_count_scatter2.png")
 ggplot(coding_percentage, aes(x=TSS, y=cluster, group=TSS)) + 
   geom_boxplot(width=0.7, outlier.size=0.3, fill="#f8766d", color="#bdbdbd") +
   theme_minimal() +
-  ylab("number of ubi-rOCRs overlapped TSS-clusters") + xlab("number of TSSs in a gene") +
+  ylab("number of ubi-rOCRs overlapped TSS-clusters") + 
+  xlab("number of TSSs in a gene") +
   labs(title="number of ubi-rOCRs overlapped TSS-clusters\nin protein-coding genes") +
   theme(title = element_text(face="bold",size=12))
 ggsave("percentatge_ubi-rOCRs_TSS-cluster_in_coding-gene_boxplot.pdf", width = 10, height=5)
 ggsave("percentatge_ubi-rOCRs_TSS-cluster_in_coding-gene_boxplot.png", width = 10, height=5)
 
-
+###----------------------------
 ### ubi-rOCTRs overlapped genes, 
 overlapped_TSS_type = read.table("GRCh38_coding-gene_numOfTSS_overlappedTSSLength.txt")
 colnames(overlapped_TSS_type) = c("gene", "tss", "num_of_TSS", "type") 
@@ -292,7 +320,20 @@ distance = read.table("TSS_nearest_TSS_forHist_annotated.bed")
 colnames(distance) = c("tss","distance", "type")
 
 
-ggplot(distance, aes(log10(distance+0.1), fill=type, col=type)) + 
+ggplot(distance, aes(distance, fill=type, col=type)) + 
+  geom_histogram(alpha=0.5, binwidth = 1) +
+  scale_fill_manual(values = c("#00bfc4","#f8766d")) +
+  scale_color_manual(values = c("#00bfc4","#f8766d")) +
+  theme_minimal() +
+  geom_vline(xintercept = log10(50), col="grey",linetype="dashed", size=1) +
+  theme(title = element_text(face="bold",size=12),
+        legend.position = c(0.8,0.85)) +
+  labs(title="distance to neasest TSS for all TSSs") +
+  coord_cartesian(xlim=c(0,100))
+ggsave("TSSs_distance2nearest_TSS_density.pdf")
+ggsave("TSSs_distance2nearest_TSS_density.png")
+
+ggplot(distance, aes(log10(distance), fill=type, col=type)) + 
   geom_density(size=1, alpha=0.5) +
   scale_fill_manual(values = c("#00bfc4","#f8766d")) +
   scale_color_manual(values = c("#00bfc4","#f8766d")) +
@@ -301,11 +342,11 @@ ggplot(distance, aes(log10(distance+0.1), fill=type, col=type)) +
   theme(title = element_text(face="bold",size=12),
         legend.position = c(0.8,0.85)) +
   labs(title="distance to neasest TSS for all TSSs")
-ggsave("TSSs_distance2nearest_TSS_density.pdf")
-ggsave("TSSs_distance2nearest_TSS_density.png")
+ggsave("TSSs_distance2nearest_TSS_density_log.pdf")
+ggsave("TSSs_distance2nearest_TSS_density_log.png")
 
 
-ggplot(distance, aes(y=log10(distance+0.1), x=type, fill=type)) + 
+ggplot(distance, aes(y=log10(distance), x=type, fill=type)) + 
   geom_boxplot(width=0.5) +
   scale_fill_manual(values = c("#00bfc4","#f8766d")) +
   theme_minimal() +
@@ -336,11 +377,26 @@ distance_gene = read.table("TSS_nearest_TSS_distance_sameGene_annotated.bed")
 colnames(distance_gene) = c("gene","tss","distance", "type")
 
 
-ggplot(distance_gene, aes(log10(distance+0.1), fill=type, col=type)) + 
+a=distance_gene[distance_gene$distance<200,]
+ggplot(a, aes(distance, fill=type, col=type)) + 
   geom_density(size=1, alpha=0.5) +
-  scale_fill_manual(values = c("#00bfc4","#f8766d")) +
-  scale_color_manual(values = c("#00bfc4","#f8766d")) +
+  scale_fill_manual(values = c("#B79F00","#00bfc4","#f8766d")) +
+  scale_color_manual(values = c("#B79F00","#00bfc4","#f8766d")) +
   theme_minimal() +
+  theme(title = element_text(face="bold",size=12),
+        legend.position = c(0.8,0.85)) +
+  labs(title="distance to neasest TSS for all TSSs\n(same gene, only distance<200)")
+
+ggsave("TSSs_distance2nearest_TSS_density_sameGene_200.pdf")
+ggsave("TSSs_distance2nearest_TSS_density_sameGene_200.png")
+
+
+ggplot(distance_gene, aes(log10(distance), fill=type, col=type)) + 
+  geom_density(size=1, alpha=0.5) +
+  scale_fill_manual(values = c("#B79F00","#00bfc4","#f8766d")) +
+  scale_color_manual(values = c("#B79F00","#00bfc4","#f8766d")) +
+  theme_minimal() +
+  geom_vline(xintercept = log10(2), col="yellow",linetype="dashed", size=1) +
   geom_vline(xintercept = log10(50), col="grey",linetype="dashed", size=1) +
   theme(title = element_text(face="bold",size=12),
         legend.position = c(0.8,0.85)) +
@@ -348,9 +404,9 @@ ggplot(distance_gene, aes(log10(distance+0.1), fill=type, col=type)) +
 ggsave("TSSs_distance2nearest_TSS_density_sameGene.pdf")
 ggsave("TSSs_distance2nearest_TSS_density_sameGene.png")
 
-ggplot(distance_gene, aes(y=log10(distance+0.1), x=type, fill=type)) + 
+ggplot(distance_gene, aes(y=log10(distance), x=type, fill=type)) + 
   geom_boxplot(width=0.5) +
-  scale_fill_manual(values = c("#00bfc4","#f8766d")) +
+  scale_fill_manual(values = c("#B79F00","#00bfc4","#f8766d")) +
   theme_minimal() +
   geom_hline(yintercept = log10(50), col="grey",linetype="dashed", size=1) +
   theme(title = element_text(face="bold",size=12)) +
@@ -361,7 +417,7 @@ ggsave("TSSs_distance2nearest_TSS_boxplot_sameGene.png")
 
 ggplot(distance_gene, aes(y=distance, x=type, fill=type)) + 
   geom_boxplot(width=0.5, outlier.size = 0.1) +
-  scale_fill_manual(values = c("#00bfc4","#f8766d")) +
+  scale_fill_manual(values = c("#B79F00","#00bfc4","#f8766d")) +
   theme_minimal() + coord_cartesian(ylim = c(0, 150)) +
   geom_hline(yintercept = 50, col="grey",linetype="dashed", size=1) +
   theme(title = element_text(face="bold",size=12)) +
@@ -371,7 +427,85 @@ ggsave("TSSs_distance2nearest_TSS_boxplot_sameGene_zoomin.pdf")
 ggsave("TSSs_distance2nearest_TSS_boxplot_sameGene_zoomin.png")
 
 
+
+x = distance_gene[distance_gene$type=="TSSs_overlapping_ubi-rOCRs",]$distance
+y = distance_gene[distance_gene$type=="TSSs_overlapping_rOCRs",]$distance
+z = distance_gene[distance_gene$type=="TSSs_not_overlapping_rOCRs",]$distance
+wilcox.test(x,y)$p.value
+wilcox.test(x,z)$p.value
+wilcox.test(y,z)$p.value
+length(x)
+length(y)
+length(z)
 ####################
+# basic, distance, same gene
+####################
+basic_distance = read.table("hg38_v28_basic_TSS_multiple_distance_sameGene.bed")
+colnames(basic_distance) = c("gene","tss","distance", "type1", "type2")
+
+ggplot(basic_distance, aes(log10(distance), fill=type1, col=type1)) + 
+  geom_density(size=1, alpha=0.5) +
+  scale_fill_manual(values = c("#B79F00","#00bfc4","#f8766d")) +
+  scale_color_manual(values = c("#B79F00","#00bfc4","#f8766d")) +
+  theme_minimal() +
+  geom_vline(xintercept = log10(50), col="grey",linetype="dashed", size=1) +
+  theme(title = element_text(face="bold",size=12),
+        legend.position = c(0.8,0.85)) +
+  labs(title="distance to neasest TSS for all TSSs\n(same gene)")
+ggsave("basic_TSSs_distance2nearest_TSS_density_sameGene.pdf")
+ggsave("basic_TSSs_distance2nearest_TSS_density_sameGene.png")
 
 
+a=basic_distance[basic_distance$distance<700,]
+ggplot(a, aes(distance, fill=type1, col=type1)) + 
+  geom_density(size=1, alpha=0.5) +
+  scale_fill_manual(values = c("#B79F00","#00bfc4","#f8766d")) +
+  scale_color_manual(values = c("#B79F00","#00bfc4","#f8766d")) +
+  theme_minimal() +
+  theme(title = element_text(face="bold",size=12),
+        legend.position = c(0.8,0.85)) +
+  labs(title="distance to neasest TSS for all TSSs\n(same gene, only distance<700)")
 
+ggsave("basic_TSSs_distance2nearest_TSS_density_sameGene_700.pdf")
+ggsave("basic_TSSs_distance2nearest_TSS_density_sameGene_700.png")
+
+
+ggplot(basic_distance, aes(y=distance, x=type1, fill=type1)) + 
+  geom_boxplot(width=0.5, outlier.size = 0.1) +
+  scale_fill_manual(values = c("#B79F00","#00bfc4","#f8766d")) +
+  theme_minimal() + coord_cartesian(ylim = c(0, 150)) +
+  geom_hline(yintercept = 50, col="grey",linetype="dashed", size=1) +
+  theme(title = element_text(face="bold",size=12)) +
+  labs(title="distance to neasest TSS for all TSSs\n(same gene)")
+
+ggsave("basic_TSSs_distance2nearest_TSS_boxplot_sameGene_zoomin.pdf")
+ggsave("basic_TSSs_distance2nearest_TSS_boxplot_sameGene_zoomin.png")
+
+x = basic_distance[basic_distance$type1=="overlap_with_ubi-rOCRs",]$distance
+y = basic_distance[basic_distance$type1=="overlap_with_not-ubi_active-rOCRs",]$distance
+z = basic_distance[basic_distance$type1=="no_overlap",]$distance
+wilcox.test(x,y)$p.value
+wilcox.test(x,z)$p.value
+wilcox.test(y,z)$p.value
+length(x)
+length(y)
+length(z)
+####################
+# TSS number in gene: ubi-rOCRs vs. rOCRs
+####################
+tss_count = read.table("./basic_v28/hg38_v28_basic_gene_labled_TSScount.bed")
+colnames(tss_count) = c("gene_id", "type", "tss_count")
+
+ggplot(tss_count, aes(x = type, y=tss_count, fill = type)) +
+  geom_boxplot(width = 0.3, outlier.shape = NA) + 
+  coord_cartesian(ylim = c(0, 8)) +
+  theme_minimal() +
+  scale_fill_manual(values = c("#FFCD00","#00B0F0","#FF0000")) +
+  theme(title = element_text(face="bold", size=12), axis.text.x = element_blank(),
+        legend.position = c(0.3,0.8)) +
+  ylab("number of TSSs") + xlab("gene") +
+  labs(title="number of TSSs in gene")
+
+ggsave("boxplot_number_of_TSSs.pdf")
+
+####################

@@ -23,6 +23,8 @@ python ${scriptDir}get_GRCh38_tissue_RNA_exp.py
 ################################################
 # Oct04
 ## get donor ID, only used the matched RNA-seq & RAMPAGE tissue sample to calculate tissue-specificity index
+python ${scriptDir}get_donorID.py /data/zusers/fankaili/ccre/hg38_ubi-rDHS/hg38_closest_gene_exp_list.txt /data/zusers/fankaili/ccre/hg38_ubi-rDHS/hg38_closest_gene_exp_list_donor.txt
+#
 awk '{FS=OFS="\t"}{print $1,$2,$4"\n"$1,$3,$4}' hg38_RAMPAGE_list.txt > hg38_RAMPAGE_list_duplicate.txt
 python ${scriptDir}get_donorID.py /data/zusers/fankaili/ccre/hg38_ubi-rDHS/hg38_RAMPAGE_list_duplicate.txt \
 /data/zusers/fankaili/ccre/hg38_ubi-rDHS/hg38_RAMPAGE_list_duplicate_donor.txt
@@ -111,27 +113,70 @@ rm tmp.txt
 # 45 tissues in total 104 samples
 python ${scriptDir}get_GRCh38_tissue_RAMPAGE_exp.py
 
-
-
 #
 echo "TSS_id" > hg38_tissue_TSS_exp_matrix.txt
 cut -f 1 ./rampage/ENCFF794RVT.tab >> hg38_tissue_TSS_exp_matrix.txt
 while read line
 do
+    expID=`awk '{FS=OFS="\t"}{print $1}' <<< $line`
+    echo -e "TSS_id\t"${expID} > tmp.txt;
+    #
     plus=`awk '{FS=OFS="\t"}{print $2}' <<< $line` ;
-    echo ${plus} ;
-    echo ${plus} > temp.txt;
-    awk '{print $4}' ./rampage/${plus}.tab >> temp.txt ;
-    paste hg38_tissue_TSS_exp_matrix.txt temp.txt > temp2.txt;
-    mv temp2.txt hg38_tissue_TSS_exp_matrix.txt;
+    awk '{FS=OFS="\t"}{if(NR==FNR){if($6=="+"){a[$4]=1}}else{if(a[$1]){print $1,$4}}}' TSS.Filtered.bed ./rampage/${plus}.tab >> tmp.txt ;
+    #
     minus=`awk '{FS=OFS="\t"}{print $3}' <<< $line` ;
-    echo ${minus} ;
-    echo ${minus} > temp.txt;
-    awk '{print $4}' ./rampage/${minus}.tab >> temp.txt ;
-    paste hg38_tissue_TSS_exp_matrix.txt temp.txt > temp2.txt;
-    mv temp2.txt hg38_tissue_TSS_exp_matrix.txt;
+    awk '{FS=OFS="\t"}{if(NR==FNR){if($6=="-"){a[$4]=1}}else{if(a[$1]){print $1,$4}}}' TSS.Filtered.bed ./rampage/${minus}.tab >> tmp.txt ;
+    #
+    awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1;b[$1]=$0}else{if(a[$1]){print b[$1],$2}}}'  hg38_tissue_TSS_exp_matrix.txt tmp.txt > tmp2.txt
+    mv tmp2.txt hg38_tissue_TSS_exp_matrix.txt;
 done < hg38_tissue_TSS_exp_list2.txt
-rm temp.txt
+rm tmp.txt
+
+head -1 hg38_tissue_TSS_exp_matrix.txt > hg38_tissue_uniqTSS_exp_matrix.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=$8}else{if(FNR>1){id=$1;$1=a[id];print $0}}}' TSS.Filtered.uniqID.bed hg38_tissue_TSS_exp_matrix.txt | sort -u >> hg38_tissue_uniqTSS_exp_matrix.txt
+
+
+##################
+# Feb 19
+# TSS expression matrix for v28
+#
+echo "TSS_id" > hg38_tissue_TSS_exp_matrix_v28.txt
+cut -f 1 ./tissue_rampage_v28/ENCFF794RVT.tab >> hg38_tissue_TSS_exp_matrix_v28.txt
+while read line
+do
+    expID=`awk '{FS=OFS="\t"}{print $1}' <<< $line`
+    echo -e "TSS_id\t"${expID} > tmp.txt;
+    #
+    plus=`awk '{FS=OFS="\t"}{print $2}' <<< $line` ;
+    #bigWigAverageOverBed /data/projects/encode/data/${expID}/${plus}.bigWig /home/fankaili/genome/hg38_v28_comprehensive_TSS_sorted.bed ./tissue_rampage_v28/${plus}.tab
+    awk '{FS=OFS="\t"}{if(NR==FNR){if($6=="+"){a[$4]=1}}else{if(a[$1]){print $1,$4}}}' /home/fankaili/genome/hg38_v28_comprehensive_TSS.bed ./tissue_rampage_v28/${plus}.tab >> tmp.txt ;
+    awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=$8;b[$4]=1}else{if(b[$1]){print a[$1],$4}}}'  /data/zusers/fankaili/ccre/hg38_ubi-rDHS/comprehensive_annotation/hg38_v28_comprehensive_TSS_filtered_with_uniqID.bed ./tissue_rampage_v28/${plus}.tab | sort -u > ./tissue_rampage_v28/${expID}.txt
+    #
+    minus=`awk '{FS=OFS="\t"}{print $3}' <<< $line` ;
+    #bigWigAverageOverBed /data/projects/encode/data/${expID}/${minus}.bigWig /home/fankaili/genome/hg38_v28_comprehensive_TSS_sorted.bed ./tissue_rampage_v28/${minus}.tab
+    awk '{FS=OFS="\t"}{if(NR==FNR){if($6=="-"){a[$4]=1}}else{if(a[$1]){print $1,$4}}}' /home/fankaili/genome/hg38_v28_comprehensive_TSS.bed ./tissue_rampage_v28/${minus}.tab >> tmp.txt ;
+    awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=$8;b[$4]=1}else{if(b[$1]){print a[$1],$4}}}'  /data/zusers/fankaili/ccre/hg38_ubi-rDHS/comprehensive_annotation/hg38_v28_comprehensive_TSS_filtered_with_uniqID.bed ./tissue_rampage_v28/${minus}.tab | sort -u >> ./tissue_rampage_v28/${expID}.txt
+    #
+    awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1;b[$1]=$0}else{if(a[$1]){print b[$1],$2}}}'  hg38_tissue_TSS_exp_matrix_v28.txt tmp.txt > tmp2.txt
+    mv tmp2.txt hg38_tissue_TSS_exp_matrix_v28.txt;
+done < hg38_tissue_TSS_exp_list2.txt
+rm tmp.txt
+
+while read line
+do
+    expID=`awk '{FS=OFS="\t"}{print $5}' <<< $line`
+    line2=`grep ${expID} hg38_RAMPAGE_list.txt`
+    #
+    plus=`awk '{FS=OFS="\t"}{print $2}' <<< $line2`
+    #bigWigAverageOverBed /data/projects/encode/data/${expID}/${plus}.bigWig /home/fankaili/genome/hg38_v28_comprehensive_TSS_sorted.bed ./tissue_rampage_v28/${plus}.tab
+    awk '{FS=OFS="\t"}{if(NR==FNR){if($6=="+"){a[$4]=1}}else{if(a[$1]){print $1,$4}}}'  /data/zusers/fankaili/ccre/hg38_ubi-rDHS/comprehensive_annotation/hg38_v28_comprehensive_TSS_filtered_with_uniqID.bed ./tissue_rampage_v28/${plus}.tab | sort -u > ./tissue_rampage_v28/${expID}.txt
+    #
+    minus=`awk '{FS=OFS="\t"}{print $3}' <<< $line2` ;
+    #bigWigAverageOverBed /data/projects/encode/data/${expID}/${minus}.bigWig /home/fankaili/genome/hg38_v28_comprehensive_TSS_sorted.bed ./tissue_rampage_v28/${minus}.tab
+    awk '{FS=OFS="\t"}{if(NR==FNR){if($6=="-"){a[$4]=1}}else{if(a[$1]){print $1,$4}}}'  /data/zusers/fankaili/ccre/hg38_ubi-rDHS/comprehensive_annotation/hg38_v28_comprehensive_TSS_filtered_with_uniqID.bed ./tissue_rampage_v28/${minus}.tab | sort -u >> ./tissue_rampage_v28/${expID}.txt
+done < /data/zusers/fankaili/ccre/hg38_ubi-rDHS/hg38_matched_DNase_RNA_RAMPAGE_list.txt
+
+
 
 ## 2) calculate tissue specificity index
 awk '{if(NR>1){print $0}}' hg38_tissue_TSS_exp_matrix.txt > tmp.txt

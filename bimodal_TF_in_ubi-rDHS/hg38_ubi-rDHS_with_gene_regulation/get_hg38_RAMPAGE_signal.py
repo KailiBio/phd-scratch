@@ -38,7 +38,7 @@ if __name__ == "__main__":
             if f.bio_rep==[1] and f.tech_rep==['1_1'] and f.file_format=="bigWig" and f.output_type=="plus strand signal of unique reads" and f.assembly=="GRCh38":
 				plus = f.accession
 				print(plus)
-				#subprocess.call("bigWigAverageOverBed /data/projects/encode/data/"+expID+"/"+plus+".bigWig /data/zusers/fankaili/ccre/hg38_ubi-rDHS/TSS.Filtered_sorted.bed /data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage/"+plus+".tab", shell=True)
+				#subprocess.call("bigWigAverageOverBed /data/projects/encode/data/"+expID+"/"+plus+".bigWig rm  /data/zusers/fankaili/ccre/hg38_ubi-rDHS/rampage/"+plus+".tab", shell=True)
 	    	elif f.bio_rep==[1] and f.tech_rep==['1_1'] and f.file_format=="bigWig" and f.output_type=="minus strand signal of unique reads" and f.assembly=="GRCh38":
 				minus = f.accession
 				print(minus)
