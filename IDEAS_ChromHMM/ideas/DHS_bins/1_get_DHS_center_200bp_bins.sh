@@ -5,6 +5,7 @@
 # 1. check mm10 DHS sizes and DHS-gap sizes
 # 2. version 1: 100-300bp bins
 # 3. version 2: all regions
+# 4. version 3: all regions, 100-400bp bins
 
 scriptDir="/data/zusers/fankaili/github/weng-lab/Kaili/IDEAS_ChromHMM/ideas/DHS_bins/"
 workDir="/data/zusers/fankaili/ideas/dhs_bins/"
@@ -34,7 +35,7 @@ python ${scriptDir}DHS-center_bins_v2.py /data/zusers/fankaili/ideas/dhs_bins/mm
 /data/zusers/fankaili/ideas/dhs_bins/mm10_OCR-center_bins_v2.bed
 
 
-# 4. version 3: all regions, 150-400bp bins
+# 4. version 3: all regions, 100-400bp bins
 awk 'BEGIN{FS=OFS="\t";n=1;chr="chr1";end=0}{if($1==chr){gap=($2-end)}else{gap=($2-0)};print $0,"O"n,n,$3-$2,gap;n+=1;chr=$1;end=$3}' \
 /data/zusers/fankaili/ideas/dhs_bins/mm10-rOCRs.bed > mm10-rOCRs.bed_withLength.txt
 #
@@ -70,7 +71,21 @@ python ${scriptDir}DHS-center_bins_v3.py
 #
 cut -f 1-4 mm10-rOCRs_v3_sorted_2.txt > mm10_OCR-center_bins_v3.bed
 cat mm10_OCR-center_bins_v3_gap.bed >> mm10_OCR-center_bins_v3.bed
-
+rm temp*.txt
 
 # Rscript make_length_distribution_dhs-bins.R
 # Rscript make_DHS_bins_v3_length_distribution.R
+
+
+
+##############
+# Feb 20
+## calculte DHS-center bins shift
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=$2;b[$4]=$3}else{print $4,a[$4]-$2,$3-b[$4],$6,$8}}' mm10-rOCRs.bed_withLength.txt mm10-rOCRs_v3_sorted.txt > mm10_rOCR_bins_shift.txt
+#
+awk '{FS=OFS="\t"}{if($2==0 && $3==0){print $0}}' mm10_rOCR_bins_shift.txt > mm10_rOCR_bins_no_shift.txt
+awk '{FS=OFS="\t"}{if($2!=0 && $3==0){print $0}}' mm10_rOCR_bins_shift.txt > mm10_rOCR_bins_left_shift.txt
+awk '{FS=OFS="\t"}{if($2==0 && $3!=0){print $0}}' mm10_rOCR_bins_shift.txt > mm10_rOCR_bins_right_shift.txt
+awk '{FS=OFS="\t"}{if($2!=0 && $3!=0){print $0}}' mm10_rOCR_bins_shift.txt > mm10_rOCR_bins_both_shift.txt
+
+# Rscript DHS-center_bins_shifted.R

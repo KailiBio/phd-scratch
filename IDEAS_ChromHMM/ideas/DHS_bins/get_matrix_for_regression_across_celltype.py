@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # -- Kaili
-# This script is for geting r-squre for all genes across cell type.
+# This script is for geting data matrix for calculating r-square across cell type.
 # INPUT: prefix (dhs or normal)
 #               gene list file(only one column for geneID)
 #               work directory
@@ -12,11 +12,7 @@
 
 import re, os, sys
 import subprocess
-from subprocess import Popen, PIPE, STDOUT
-# package for parallel
-from multiprocessing import Pool
-from functools import partial
-from contextlib import contextmanager
+
 
 def get_list(file):
     list = []
@@ -24,6 +20,10 @@ def get_list(file):
         line = line.rstrip()
         list.append(line)
     return list
+
+def get_exp_dic(expression_file):
+    dic = {}
+    for line in open(expression_file).readlines()[1:]
 
 def get_gene_state_proportion_dic(window, celltype_list, prefix):
     out_dic = {}
@@ -47,40 +47,20 @@ def get_gene_state_proportion_dic(window, celltype_list, prefix):
     #
     return out_dic
 
-
-def calculate_rsquare(window, workDir , gene, prefix):
-    # get tmp file for gene in window i
-    if matrix[window].has_key(gene):
-        out = matrix[window][gene]
-        tmp_file = workDir+"tmp_rsquare_"+gene+"_"+prefix+"_"+str(window)+".txt"
-        tmp2_file = workDir+"tmp_rsquare_"+gene+"_"+prefix+"_"+str(window)+"_sorted.txt"
-        output = open(tmp_file, "w")
-        for key,value in out.items():
-            print >> output, key+"\t"+value
-        output.close()
-        subprocess.call("sort -k1,1 "+tmp_file+" > "+tmp2_file, shell=True)
-        # calculate r-square
-        cmd = "Rscript /data/zusers/fankaili/github/weng-lab/Kaili/IDEAS_ChromHMM/ideas/DHS_bins/calculate_rsqaure.R "+tmp2_file+" "+prefix+" "+gene+" 2>/dev/null | awk '{if($0 ~ /^\[1\]*/){print $2}}'"
-        p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True)
-        r2 = p.stdout.read().rstrip()
-        p.stdout.close()
-        return(r2)
-    else:
-        return("NA")
-
-
 if __name__ == "__main__":
     prefix = sys.argv[1]
-    gene_file = sys.argv[2]
+    sd_range = sys.argv[2]
     workDir = sys.argv[3]
     num = sys.argv[4]
 
-    # gene_file = "/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/gene_expression/mm10_RNA_protein-coding_tpm_matrix_matched.txt"
-    celltype_file = "/data/zusers/fankaili/ideas/ENCODE_mouse_rep1_sample_list.txt"
-    # get gene list
-    gene_list = get_list(gene_file)
     # get celltype list
+    celltype_file = "/data/zusers/fankaili/ideas/ENCODE_mouse_rep1_sample_list.txt"
     celltype_list = get_list(celltype_file)
+    # get expression
+    expression_file = "/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/gene_expression/mm10_RNA_protein-coding_tpm_matrix_matched.txt"
+    # get gene list
+    gene_file = "/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/gene_expression/gene_list_sd_"+sd_range+".txt"
+    gene_list = get_list(gene_file)
 
     # for each window, put all cell type state proportion into dic
     matrix = {}
@@ -89,7 +69,15 @@ if __name__ == "__main__":
         matrix[i] = get_gene_state_proportion_dic(i, celltype_list, prefix)
 
     # calculate R square for each gene
-    outfile = open(workDir+"gene_rsquare_matrix_"+prefix+"_"+str(num)+".txt", "w+")
+    outfile = open(workDir+"regression_across_celltype_data_"+prefix+"_"+sd_range+".txt", "w+")
+    for gene in gene_list:
+
+
+
+
+
+
+
     n=0
     for gene in gene_list:
         n +=1
@@ -103,3 +91,8 @@ if __name__ == "__main__":
         print >> outfile, gene + "\t" + ("\t").join(r2_1) + "\t" + ("\t").join(r2_2) + "\t" + ("\t").join(r2_3) + "\t" + ("\t").join(r2_4)
         subprocess.call("rm "+workDir+"tmp_rsquare_"+gene+"_"+prefix+"*.txt", shell=True)
     outfile.close()
+
+matrix = {}
+for i in range(1,21):
+    # read state proportion file, put into dic make gene as key
+    matrix[i] = get_gene_state_proportion_dic(i, celltype_list, prefix)

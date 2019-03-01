@@ -152,8 +152,8 @@ mm10_RNA_protein-coding_tpm_matrix.txt ./normal_state_proportion/mm10_gene_lung_
 #####################
 # try ±200bp, ±400bp, ±500bp, ±2kb
 # 1) get bins
-awk '{FS=OFS="\t"}{if($6=="+"){print $1,$2-200, $2,$4}else{print $1,$3, $3+400,$4}}' /home/fankaili/genome/mm10_vM4_protein_coding.bed > mm10_protein_coding_TSSup200_bins.bed
-awk '{FS=OFS="\t"}{if($6=="+"){print $1,$2-200, $2+200,$4}else{print $1,$3-400, $3+400,$4}}' /home/fankaili/genome/mm10_vM4_protein_coding.bed > mm10_protein_coding_TSS200_bins.bed
+awk '{FS=OFS="\t"}{if($6=="+"){print $1,$2-200, $2,$4}else{print $1,$3, $3+200,$4}}' /home/fankaili/genome/mm10_vM4_protein_coding.bed > mm10_protein_coding_TSSup200_bins.bed
+awk '{FS=OFS="\t"}{if($6=="+"){print $1,$2-200, $2+200,$4}else{print $1,$3-200, $3+200,$4}}' /home/fankaili/genome/mm10_vM4_protein_coding.bed > mm10_protein_coding_TSS200_bins.bed
 awk '{FS=OFS="\t"}{if($6=="+"){print $1,$2-400, $2+400,$4}else{print $1,$3-400, $3+400,$4}}' /home/fankaili/genome/mm10_vM4_protein_coding.bed > mm10_protein_coding_TSS400_bins.bed
 awk '{FS=OFS="\t"}{if($6=="+"){print $1,$2-500, $2+500,$4}else{print $1,$3-500, $3+500,$4}}' /home/fankaili/genome/mm10_vM4_protein_coding.bed > mm10_protein_coding_TSS500_bins.bed
 awk '{FS=OFS="\t"}{if($6=="+"){print $1,$2-2000, $2+2000,$4}else{print $1,$3-2000, $3+2000,$4}}' /home/fankaili/genome/mm10_vM4_protein_coding.bed > mm10_protein_coding_TSS2000_bins.bed
@@ -273,3 +273,6 @@ count_state_proportion_bigbins ${stateBedDir} ${prefix} ${state_num} ${suffix}
 # mkdir ocr_state_proportion2
 # mkdir normal_state_proportion2
 # count_state_proportion2
+
+
+## Rscript do_within_gene_regression.R

@@ -1,6 +1,7 @@
 
 
-
+# -- Kaili
+# This script is for making length distribution of DHS-center bins.
 
 setwd("/Users/kaili/Dropbox (UMass Medical School)/Project/chr_status/ideas/dhs_bins/")
 
@@ -33,3 +34,18 @@ hist(bins[,3]-bins[,2], breaks = 99.5:473.5, xlab = "length of DHS-bins",
      main = "length distribution of DHS-bins", col = "grey", border = "grey", freq = F)
 
 dev.off()
+
+
+###############
+# Feb20
+colnames(bins) = c("chr", "s", "e", "id")
+bins = transform(bins, length = bins$e-bins$s)
+
+ggplot(bins, aes(x = length)) + 
+  geom_histogram(binwidth = 1, aes(y=..density..), fill = "#AEAFAE") +
+  theme_minimal() + theme(title = element_text(face = "bold", size=12)) +
+  xlab("length of DHS-center bins")
+
+ggsave("density_histogram_of_bin_length.pdf")
+
+###############

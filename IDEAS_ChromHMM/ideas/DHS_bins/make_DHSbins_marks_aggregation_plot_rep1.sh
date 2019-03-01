@@ -184,3 +184,35 @@ do
     echo $line
     Rscript ${scriptDir}make_aggregation_each_sample.R ${line}
 done < /data/zusers/fankaili/ideas/ENCODE_mouse_rep1_sample_list.txt
+
+
+
+################
+# Feb27
+# average aggregation
+mkdir average_signal
+#
+for mark in ATAC DNAme H3K4me1 H3K4me2 H3K4me3 H3K9me3 H3K9ac H3K27me3 H3K27ac H3K36me3
+do
+    while read line
+    do
+        if [ $line == "embryonic-facial-prominence_11.5" ];then
+            cat ./signal_OCR/${line}"_"${mark}_OCR.txt > ./average_signal/${mark}_average_signal_dhs.txt
+            #
+            cat ./signal_normal/${line}"_"${mark}_normal.txt > ./average_signal/${mark}_average_signal_normal.txt
+        else
+            paste ./signal_OCR/${line}"_"${mark}_OCR.txt ./average_signal/${mark}_average_signal_dhs.txt | awk '{print $1+$2}' > tmp_dhs.txt
+            mv tmp_dhs.txt ./average_signal/${mark}_average_signal_dhs.txt
+            #
+            paste ./signal_normal/${line}"_"${mark}_normal.txt ./average_signal/${mark}_average_signal_normal.txt | awk '{print $1+$2}' > tmp_normal.txt
+            mv tmp_normal.txt ./average_signal/${mark}_average_signal_normal.txt
+        fi
+    done < /data/zusers/fankaili/ideas/ENCODE_mouse_rep1_sample_list.txt
+    awk '{print $1/66}' ./average_signal/${mark}_average_signal_dhs.txt > tmp_dhs.txt
+    mv tmp_dhs.txt ./average_signal/${mark}_average_signal_dhs.txt
+    #
+    awk '{print $1/66}' ./average_signal/${mark}_average_signal_normal.txt > tmp_normal.txt
+    mv tmp_normal.txt ./average_signal/${mark}_average_signal_normal.txt
+done
+
+# Rscript ${scriptDir}make_aggregation_average_all_sample.R

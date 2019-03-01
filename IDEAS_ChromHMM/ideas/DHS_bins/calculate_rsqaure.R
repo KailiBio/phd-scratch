@@ -3,15 +3,16 @@
 # This script is for calculating r-square.
 
 args = commandArgs(trailingOnly=TRUE)
-file=args[1]
-type=args[2]
+file = args[1]
+type = args[2]
+gene_name = args[3]
 
 exp = read.table("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/gene_expression/mm10_RNA_protein-coding_tpm_matrix_matched.txt", row.names = 1,
                  header=TRUE)
 
 data = read.table(file)
 gene = as.character(data[1,1])
-y = t(exp[gene,])
+y = t(exp[gene_name,])
 if(type=="dhs"){
   model = lm(log(y+1e-5) ~ log(data[,2]+1e-5)+log(data[,3]+1e-5)+log(data[,4]+1e-5)+
                log(data[,5]+1e-5)+log(data[,6]+1e-5)+
