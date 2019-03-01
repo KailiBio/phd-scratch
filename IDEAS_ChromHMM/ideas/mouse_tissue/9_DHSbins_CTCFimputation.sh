@@ -39,12 +39,11 @@ nohup bash dhs_ctcf.sh > nohup.dhs_ctcf.out 2>&1&
 
 # 2. impute to 66 ctcf_samples
 # get input file
-cat dhs_ctcf.input /data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/DHS_v3_100-400bp.input | sort -u > \
-ctcf_9sample_impute.input
+cat dhs_ctcf.input /data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/DHS_v3_100-400bp.input | sort -u > ctcf_9sample_impute.input
 
 # get .parafile & .sh file
 ## make .para0 file
-awk '{FS=OFS}{if(NR==1){print $0}else{printf $1;for(i=2;i<=NF;i++){printf " ";printf "%.2f", 100*$i};printf "\n"}}' \
+awk '{FS=OFS}{if(NR==1){print $0}else{printf 100*$1;for(i=2;i<=NF;i++){printf " ";printf "%.2f", 100*$i};printf "\n"}}' \
 /data/zusers/fankaili/ideas/dhs_ctcf/dhs_ctcf_result/dhs_ctcf.para0 > \
 /data/zusers/fankaili/ideas/dhs_ctcf/dhs_ctcf_result/dhs_ctcf_100fold.para0
 cp dhs_ctcf.parafile ctcf_9sample_impute.parafile
@@ -56,5 +55,5 @@ vim ctcf_9sample_impute.sh
 nohup bash ctcf_9sample_impute.sh > nohup.ctcf_9sample_impute.out 2>&1&
 
 
-
 # 3. use liver0 & lung0 to validate imputation.
+bash ${scriptDir}validate_imputed_CTCF_states.sh
