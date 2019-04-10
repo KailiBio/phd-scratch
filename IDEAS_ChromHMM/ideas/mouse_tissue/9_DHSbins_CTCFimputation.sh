@@ -57,3 +57,7 @@ nohup bash ctcf_9sample_impute.sh > nohup.ctcf_9sample_impute.out 2>&1&
 
 # 3. use liver0 & lung0 to validate imputation.
 bash ${scriptDir}validate_imputed_CTCF_states.sh
+
+
+# 4. Why samples with CTCF data are different
+bash ${scriptDir}validate_CTCFstates_with_CTCFdata.sh

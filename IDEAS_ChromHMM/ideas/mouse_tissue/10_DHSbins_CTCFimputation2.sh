@@ -111,7 +111,7 @@ vim ctcf_8sample_impute_11sample_2.sh
 cp ctcf_8sample_impute_11sample.parafile ctcf_8sample_impute_11sample_2.parafile
 vim ctcf_8sample_impute_11sample_2.parafile
 nohup bash ctcf_8sample_impute_11sample_2.sh > ./nohup/nohup.ctcf_8sample_impute_11sample_2.out 2>&1&
-
+# z008 41129
 
 # 5. use 8 sample without_brain model to run all 11 samples
 # get input file
@@ -134,3 +134,4 @@ vim ctcf_8sample_to_11sample_2.sh
 cp ctcf_8sample_to_11sample.parafile ctcf_8sample_to_11sample_2.parafile
 vim ctcf_8sample_to_11sample_2.parafile
 nohup bash ctcf_8sample_to_11sample_2.sh > ./nohup/nohup.ctcf_8sample_to_11sample_2.out 2>&1&
+# z010 50070

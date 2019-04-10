@@ -307,14 +307,6 @@ done
 ### 2) redo state conversation using adjusted rand index & Matthews Correlation Coefficient
 nohup Rscript ${scriptDir}ARI_MCC_state_conversation_between_samples.R > ./nohup/nohup.state_conservation_11sample_CTCF_ARI.out 2>&1&
 
-# nohup Rscript ${scriptDir}ARI_MCC_state_conversation_between_samples.R 1 7 > ./nohup/ARI_MCC_1.out 2>&1&
-# nohup Rscript ${scriptDir}ARI_MCC_state_conversation_between_samples.R 8 14 > ./nohup/ARI_MCC_2.out 2>&1&
-# nohup Rscript ${scriptDir}ARI_MCC_state_conversation_between_samples.R 15 21 > ./nohup/ARI_MCC_3.out 2>&1&
-# nohup Rscript ${scriptDir}ARI_MCC_state_conversation_between_samples.R 20 28 > ./nohup/ARI_MCC_4.out 2>&1&
-# nohup Rscript ${scriptDir}ARI_MCC_state_conversation_between_samples.R 29 35 > ./nohup/ARI_MCC_5.out 2>&1&
-# nohup Rscript ${scriptDir}ARI_MCC_state_conversation_between_samples.R 36 42 > ./nohup/ARI_MCC_6.out 2>&1&
-# nohup Rscript ${scriptDir}ARI_MCC_state_conversation_between_samples.R 0 0 > ./nohup/ARI_MCC_7.out 2>&1&
-
 # 9. for 6 states
 cat ./state_CTCF_signal/liver14.5_CTCF_state_candidate_region/liver14.5_state_21_region.bed \
 ./state_CTCF_signal/liver14.5_CTCF_state_candidate_region/liver14.5_state_29_region.bed \
