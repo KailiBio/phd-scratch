@@ -94,4 +94,116 @@ p = grid.arrange(p1, p2, p3, ncol=1,
 ggsave("fig1.basic_v28.pdf", p)
 
 ###################
+# lincRNA comparison
+###################
+setwd("/Users/kaili/Dropbox (UMass Medical School)/Project/ccRE/hg38_rOCR/fig1/basic_v28/lincRNA/")
+library(ggplot2)
+library(grid)
+library(gridExtra)
 
+cell_list = c("A172","Daoy","GM23248","GM23338","hepatocyte","HT1080","LHCN-M2","myotube",
+         "NCI-H460","neural_progenitor_cell","RPMI-7951","SJCRH30","SJSA1",
+         "skeletal_muscle_myoblast","SK-MEL-5","SK-N-DZ")
+
+###########
+# gene
+###########
+RNA = read.table("sample_RNA_signal_comparison_PC_linc_new.txt")
+colnames(RNA) = c("OCR", "signal", "ubi", "cell_line", "sum","PC","type")
+
+ggplot(data=RNA, aes(x=cell_line, y=log10(signal+0.1), fill=type)) + 
+  geom_boxplot(width=0.5, outlier.shape = NA) + 
+  theme_minimal() + ylab("Expression of transcripts\nlog10(TPM+0.1)") +
+  theme(axis.title.x=element_blank(), 
+        axis.ticks.x=element_blank(), axis.line.x=element_blank(),
+        axis.text.y=element_text(face="bold", size=12),
+        axis.title.y = element_text(face="bold", size=12)) +
+  scale_fill_manual(values = c("#397AF2","#2E9E49","#FBB30B","#E73A2F")) +
+  coord_cartesian(ylim=c(-1,3.2))
+
+ggsave("PC_lincRNA_RNA.pdf", width = 12)
+ggsave("PC_lincRNA_RNA.png", width = 12)
+
+RNA2 = RNA[RNA$PC=="lincRNA",]
+ggplot(data=RNA2, aes(x=cell_line, y=log10(signal+0.1), fill=type)) + 
+  geom_boxplot(width=0.5, outlier.shape = NA) + 
+  theme_minimal() + ylab("Expression of transcripts\nlog10(TPM+0.1)") +
+  theme(axis.title.x=element_blank(), 
+        axis.ticks.x=element_blank(), axis.line.x=element_blank(),
+        axis.text.y=element_text(face="bold", size=12),
+        axis.title.y = element_text(face="bold", size=12)) +
+  scale_fill_manual(values = c("#397AF2","#FBB30B")) +
+  coord_cartesian(ylim=c(-1,2))
+
+ggsave("lincRNA_RNA.pdf", width = 12)
+ggsave("lincRNA_RNA.png", width = 12)
+
+for(i in 1:length(cell_list)){
+  print(cell[i])
+  x = RNA2[RNA2$type=="ubi-lincRNA" & RNA2$cell_line==cell_list[i],]$signal
+  y = RNA2[RNA2$type=="other-lincRNA" & RNA2$cell_line==cell_list[i],]$signal
+  print(wilcox.test(x,y)$p.value)
+}
+
+###########
+# TSS
+###########
+
+RAMPAGE = read.table("sample_RAMPAGE_signal_comparison_PC_linc_new.txt")
+colnames(RAMPAGE) = c("OCR", "signal", "ubi", "cell_line", "sum","PC","type")
+
+ggplot(data=RAMPAGE, aes(x=cell_line, y=log10(signal+0.1), fill=type)) + 
+  geom_boxplot(width=0.5, outlier.shape = NA) + 
+  theme_minimal() + ylab("Expression of TSSs\nlog10(TPM+0.1)") +
+  theme(axis.title.x=element_blank(), 
+        axis.ticks.x=element_blank(), axis.line.x=element_blank(),
+        axis.text.y=element_text(face="bold", size=12),
+        axis.title.y = element_text(face="bold", size=12)) +
+  scale_fill_manual(values = c("#397AF2","#2E9E49","#FBB30B","#E73A2F")) +
+  coord_cartesian(ylim=c(-1,3.2))
+
+ggsave("PC_lincRNA_RAMPAGE.pdf", width = 12)
+ggsave("PC_lincRNA_RAMPAGE.png", width = 12)
+
+RAMPAGE2 = RAMPAGE[RAMPAGE$PC=="lincRNA",]
+ggplot(data=RAMPAGE2, aes(x=cell_line, y=log10(signal+0.1), fill=type)) + 
+  geom_boxplot(width=0.5, outlier.shape = NA) + 
+  theme_minimal() + ylab("Expression of TSSs\nlog10(TPM+0.1)") +
+  theme(axis.title.x=element_blank(), 
+        axis.ticks.x=element_blank(), axis.line.x=element_blank(),
+        axis.text.y=element_text(face="bold", size=12),
+        axis.title.y = element_text(face="bold", size=12)) +
+  scale_fill_manual(values = c("#397AF2","#FBB30B")) +
+  coord_cartesian(ylim=c(-1,1.3))
+
+ggsave("lincRNA_RAMPAGE.pdf", width = 12)
+ggsave("lincRNA_RAMPAGE.png", width = 12)
+
+for(i in 1:length(cell_list)){
+  print(cell[i])
+  x = RAMPAGE2[RAMPAGE2$type=="ubi-lincRNA" & RAMPAGE2$cell_line==cell_list[i],]$signal
+  y = RAMPAGE2[RAMPAGE2$type=="other-lincRNA" & RAMPAGE2$cell_line==cell_list[i],]$signal
+  print(wilcox.test(x,y)$p.value)
+}
+
+RAMPAGE3 = RAMPAGE[RAMPAGE$type=="ubi-lincRNA" | RAMPAGE$type=="other-PC",]
+ggplot(data=RAMPAGE3, aes(x=cell_line, y=log10(signal+0.1), fill=type)) + 
+  geom_boxplot(width=0.5, outlier.shape = NA) + 
+  theme_minimal() + ylab("Expression of TSSs\nlog10(TPM+0.1)") +
+  theme(axis.title.x=element_blank(), 
+        axis.ticks.x=element_blank(), axis.line.x=element_blank(),
+        axis.text.y=element_text(face="bold", size=12),
+        axis.title.y = element_text(face="bold", size=12)) +
+  scale_fill_manual(values = c("#2E9E49","#FBB30B")) +
+  coord_cartesian(ylim=c(-1,1.3))
+
+ggsave("ubi-lincRNA_other-PC_RAMPAGE.pdf", width = 12)
+ggsave("ubi-lincRNA_other-PC_RAMPAGE.png", width = 12)
+
+for(i in 1:length(cell_list)){
+  print(cell[i])
+  x = RAMPAGE3[RAMPAGE3$type=="ubi-lincRNA" & RAMPAGE3$cell_line==cell_list[i],]$signal
+  y = RAMPAGE3[RAMPAGE3$type=="other-PC" & RAMPAGE3$cell_line==cell_list[i],]$signal
+  print(wilcox.test(x,y)$p.value)
+}
+###################

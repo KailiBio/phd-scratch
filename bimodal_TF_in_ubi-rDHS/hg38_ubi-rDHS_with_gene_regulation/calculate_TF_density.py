@@ -12,7 +12,6 @@ if __name__ == "__main__":
     outDir = sys.argv[2]
     outDir2 = sys.argv[3]
 
-
     id = ""
     subprocess.call("if [ -f "+outDir+" ];then rm "+outDir+"; fi", shell=True)
     for line in open(motif_file).readlines():
