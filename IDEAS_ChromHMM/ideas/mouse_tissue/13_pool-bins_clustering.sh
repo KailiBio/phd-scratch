@@ -26,7 +26,32 @@ do
     nohup bash ${scriptDir}make_cluster_for_pool-bins.sh ${mark} > ./nohup/nohup.make_cluster_for_pool-bins_${mark}.out 2>&1&
 done
 
+
+###############
+# Apr 23
+# test Arjan's 260,941 enhancer regions
+awk '{FS=OFS="\t"}{print $1,$2,$3}' ./ss/Enh-embryonic_facial_prominence_12.5_H3K27ac | sort -k1,1 -k2,2n > ./ss/enhancer_list.bed
+## 1) percentage of bins belong to enhancer_list in each state
+if [ -f bins_percentage_in_enhancer_list.txt ];then rm bins_percentage_in_enhancer_list.txt; fi
+for state in {0..46}
+do
+    echo ${state}
+    #
+    num=`wc -l ./pool-bins/dhs_ctcf_9-66_state_${state}_seperate_bins_sorted.bed | awk '{print $1}'`
+    intersectBed -a ./pool-bins/dhs_ctcf_9-66_state_${state}_seperate_bins_sorted.bed -b ./ss/enhancer_list.bed -wa -wb | cut -f 4 | sort -u | wc -l | awk -v num="$num" -v state="$state" '{print state,$1,num,$1/num}' >>  bins_percentage_in_enhancer_list.txt
+done
+# Rscript make_enhancer_percentage_barplot.R
+## 2) merge state 18,22,35,41,44
+cat ./pool-bins/dhs_ctcf_9-66_state_18_pool-bins.bed ./pool-bins/dhs_ctcf_9-66_state_22_pool-bins.bed ./pool-bins/dhs_ctcf_9-66_state_35_pool-bins.bed ./pool-bins/dhs_ctcf_9-66_state_41_pool-bins.bed ./pool-bins/dhs_ctcf_9-66_state_44_pool-bins.bed | sort -k1,1 -k2,2n > tmp.bed
+bedtools merge -i tmp.bed | sort -k1,1 -k2,2n | awk '{FS=OFS="\t"}{print $0,"E"NR}' > ./pool-bins/dhs_ctcf_9-66_state_E_pool-bins_withID.bed
+## 3) calculate signal for pool bins
+nohup bash ${scriptDir}get_pool-bins_signal.sh "E" > ./nohup/nohup.get_pool-bins_signal_${state}.out 2>&1&
+# 50781
+## 4) do cluster
 for mark in H3K27ac H3K27me3 H3K36me3 H3K4me1 H3K4me2 H3K4me3 H3K9ac H3K9me3
 do
-    pdfjam --outfile ${mark}_hlcust.pdf state0_${mark}_hlcust.pdf state1_${mark}_hlcust.pdf state2_${mark}_hlcust.pdf state3_${mark}_hlcust.pdf state4_${mark}_hlcust.pdf state5_${mark}_hlcust.pdf state6_${mark}_hlcust.pdf state7_${mark}_hlcust.pdf state8_${mark}_hlcust.pdf state9_${mark}_hlcust.pdf state10_${mark}_hlcust.pdf state11_${mark}_hlcust.pdf state12_${mark}_hlcust.pdf state13_${mark}_hlcust.pdf state14_${mark}_hlcust.pdf state15_${mark}_hlcust.pdf state16_${mark}_hlcust.pdf state17_${mark}_hlcust.pdf state18_${mark}_hlcust.pdf state19_${mark}_hlcust.pdf state20_${mark}_hlcust.pdf state21_${mark}_hlcust.pdf state22_${mark}_hlcust.pdf state23_${mark}_hlcust.pdf state24_${mark}_hlcust.pdf state25_${mark}_hlcust.pdf state26_${mark}_hlcust.pdf state27_${mark}_hlcust.pdf state28_${mark}_hlcust.pdf state29_${mark}_hlcust.pdf state30_${mark}_hlcust.pdf state31_${mark}_hlcust.pdf state32_${mark}_hlcust.pdf state33_${mark}_hlcust.pdf state34_${mark}_hlcust.pdf state35_${mark}_hlcust.pdf state36_${mark}_hlcust.pdf state37_${mark}_hlcust.pdf state38_${mark}_hlcust.pdf state39_${mark}_hlcust.pdf state40_${mark}_hlcust.pdf state41_${mark}_hlcust.pdf state42_${mark}_hlcust.pdf state43_${mark}_hlcust.pdf state44_${mark}_hlcust.pdf state45_${mark}_hlcust.pdf state46_${mark}_hlcust.pdf
+    Rscript ${scriptDir}do_hclust_for_pool-bins.R "E" ${mark}
 done
+#
+cd /data/zusers/fankaili/ideas/dhs_ctcf/pool-bins/hclust/
+pdfjam --outfile stateE_hlcust.pdf stateE_H3K27ac_hlcust.pdf stateE_H3K4me3_hlcust.pdf stateE_H3K27me3_hlcust.pdf stateE_H3K36me3_hlcust.pdf stateE_H3K4me1_hlcust.pdf stateE_H3K4me2_hlcust.pdf stateE_H3K9ac_hlcust.pdf stateE_H3K9me3_hlcust.pdf

@@ -2,7 +2,7 @@
 # -- Kaili
 # This script is for getting ARI heatmap for given two state files.
 # EXP: Rscript get_ARI_heatmap_between_IDEASruns.R /data/zusers/fankaili/ideas/dhs_ctcf/
-#     ctcf_8sample_impute_11sample.state ctcf_8sample_impute_11sample_2.state 11 47 
+#     ctcf_8sample_impute_11sample.state ctcf_8sample_impute_11sample_2.state 11 47
 #     "8 samples impute 11 samples (reproducibility)"
 #     "ARI_8sample_imputation_reproducibility"
 
@@ -42,7 +42,7 @@ calculate_ari<-function(x,y)
   b=TN+1;
   c=FN+1;
   d=FP+1;
-  
+
   ari=(a-(a+c)*(a+d)/(a+b+c+d))/((a+c+a+d)/2-(a+c)*(a+d)/(a+b+c+d));
   return(ari);
 }
@@ -75,6 +75,12 @@ for(i in 0:(state_num-1)){
 colnames(ari) = sample
 rownames(ari) = 0:(state_num-1)
 print("get ari matrix.")
+
+#for(i in 0:(state_num-1)){
+#  datM1 =switch_state(dat1,state=i)
+#  datM2 =switch_state(dat2,state=i)
+#  ari[i+1,1] = calculate_ari(datM1, datM2)
+#}
 
 write.table(ari,paste(out_name,".txt", sep=""), quote = FALSE)
 
