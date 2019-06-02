@@ -10,7 +10,6 @@
 # 4. get state proportion
 # 5. do regression
 
-
 scriptDir="/data/zusers/fankaili/github/weng-lab/Kaili/IDEAS_ChromHMM/ideas/DHS_bins/"
 workDir="/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/gene_expression/"
 

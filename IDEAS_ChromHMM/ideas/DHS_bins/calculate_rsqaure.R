@@ -5,16 +5,12 @@
 args = commandArgs(trailingOnly=TRUE)
 file = args[1]
 type = args[2]
-gene_name = args[3]
 
-exp = read.table("/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/gene_expression/mm10_RNA_protein-coding_tpm_matrix_matched.txt", row.names = 1,
-                 header=TRUE)
 
 data = read.table(file)
-gene = as.character(data[1,1])
-y = t(exp[gene_name,])
+y = data[,3]
 if(type=="dhs"){
-  model = lm(log(y+1e-5) ~ log(data[,2]+1e-5)+log(data[,3]+1e-5)+log(data[,4]+1e-5)+
+  model = lm(log(y+1e-5) ~ log(data[,4]+1e-5)+
                log(data[,5]+1e-5)+log(data[,6]+1e-5)+
                log(data[,7]+1e-5)+log(data[,8]+1e-5)+log(data[,9]+1e-5)+
                log(data[,10]+1e-5)+log(data[,11]+1e-5)+log(data[,12]+1e-5)+
@@ -28,9 +24,9 @@ if(type=="dhs"){
                log(data[,34]+1e-5)+log(data[,35]+1e-5)+log(data[,36]+1e-5)+
                log(data[,37]+1e-5)+log(data[,38]+1e-5)+log(data[,39]+1e-5)+
                log(data[,40]+1e-5)+log(data[,41]+1e-5)+log(data[,42]+1e-5)+
-               log(data[,43]+1e-5)+log(data[,44]+1e-5))
+               log(data[,43]+1e-5)+log(data[,44]+1e-5)+log(data[,45]+1e-5)+log(data[,46]+1e-5))
 }else{
-  model = lm(log(y+1e-5) ~ log(data[,2]+1e-5)+log(data[,3]+1e-5)+log(data[,4]+1e-5)+
+  model = lm(log(y+1e-5) ~ log(data[,4]+1e-5)+
                log(data[,5]+1e-5)+log(data[,6]+1e-5)+
                log(data[,7]+1e-5)+log(data[,8]+1e-5)+log(data[,9]+1e-5)+
                log(data[,10]+1e-5)+log(data[,11]+1e-5)+log(data[,12]+1e-5)+
@@ -44,7 +40,8 @@ if(type=="dhs"){
                log(data[,34]+1e-5)+log(data[,35]+1e-5)+log(data[,36]+1e-5)+
                log(data[,37]+1e-5)+log(data[,38]+1e-5)+log(data[,39]+1e-5)+
                log(data[,40]+1e-5)+log(data[,41]+1e-5)+log(data[,42]+1e-5)+
-               log(data[,43]+1e-5)+log(data[,44]+1e-5)+log(data[,45]+1e-5))
+               log(data[,43]+1e-5)+log(data[,44]+1e-5)+log(data[,45]+1e-5)+
+               log(data[,46]+1e-5)+log(data[,47]+1e-5))
 }
 r = round(summary(model)$adj.r.squared,4)
 print(r)

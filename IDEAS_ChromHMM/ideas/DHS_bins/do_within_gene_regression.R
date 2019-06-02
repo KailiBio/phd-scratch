@@ -203,9 +203,9 @@ R2_matrix_melt = melt(R2_matrix, id="group")
 matrix = data.frame(rbind(cbind(R1_matrix_melt, type="200bp_bins"),
                     cbind(R2_matrix_melt, type="dhs_bins")))
 
-matrix$Var1 = factor(matrix$Var1, levels = 1:20)
+matrix$variable = factor(rownames(R1_matrix), levels = 1:20)
 
-ggplot(matrix, aes(x=Var1, y=value, fill = type)) +
+ggplot(matrix, aes(x=variable, y=value, fill = type)) +
   geom_boxplot(width=0.5, outlier.shape=NA) +
   theme_minimal() +
   scale_fill_manual(values = c("#00bfc4", "#f8766d")) +

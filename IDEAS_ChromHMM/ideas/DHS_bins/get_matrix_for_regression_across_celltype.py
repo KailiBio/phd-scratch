@@ -6,15 +6,17 @@
 #               gene list file(only one column for geneID)
 #               work directory
 # OUTPUT: matrix of adjusted r-squared
-# EXP: python get_gene_across_celltype_rsquare.py dhs
-#           /data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/gene_expression/gene_list.txt
-#           /data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/gene_expression/
+# EXP: python get_matrix_for_regression_across_celltype.py dhs 0-0.5
+#           /data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/gene_expression/across_sample_matrix/
 
 import re, os, sys
 import subprocess
-
+import numpy as np
 
 def get_list(file):
+    '''
+    This function is for reading file into list.
+    '''
     list = []
     for line in open(file).readlines():
         line = line.rstrip()
@@ -22,10 +24,27 @@ def get_list(file):
     return list
 
 def get_exp_dic(expression_file):
+    '''
+    This function is for reading expression matix into dictionary.
+    First key is geneID, second is sample.
+    '''
+    read_exp = np.genfromtxt(expression_file, dtype=None, encoding=None)
+    header = read_exp[0]
+    exp = read_exp[1:]
+    #
     dic = {}
-    for line in open(expression_file).readlines()[1:]
+    for i in range(exp.shape[0]):
+        gene = exp[i][0]
+        dic[gene] = {}
+        for j in range(1,exp.shape[1]):
+            dic[gene][header[j]] = exp[i][j]
+    return(dic)
 
 def get_gene_state_proportion_dic(window, celltype_list, prefix):
+    '''
+    This function is for reading all the state proportion file into disctionary.
+    First key is window number, second is geneID, third is sample.
+    '''
     out_dic = {}
     #
     sample = celltype_list[0]
@@ -51,48 +70,32 @@ if __name__ == "__main__":
     prefix = sys.argv[1]
     sd_range = sys.argv[2]
     workDir = sys.argv[3]
-    num = sys.argv[4]
 
-    # get celltype list
+    # get files:
+    ## get celltype list
     celltype_file = "/data/zusers/fankaili/ideas/ENCODE_mouse_rep1_sample_list.txt"
     celltype_list = get_list(celltype_file)
-    # get expression
+    ## get expression
     expression_file = "/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/gene_expression/mm10_RNA_protein-coding_tpm_matrix_matched.txt"
-    # get gene list
+    exp = get_exp_dic(expression_file)
+    ## get gene list
     gene_file = "/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/gene_expression/gene_list_sd_"+sd_range+".txt"
     gene_list = get_list(gene_file)
-
-    # for each window, put all cell type state proportion into dic
+    ## get state proportion
+    ### for each window, put all cell type state proportion into dic
     matrix = {}
     for i in range(1,21):
         # read state proportion file, put into dic make gene as key
         matrix[i] = get_gene_state_proportion_dic(i, celltype_list, prefix)
 
     # calculate R square for each gene
-    outfile = open(workDir+"regression_across_celltype_data_"+prefix+"_"+sd_range+".txt", "w+")
-    for gene in gene_list:
-
-
-
-
-
-
-
-    n=0
-    for gene in gene_list:
-        n +=1
-        print(n)
-        outlist = [gene]
-        p = Pool(5)
-        r2_1 = p.map(partial(calculate_rsquare, workDir = workDir, gene = gene, prefix = prefix), range(1,6))
-        r2_2 = p.map(partial(calculate_rsquare, workDir = workDir, gene = gene, prefix = prefix), range(6,11))
-        r2_3 = p.map(partial(calculate_rsquare, workDir = workDir, gene = gene, prefix = prefix), range(11,16))
-        r2_4 = p.map(partial(calculate_rsquare, workDir = workDir, gene = gene, prefix = prefix), range(16,21))
-        print >> outfile, gene + "\t" + ("\t").join(r2_1) + "\t" + ("\t").join(r2_2) + "\t" + ("\t").join(r2_3) + "\t" + ("\t").join(r2_4)
-        subprocess.call("rm "+workDir+"tmp_rsquare_"+gene+"_"+prefix+"*.txt", shell=True)
-    outfile.close()
-
-matrix = {}
-for i in range(1,21):
-    # read state proportion file, put into dic make gene as key
-    matrix[i] = get_gene_state_proportion_dic(i, celltype_list, prefix)
+    for i in range(1,21):
+        outfile = open(workDir+"regression_across_celltype_data_"+prefix+"_"+sd_range+"_window"+str(i)+".txt", "w+")
+        #
+        for gene in gene_list:
+            if exp.has_key(gene) and matrix[i].has_key(gene):
+                for sample in celltype_list:
+                    y = exp[gene][sample]
+                    x = matrix[i][gene][sample]
+                    print >> outfile, gene+"\t"+sample+"\t"+y+"\t"+x
+        outfile.close()
