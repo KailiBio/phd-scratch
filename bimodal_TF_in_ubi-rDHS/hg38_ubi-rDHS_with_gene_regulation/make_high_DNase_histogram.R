@@ -35,4 +35,51 @@ hist(data2[,1], breaks = max(data2[,1]), col="grey", border = "grey", freq = F, 
      xlab="number of high DNase samples", ylim=c(0,0.005))
 lines(c(450, 450), c(0,1), col="red", lwd=2, lty=2)
 text(430,0.004,"450",col="red")
+dev.off
+
+# Apr25,2019
+ggplot(data2, aes(x=V2)) + geom_histogram(aes(y=..density..),binwidth = 1, col="#8c8c8c") +
+  theme_minimal() + theme(title=element_text(face="bold",size=12)) +
+  xlab("number of active biosamples") + ylab("density of regulatory elements") +
+  geom_vline(xintercept = 450, color ="#E73A2F",linetype="dashed")
+ggsave("hg19_rDHSs_high_DNase_histogram_new.png", width=5, height = 3.8)
+
+ggplot(data2, aes(x=V2)) + geom_histogram(aes(y=..density..),binwidth = 1, col="#8c8c8c") +
+  theme_minimal() + theme(title=element_text(face="bold",size=12)) +
+  xlab("number of active biosamples") + ylab("density of regulatory elements") +
+  geom_vline(xintercept = 450, color ="#E73A2F",linetype="dashed") +
+  coord_cartesian(ylim=c(0,0.003))
+ggsave("hg19_rDHSs_high_DNase_histogram_new2.png", width=6, height = 2)
+
+### pie chart
+install.packages("coolbutuseless/threed")
+install.packages("coolbutuseless/ggthreed")
+ggplot(df) + 
+  geom_threedpie(aes(x = as.factor(value))) + 
+  theme_void() + 
+  theme(legend.position = 'bottom')
+
+df <- data.frame(
+  group = c("PLS", "ELS", "CTCF-only"),
+  value = c(9009, 1826, 86)
+)
+
+library(googleVis)
+op <- options(gvis.plot.tag = "chart")
+pie <- gvisPieChart(df, options = list(title = "Sales per region", 
+                                                 width = 1000, height = 500))
+plot(pie)
+
+
+library(plotrix)
+group = c("PLS", "ELS", "CTCF-only")
+value = c(9009, 1826, 86)
+pdf("ss.pdf")
+pie3D(value,labels = group,main="3D Pie chart of Sales per region", explode = 0)
 dev.off()
+
+
+region<-c("US","Europe","Japan","China","Others")
+sales<-c(25000,12000 ,10000,5000,2000)
+region_sales<-data.frame(region,sales)
+pie3D(sales,labels = region,main="3D Pie chart of Sales per region")
