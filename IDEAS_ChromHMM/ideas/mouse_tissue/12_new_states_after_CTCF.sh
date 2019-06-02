@@ -22,7 +22,8 @@ vim all_data_impuatation.parafile
 
 nohup bash all_data_impuatation.sh > ./nohup/nohup.all_data_impuatation.out 2>&1&
 # z001 22638
-# get 44 states
+# get 44 states in total
+
 
 # 2. all 66 samples without CTCF, set state number the same as the last run
 ## get input file
@@ -31,13 +32,14 @@ awk '{FS=OFS}{if($2!="CTCF"){print $0}}' all_data_impuatation.input > all_data_4
 cp all_data_impuatation.sh all_data_44states.sh
 vim all_data_44states.sh
 ##  get parafile
+# set state num=43
 cp all_data_impuatation.parafile all_data_44states.parafile
 vim all_data_44states.parafile
 
 nohup bash all_data_44states.sh > ./nohup/nohup.all_data_44states.out 2>&1&
 # z001 28615
-
-
+# z001 28965
 
 
 # 3. make hierarchical clutering, look at state changes
+# Rscript make_hclust_after_imputate_CTCF.R
