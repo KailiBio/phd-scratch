@@ -13,7 +13,7 @@ rna_filelist="/data/zusers/fankaili/regions/mouse_e11.5_RNA-seq_list.txt"
 cd ${workDir}
 
 # 0. preparation
-cat e11.5_forebrain_ELS.bed e11.5_midbrain_ELS.bed e11.5_hindbrain_ELS.bed e11.5_neural-tube_ELS.bed e11.5_heart_ELS.bed e11.5_facial_ELS.bed e11.5_limb_ELS.bed e11.5_liver_ELS.bed | sort -u | sort -k1,1 -k2,2n > e11.5_ELS.bed
+cat ./e11.5_dELS/e11.5_forebrain_dELS.bed ./e11.5_dELS/e11.5_midbrain_dELS.bed ./e11.5_dELS/e11.5_hindbrain_dELS.bed ./e11.5_dELS/e11.5_neural-tube_dELS.bed ./e11.5_dELS/e11.5_heart_dELS.bed ./e11.5_dELS/e11.5_facial_dELS.bed ./e11.5_dELS/e11.5_limb_dELS.bed ./e11.5_dELS/e11.5_liver_dELS.bed | sort -u | sort -k1,1 -k2,2n > ./e11.5_dELS/e11.5_dELS.bed
 
 # 1. get split table
 while read line
@@ -34,3 +34,6 @@ do
 done < ${rna_filelist}
 ####
 # Rscript make_merge_length_histogram_merged.R
+
+# 3. merge 8 tissues into one
+bash ${scriptDir}get_high_density_table_for_merged_all_tissue.sh

@@ -10,7 +10,24 @@ cd ${workDir}${tissue}
 
 
 # 1. get merged region
-sort -k1,1 -k2,2n e11.5_${tissue}_center_regions_Matrix.txt > tmp.bed
+if [ "$tissue" = "forebrain" ];then
+    sort -k 10nr e11.5_${tissue}_center_regions_Matrix.txt | head -100 | sort -k1,1 -k2,2n > tmp.bed
+elif [ "$tissue" = "midbrain" ];then
+    sort -k 11nr e11.5_${tissue}_center_regions_Matrix.txt | head -100 | sort -k1,1 -k2,2n > tmp.bed
+elif [ "$tissue" = "hindbrain" ];then
+    sort -k 12nr e11.5_${tissue}_center_regions_Matrix.txt | head -100 | sort -k1,1 -k2,2n > tmp.bed
+elif [ "$tissue" = "neural-tube" ];then
+    sort -k 13nr e11.5_${tissue}_center_regions_Matrix.txt | head -100 | sort -k1,1 -k2,2n > tmp.bed
+elif [ "$tissue" = "heart" ];then
+    sort -k 14nr e11.5_${tissue}_center_regions_Matrix.txt | head -100 | sort -k1,1 -k2,2n > tmp.bed
+elif [ "$tissue" = "facial" ];then
+    sort -k 15nr e11.5_${tissue}_center_regions_Matrix.txt | head -100 | sort -k1,1 -k2,2n > tmp.bed
+elif [ "$tissue" = "limb" ];then
+    sort -k 16nr e11.5_${tissue}_center_regions_Matrix.txt | head -100 | sort -k1,1 -k2,2n > tmp.bed
+elif [ "$tissue" = "liver" ];then
+    sort -k 17nr e11.5_${tissue}_center_regions_Matrix.txt | head -100 | sort -k1,1 -k2,2n > tmp.bed
+fi
+#
 bedtools merge -i tmp.bed | sort -k1,1 -k2,2n | awk '{FS=OFS="\t"}{print $0,"merged_region_"NR,$3-$2}' > e11.5_${tissue}_merged_regions.bed
 ###-----
 echo "**get merged regions.**"
@@ -19,7 +36,7 @@ echo "**get merged regions.**"
 awk 'BEGIN{FS=OFS="\t";print "chr\ts\te\tid\tlength"}{print $0}' e11.5_${tissue}_merged_regions.bed > e11.5_${tissue}_merged_regions_dELS.bed
 #
 awk -v sample="total_ELS" '{if(NR==1){print $0,sample}}' e11.5_${tissue}_merged_regions_dELS.bed > tmp.bed
-intersectBed -a e11.5_${tissue}_merged_regions_dELS.bed -b ../e11.5_ELS/e11.5_ELS.bed -c >> tmp.bed
+intersectBed -a e11.5_${tissue}_merged_regions_dELS.bed -b ../e11.5_dELS/e11.5_dELS.bed -c >> tmp.bed
 mv tmp.bed e11.5_${tissue}_merged_regions_dELS.bed
 #
 while read line
@@ -29,7 +46,7 @@ do
     echo $sample
     #
     awk -v sample="$sample" '{if(NR==1){print $0,sample}}' e11.5_${tissue}_merged_regions_dELS.bed > tmp.bed
-    intersectBed -a e11.5_${tissue}_merged_regions_dELS.bed -b ../e11.5_ELS/e11.5_${sample}_ELS.bed -c >> tmp.bed
+    intersectBed -a e11.5_${tissue}_merged_regions_dELS.bed -b ../e11.5_dELS/e11.5_${sample}_dELS.bed -c >> tmp.bed
     mv tmp.bed e11.5_${tissue}_merged_regions_dELS.bed
 done < ../e11.5_master_list.txt
 ###-----

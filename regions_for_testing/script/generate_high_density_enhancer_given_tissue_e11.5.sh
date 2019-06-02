@@ -34,8 +34,8 @@ echo "**get 300kb region.**"
 # 2. get number of dELS in these regions in all tissues, as well as non-redundant ELSs
 awk 'BEGIN{FS=OFS="\t";print "chr\ts\te\tid\tscore\tstrand\tgene\texp"}{print $0}' ./${tissue}/e11.5_${tissue}_center_regions.bed > ./${tissue}/e11.5_${tissue}_center_regions_dELS.bed
 #
-awk -v sample="total_ELS" '{if(NR==1){print $0,sample}}' ./${tissue}/e11.5_${tissue}_center_regions_dELS.bed > ./${tissue}/tmp.bed
-intersectBed -a ./${tissue}/e11.5_${tissue}_center_regions_dELS.bed -b ./e11.5_ELS/e11.5_ELS.bed -c >> ./${tissue}/tmp.bed
+awk -v sample="total_dELS" '{if(NR==1){print $0,sample}}' ./${tissue}/e11.5_${tissue}_center_regions_dELS.bed > ./${tissue}/tmp.bed
+intersectBed -a ./${tissue}/e11.5_${tissue}_center_regions_dELS.bed -b ./e11.5_dELS/e11.5_dELS.bed -c >> ./${tissue}/tmp.bed
 mv ./${tissue}/tmp.bed ./${tissue}/e11.5_${tissue}_center_regions_dELS.bed
 #
 while read line
@@ -45,7 +45,7 @@ do
     echo $sample
     #
     awk -v sample="$sample" '{if(NR==1){print $0,sample}}' ./${tissue}/e11.5_${tissue}_center_regions_dELS.bed > ./${tissue}/tmp.bed
-    intersectBed -a ./${tissue}/e11.5_${tissue}_center_regions_dELS.bed -b ./e11.5_ELS/e11.5_${sample}_ELS.bed -c >> ./${tissue}/tmp.bed
+    intersectBed -a ./${tissue}/e11.5_${tissue}_center_regions_dELS.bed -b ./e11.5_dELS/e11.5_${sample}_dELS.bed -c >> ./${tissue}/tmp.bed
     mv ./${tissue}/tmp.bed ./${tissue}/e11.5_${tissue}_center_regions_dELS.bed
 done < e11.5_master_list.txt
 ###-----
