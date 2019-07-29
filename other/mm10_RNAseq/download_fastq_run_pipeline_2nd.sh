@@ -38,8 +38,8 @@ RSEMrefDir="/home/fankaili/RSEMgenome/RSEMref_mm10"
 dataType="unstr_SE"
 #
 #mkdir ${workDir}rna_exp/${expID}/${fileIDs}/
-echo bash /data/zusers/fankaili/github/weng-lab/Kaili/other/mm10_RNAseq/run_RNAseq_pipeline.sh ${workDir}rna_exp/${expID}/${fileIDs}.fastq "" ${STARgenomeDir} ${RSEMrefDir} ${dataType} 8 8 ${workDir}rna_exp/${expID}/${fileIDs}/ ${fileIDs}
-bash /data/zusers/fankaili/github/weng-lab/Kaili/other/mm10_RNAseq/run_RNAseq_pipeline.sh ${workDir}rna_exp/${expID}/${fileIDs}.fastq "" ${STARgenomeDir} ${RSEMrefDir} ${dataType} 8 8 ${workDir}rna_exp/${expID}/${fileIDs}/ ${fileIDs}
+echo bash /data/zusers/fankaili/github/weng-lab/Kaili/other/mm10_RNAseq/run_RNAseq_pipeline_2nd.sh ${workDir}rna_exp/${expID}/${fileIDs}.fastq "" ${STARgenomeDir} ${RSEMrefDir} ${dataType} 8 8 ${workDir}rna_exp/${expID}/${fileIDs}/ ${fileIDs}
+bash /data/zusers/fankaili/github/weng-lab/Kaili/other/mm10_RNAseq/run_RNAseq_pipeline_2nd.sh ${workDir}rna_exp/${expID}/${fileIDs}.fastq "" ${STARgenomeDir} ${RSEMrefDir} ${dataType} 8 8 ${workDir}rna_exp/${expID}/${fileIDs}/ ${fileIDs}
 
 # bash /data/zusers/fankaili/github/weng-lab/Kaili/other/mm10_RNAseq/run_RNAseq_pipeline.sh /data/zusers/fankaili/ccre/mm10_rnaseq/ENCFF581SPK.fastq "" /home/fankaili/STARgenome /home/fankaili/RSEMgenome/RSEMref_mm10 unstr_SE 8 8 /data/zusers/fankaili/ccre/mm10_rnaseq/ss/ ss
 

@@ -33,8 +33,8 @@ cd ${workDir}rna_exp/${expID}
 #fi
 
 # run pipeline
-STARgenomeDir="/home/fankaili/STARgenome"
-RSEMrefDir="/home/fankaili/RSEMgenome/RSEMref_mm10"
+STARgenomeDir="/data/zusers/fankaili/STARgenome_vM18"
+RSEMrefDir="/data/zusers/fankaili/RSEMgenome_vM18/RSEMref_mm10"
 dataType="unstr_SE"
 #
 #mkdir ${workDir}rna_exp/${expID}/${fileIDs}/

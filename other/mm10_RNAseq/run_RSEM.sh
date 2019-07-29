@@ -16,7 +16,7 @@ fileIDs=`awk -v num="$num" '{if(NR==num){print $2}}' mouse_RNA_fastq_list_merged
 
 cd ${workDir}rna_exp/${expID}/${fileIDs}/
 
-RSEMrefDir="/home/fankaili/RSEMgenome/RSEMref_mm10"
+RSEMrefDir="/home/fankaili/RSEMgenome0/RSEMref_mm10"
 dataType="unstr_SE"
 nThreadsSTAR=8
 nThreadsRSEM=8
@@ -27,6 +27,25 @@ RSEM=rsem-calculate-expression
 
 ######### RSEM
 #### prepare for RSEM: sort transcriptome BAM to ensure the order of the reads, to make RSEM output (not pme) deterministic
+
+
+trBAMsortRAM=60G
+
+#mv Aligned.toTranscriptome.out.bam Tr.bam
+
+case "$dataType" in
+	str_SE|unstr_SE)
+	# single-end data
+	cat <( samtools view -H Aligned.toTranscriptome.out.bam ) <( samtools view -@ $nThreadsRSEM Aligned.toTranscriptome.out.bam | sort -S $trBAMsortRAM -T ./ ) | samtools view -@ $nThreadsRSEM -bS - > Aligned.toTranscriptome.out.sorted.bam
+	;;
+	str_PE|unstr_PE)
+	# paired-end data, merge mates into one line before sorting, and un-merge after sorting
+	cat <( samtools view -H Aligned.toTranscriptome.out.bam ) <( samtools view -@ $nThreadsRSEM Aligned.toTranscriptome.out.bam | awk '{printf "%s", $0 " "; getline; print}' | sort -S $trBAMsortRAM -T ./ | tr ' ' '\n' ) | samtools view -@ $nThreadsRSEM -bS - > Aligned.toTranscriptome.out.sorted.bam
+	;;
+esac
+
+# 'rm' Tr.bam
+
 
 # RSEM parameters: common
 RSEMparCommon="--bam --estimate-rspd  --calc-ci --no-bam-output --seed 12345"
