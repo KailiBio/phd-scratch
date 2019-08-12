@@ -94,6 +94,146 @@ do
     fi
 done < dhs_ctcf.input
 rm tmp.txt
+## 2) get signal for all bins
+awk '{OFS="\t"}{print $1,$2,$3,$4}' mm10_OCR-center_bins_v3_signal_based_space.bed > mm10_OCR-center_bins_v3_signal_based_space_bedformat.bed
+all_bins="mm10_OCR-center_bins_v3_signal_based_space_bedformat.bed"
+#
+echo "id" > ./ctcfstate_with_ctcfdata/lung0_signal_allbins.txt
+cut -f 4 ${all_bins} >> ./ctcfstate_with_ctcfdata/lung0_signal_allbins.txt
+#
+while read line
+do
+    sample=`awk '{print $1}' <<< $line`
+    if [ $sample == "lung_0" ];then
+        mark=`awk '{print $2}' <<< $line`
+        path0=`awk '{print $3}' <<< $line`
+        path=${path0%.txt}
+        echo $path
+        #
+        if [ $mark == "DNAme" ];then
+            echo -e "id\t"$mark > tmp.txt
+            awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$6}else{print $4,a[$4]}}' ${path}.tab ${all_bins} >> tmp.txt
+        else
+            echo -e "id\t"$mark > tmp.txt
+            awk  '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$5}else{print $4,a[$4]}}' ${path}.tab ${all_bins} >> tmp.txt
+        fi
+        awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$2}else{print $0,a[$1]}}' tmp.txt ./ctcfstate_with_ctcfdata/lung0_signal_allbins.txt > tmp2.txt
+        mv tmp2.txt ./ctcfstate_with_ctcfdata/lung0_signal_random100k.txt
+    fi
+done < dhs_ctcf.input
+rm tmp.txt
+
+## 3) 3bins
+sort -k1,1 -k2,2n mm10_OCR-center_bins_v3_signal_based_space_bedformat.bed | awk '{FS=OFS="\t"}{print $0,NR}' > mm10_OCR-center_bins_v3_signal_based_space_bedformat_labeled.bed
+# grep ±1 bins
+random_bins="/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/mm10_OCR-center_bins_v3_signal_based_random.bed"
+#
+awk '{FS=OFS="\t"}{if(NR==FNR){id[$5]=$4;order[$4]=$5;chr[$5]=$1;s[$5]=$2;e[$5]=$3}
+else{n=order[$4];
+printf $4"\t"e[n]-s[n]"\t";
+if(chr[n]==chr[n-1]){printf id[n-1]"\t"(e[n-1]-s[n-1])"\t"}else{printf "-\t-\t"};
+if(chr[n]==chr[n+1]){printf id[n+1]"\t"(e[n+1]-s[n+1])"\n"}else{printf "-\t-\n"}}}' mm10_OCR-center_bins_v3_signal_based_space_bedformat_labeled.bed ${random_bins} > random_3bins_list.txt
+#
+echo "id" > ./ctcfstate_with_ctcfdata/lung0_signal_random100k_3bins.txt
+cut -f 4 ${random_bins} >> ./ctcfstate_with_ctcfdata/lung0_signal_random100k_3bins.txt
+#
+while read line
+do
+    sample=`awk '{print $1}' <<< $line`
+    if [ $sample == "lung_0" ];then
+        mark=`awk '{print $2}' <<< $line`
+        path0=`awk '{print $3}' <<< $line`
+        path=${path0%.txt}
+        echo $path
+        #
+        if [ $mark == "DNAme" ];then
+            echo -e "id\t"$mark > tmp.txt
+            awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$6}else{l=$2+$4+$6;signal=(a[$1]*$2+a[$3]*$4+a[$5]*$6)/l;print $1,signal}}' ${path}.tab random_3bins_list.txt >> tmp.txt
+        else
+            echo -e "id\t"$mark > tmp.txt
+            awk  '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$5}else{l=$2+$4+$6;signal=(a[$1]*$2+a[$3]*$4+a[$5]*$6)/l;print $1,signal}}' ${path}.tab random_3bins_list.txt >> tmp.txt
+        fi
+        awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$2}else{print $0,a[$1]}}' tmp.txt ./ctcfstate_with_ctcfdata/lung0_signal_random100k_3bins.txt > tmp2.txt
+        mv tmp2.txt ./ctcfstate_with_ctcfdata/lung0_signal_random100k_3bins.txt
+    fi
+done < dhs_ctcf.input
+rm tmp.txt
+
+## 3) 5bins
+# grep ±2 bins
+random_bins="/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/mm10_OCR-center_bins_v3_signal_based_random.bed"
+#
+awk '{FS=OFS="\t"}{if(NR==FNR){id[$5]=$4;order[$4]=$5;chr[$5]=$1;s[$5]=$2;e[$5]=$3}
+else{n=order[$4];
+printf $4"\t"e[n]-s[n]"\t";
+if(chr[n]==chr[n-2]){printf id[n-2]"\t"(e[n-2]-s[n-2])"\t"}else{printf "-\t-\t"};
+if(chr[n]==chr[n-1]){printf id[n-1]"\t"(e[n-1]-s[n-1])"\t"}else{printf "-\t-\t"};
+if(chr[n]==chr[n+1]){printf id[n+1]"\t"(e[n+1]-s[n+1])"\t"}else{printf "-\t-\t"};
+if(chr[n]==chr[n+2]){printf id[n+2]"\t"(e[n+2]-s[n+2])"\n"}else{printf "-\t-\n"}}}' mm10_OCR-center_bins_v3_signal_based_space_bedformat_labeled.bed ${random_bins} > random_5bins_list.txt
+#
+echo "id" > ./ctcfstate_with_ctcfdata/lung0_signal_random100k_5bins.txt
+cut -f 4 ${random_bins} >> ./ctcfstate_with_ctcfdata/lung0_signal_random100k_5bins.txt
+#
+while read line
+do
+    sample=`awk '{print $1}' <<< $line`
+    if [ $sample == "lung_0" ];then
+        mark=`awk '{print $2}' <<< $line`
+        path0=`awk '{print $3}' <<< $line`
+        path=${path0%.txt}
+        echo $path
+        #
+        if [ $mark == "DNAme" ];then
+            echo -e "id\t"$mark > tmp.txt
+            awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$6}else{l=$2+$4+$6+$8+$10;signal=(a[$1]*$2+a[$3]*$4+a[$5]*$6+a[$7]*$8+a[$9]*$10)/l;print $1,signal}}' ${path}.tab random_5bins_list.txt >> tmp.txt
+        else
+            echo -e "id\t"$mark > tmp.txt
+            awk  '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$5}else{l=$2+$4+$6+$8+$10;signal=(a[$1]*$2+a[$3]*$4+a[$5]*$6+a[$7]*$8+a[$9]*$10)/l;print $1,signal}}' ${path}.tab random_5bins_list.txt >> tmp.txt
+        fi
+        awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$2}else{print $0,a[$1]}}' tmp.txt ./ctcfstate_with_ctcfdata/lung0_signal_random100k_5bins.txt > tmp2.txt
+        mv tmp2.txt ./ctcfstate_with_ctcfdata/lung0_signal_random100k_5bins.txt
+    fi
+done < dhs_ctcf.input
+rm tmp.txt
+
+## 4) 7bins
+# grep ±3 bins
+random_bins="/data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/mm10_OCR-center_bins_v3_signal_based_random.bed"
+#
+awk '{FS=OFS="\t"}{if(NR==FNR){id[$5]=$4;order[$4]=$5;chr[$5]=$1;s[$5]=$2;e[$5]=$3}
+else{n=order[$4];
+printf $4"\t"e[n]-s[n]"\t";
+if(chr[n]==chr[n-3]){printf id[n-3]"\t"(e[n-3]-s[n-3])"\t"}else{printf "-\t-\t"};
+if(chr[n]==chr[n-2]){printf id[n-2]"\t"(e[n-2]-s[n-2])"\t"}else{printf "-\t-\t"};
+if(chr[n]==chr[n-1]){printf id[n-1]"\t"(e[n-1]-s[n-1])"\t"}else{printf "-\t-\t"};
+if(chr[n]==chr[n+1]){printf id[n+1]"\t"(e[n+1]-s[n+1])"\t"}else{printf "-\t-\t"};
+if(chr[n]==chr[n+2]){printf id[n+2]"\t"(e[n+2]-s[n+2])"\t"}else{printf "-\t-\t"};
+if(chr[n]==chr[n+3]){printf id[n+3]"\t"(e[n+3]-s[n+3])"\n"}else{printf "-\t-\n"}}}' mm10_OCR-center_bins_v3_signal_based_space_bedformat_labeled.bed ${random_bins} > random_7bins_list.txt
+#
+echo "id" > ./ctcfstate_with_ctcfdata/lung0_signal_random100k_7bins.txt
+cut -f 4 ${random_bins} >> ./ctcfstate_with_ctcfdata/lung0_signal_random100k_7bins.txt
+#
+while read line
+do
+    sample=`awk '{print $1}' <<< $line`
+    if [ $sample == "lung_0" ];then
+        mark=`awk '{print $2}' <<< $line`
+        path0=`awk '{print $3}' <<< $line`
+        path=${path0%.txt}
+        echo $path
+        #
+        if [ $mark == "DNAme" ];then
+            echo -e "id\t"$mark > tmp.txt
+            awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$6}else{l=$2+$4+$6+$8+$10+$12+$14;signal=(a[$1]*$2+a[$3]*$4+a[$5]*$6+a[$7]*$8+a[$9]*$10+a[$11]*$12+a[$13]*$14)/l;print $1,signal}}' ${path}.tab random_7bins_list.txt >> tmp.txt
+        else
+            echo -e "id\t"$mark > tmp.txt
+            awk  '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$5}else{l=$2+$4+$6+$8+$10+$12+$14;signal=(a[$1]*$2+a[$3]*$4+a[$5]*$6+a[$7]*$8+a[$9]*$10+a[$11]*$12+a[$13]*$14)/l;print $1,signal}}' ${path}.tab random_7bins_list.txt >> tmp.txt
+        fi
+        awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$2}else{print $0,a[$1]}}' tmp.txt ./ctcfstate_with_ctcfdata/lung0_signal_random100k_7bins.txt > tmp2.txt
+        mv tmp2.txt ./ctcfstate_with_ctcfdata/lung0_signal_random100k_7bins.txt
+    fi
+done < dhs_ctcf.input
+rm tmp.txt
 
 # 4. ARI in HOX region
 # chr2:74,644,287-74,860,586

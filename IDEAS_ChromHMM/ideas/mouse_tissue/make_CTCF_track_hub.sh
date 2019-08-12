@@ -82,3 +82,17 @@ done < ${workDir}mm10_tissue_used_list_CTCF_peak_list.txt
 
 # 3. connect
 # https://users.wenglab.org/fankaili/IDEAS/CTCF_peak_hub/hub_e14.5p0_CTCF_peak.txt
+
+
+##########
+# Jun26
+# add CTCF motif track hub
+cd /data/zusers/fankaili/ideas/CTCF_impute/ctcf_samples/
+awk '{FS=OFS="\t"}{print $1,$2,$3,"CTCF_"NR,1,$6,$2,$3,"255,0,0"}' mm10_CTCF_motif_region.bed | sort -k1,1 -k2,2n > mm10_CTCF_motif_region_bed9.bed
+bedToBigBed mm10_CTCF_motif_region_bed9.bed /home/fankaili/genome/mm10.chrom.sizes mm10_CTCF_motif_region.bigBed
+cp mm10_CTCF_motif_region.bigBed /data/public_html_users/fankaili/IDEAS/CTCF_peak_hub/
+# add majority-vote track
+cd /data/zusers/fankaili/ideas/dhs_ctcf/state_bed_9sample/
+awk '{FS=OFS="\t"}{print $0,".",$2,$3,"0,176,240"}' CTCFstates_voted.txt | sort -k1,1 -k2,2n > CTCFstates_voted.bed
+bedToBigBed CTCFstates_voted.bed /home/fankaili/genome/mm10.chrom.sizes CTCFstates_voted.bigBed
+cp CTCFstates_voted.bigBed /data/public_html_users/fankaili/IDEAS/CTCF_peak_hub/

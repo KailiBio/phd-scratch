@@ -39,6 +39,7 @@ read_para_file <- function(file, filename){
 # type = "CTCF"
 
 
+
 args<-commandArgs(TRUE)
 file1 = args[1]
 file2 = args[2]

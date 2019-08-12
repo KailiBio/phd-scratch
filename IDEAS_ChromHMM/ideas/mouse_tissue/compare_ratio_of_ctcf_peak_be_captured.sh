@@ -46,6 +46,9 @@ do
     cut -f 5 ./state_bed_9impute11/${sample}_state_sorted.bed | sort | uniq -c | awk '{OFS="\t"}{print $2,$1}' | sort -k1,1n > tmp.txt
     awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$2}else{print $1,$2,$2/a[$1]}}' tmp.txt ./peaks_validation_9To11/peak-ratio-in-state_9impute11_${sample}.txt > ./peaks_validation_9To11/bin-ratio-have-peak_9impute11_${sample}.txt
 done < all_ctcf_sample.txt
+
+awk 'BEGIN{FS=OFS="\t";sum=0}{if($1==12 || $1==24 || $1==26 || $1==27 || $1==30 || $1==34 || $1==37 || $1==38 || $1==39 || $1==41 || $1==45 || $1==46){sum+=$2}}END{print sum}' peak-ratio-in-state_9impute11_lung_0.txt
+
 ## 2) 9to11
 mkdir state_bed_9to11
 bash ${dailyCodeDir}make_each_sample_state_bed_IDEAS.sh /data/zusers/fankaili/ideas/dhs_ctcf/ctcf_9sample_to_11sample_result/ ctcf_9sample_to_11sample. /data/zusers/fankaili/ideas/dhs_ctcf/state_bed_9to11/ 11
@@ -85,3 +88,17 @@ do
     cut -f 5 ./state_bed_9impute11/${sample}_state_sorted.bed | sort | uniq -c | awk '{OFS="\t"}{print $2,$1}' | sort -k1,1n > tmp.txt
     awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=$2}else{print $1,$2,$2/a[$1]}}' tmp.txt ./peaks_validation_9To11/peak-ratio-in-state_9impute11_${sample}.txt > ./peaks_validation_9To11/bin-ratio-have-peak_9impute66_${sample}.txt
 done
+
+
+# 6. majority vote states
+if [ -f ./peaks_validation_9To11/peak-recall_majorityvote.txt ]; then rm ./peaks_validation_9To11/peak-recall_majorityvote.txt; fi
+while read sample
+do
+    echo ${sample}
+    #
+    intersectBed -a ./state_bed_9sample/CTCFstates_voted.txt -b ./peaks_validation_9To11/${sample}_ctcf_peak_center_withSignal.bed -wa -wb > tmp.bed
+    # percentage of peak
+    num_peak=`wc -l ./peaks_validation_9To11/${sample}_ctcf_peak_center_withSignal.bed | awk '{print $1}'`
+    recall_peak=`cut -f 9 tmp.bed | sort -u | wc -l`
+    echo -e ${sample}"\t"${recall_peak}"\t"${num_peak} >> ./peaks_validation_9To11/peak-recall_majorityvote.txt
+done < all_ctcf_sample.txt

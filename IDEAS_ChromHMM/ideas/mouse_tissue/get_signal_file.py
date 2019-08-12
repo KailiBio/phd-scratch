@@ -47,9 +47,9 @@ if __name__ == "__main__":
 				fileID = f.accession
 			elif mark=="DNase-seq" and f.output_type=="read-depth normalized signal" and f.bio_rep==[1] and f.assembly=="mm10":
 				fileID = f.accession
-			elif f.output_type=="signal p-value" and f.file_format=="bigWig" and f.bio_rep==[1] and f.assembly=="mm10":
+			elif mark=="ATAC-seq" and f.output_type=="signal p-value" and f.file_format=="bigWig" and f.bio_rep==[1] and f.assembly=="mm10":
 				fileID = f.accession
-			elif f.output_type=="signal p-value" and f.file_format=="bigWig" and f.bio_rep==[2] and f.assembly=="mm10":
+			elif f.output_type=="signal p-value" and f.file_format=="bigWig" and f.bio_rep==[1,2] and f.assembly=="mm10":
 				fileID = f.accession
 		if fileID!="":
 			# code line for getting signal

@@ -77,4 +77,4 @@ cut -f 1 /data/zusers/fankaili/ideas/signal/rep1_signal_normal_bins/embryonic-fa
 awk '{FS=OFS=" "}{if(NR==FNR){a[$4]=$0}else{print a[$1]}}' mm10.bed tmp.txt > tmp2.txt
 mv tmp2.txt mm10.bed
 #
-nohup bash ctcf_samples.sh > ./nohup.ctcf_samples_Jan17.out 2>&1&
+nohup bash ctcf_samples.sh > ./nohup.ctcf_samples_Jan25.out 2>&1&

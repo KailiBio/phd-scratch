@@ -44,8 +44,8 @@ Rscript ${scriptDir}get_ARI_heatmap_between_IDEASruns.R /data/zusers/fankaili/id
 get_state_together ctcf_samples_rep1-impute-rep2_given9samples_10k
 #
 Rscript ${scriptDir}get_ARI_heatmap_between_IDEASruns.R /data/zusers/fankaili/ideas/CTCF_impute/ctcf_samples/ ctcf_samples.state ctcf_samples_rep1-impute-rep2_given9samples_10k.state 11 42 "rep1 vs. rep1-impute-rep2\n(given 9 sample CTCF, 10k)" "compare_rep1_rep1-impute-rep2_given9samples_10k_ARI"
-
-
+# 6) rep1-impute-rep2 (given 9 samples CTCF) vs. rep1-impute-rep2 (given 9 samples CTCF, 10k)
+Rscript ${scriptDir}get_ARI_heatmap_between_IDEASruns.R /data/zusers/fankaili/ideas/CTCF_impute/ctcf_samples/ ctcf_samples_rep1-impute-rep2_given9samples.state ctcf_samples_rep1-impute-rep2_given9samples_10k.state 11 42 "rep1-impute-rep2(given 9 sample CTCF): 100fold vs. 10k" "compare_rep1-impute-rep2_given9samples_100_10k_ARI"
 
 
 # 2. ARI bar for one sample

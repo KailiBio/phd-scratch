@@ -11,7 +11,7 @@ library(pheatmap)
 
 ################
 pdf("state_between_all_samples.pdf")
-for(i in 1:42){
+for(i in 0:42){
   data1 = read.table(paste("state_",as.character(i),"_overlapped.txt",sep=""),
                      header=TRUE)
   rownames(data1) = colnames(data1)

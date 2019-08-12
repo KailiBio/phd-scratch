@@ -2,12 +2,18 @@
 
 # -- Kaili
 # This script is for running new IDEAS adding rep2.
+# 0. basic figures for rep1 & rep2
 # 1. run DHS-bins without CTCF using rep1&rep2
 # 2. imputation with rep2
 # 3. validation with rep2
 # 4. why so different between rep1 and rep1-impute-rep2?
 
 scriptDir="/data/zusers/fankaili/github/weng-lab/Kaili/IDEAS_ChromHMM/ideas/mouse_tissue/"
+
+# 0. basic figures for rep1 & rep2
+## 1) violin plot
+## 2) histogram
+# Rscript basic_distribution_rep1_rep2.R
 
 # 1. run DHS-bins without CTCF using rep1&rep2
 cd /data/zusers/fankaili/ideas/dhs_bins/v3_100_400bp/

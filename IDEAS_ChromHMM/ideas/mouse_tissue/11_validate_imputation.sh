@@ -7,6 +7,7 @@
 # 3. predicted peaks for impuated samples
 # 4. difference between 9-impute-11 and 9-impute-66
 # 5. gene expression prediction
+# 6. how good the imputation it is?
 
 
 scriptDir="/data/zusers/fankaili/github/weng-lab/Kaili/IDEAS_ChromHMM/ideas/mouse_tissue/"
@@ -75,3 +76,6 @@ Rscript ${scriptDir}get_ARI_heatmap_between_IDEASruns.R /data/zusers/fankaili/id
 
 # 5. gene expression prediction
 bash ${scriptDir}gene_expression_regression_addCTCF.sh
+
+# 6. how good the imputation it is?
+bash ${scriptDir}validate_majority_vote.sh
