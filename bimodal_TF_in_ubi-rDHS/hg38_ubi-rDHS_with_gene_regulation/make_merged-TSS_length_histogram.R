@@ -40,3 +40,4 @@ ggplot(matrix, aes(length, fill = type)) +
   xlab("length of merged-TSS") + scale_fill_manual(values = c("green", "red")) +
   labs(title="histogram of length of merged-TSS")
 ggsave("GRCh38_merged-TSS_length_hist_overlapped_nonoverlapped.pdf")
+

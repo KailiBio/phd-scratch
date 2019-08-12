@@ -30,10 +30,8 @@ lstd=numpy.std(calculate)
 i=0
 for entry in sig[1]:
     if entry != "Zero":
-	#print masterPeak[i], "\t", (entry-lmean)/lstd, "\t", sig[0][i], "\t", sig[1][i]
-        print "\t".join([masterPeak[i], str((entry-lmean)/lstd), str(sig[0][i]), str(sig[1][i]) ])
+	print masterPeak[i], "\t", (entry-lmean)/lstd, "\t", sig[0][i], "\t", sig[1][i]
     else:
-	#print masterPeak[i], "\t", -10, "\t", 0, "\t", -10
-        print "\t".join([masterPeak[i],"-10","0","-10"])
+	print masterPeak[i], "\t", -10, "\t", 0, "\t", -10
     i+=1
 bigWig.close()

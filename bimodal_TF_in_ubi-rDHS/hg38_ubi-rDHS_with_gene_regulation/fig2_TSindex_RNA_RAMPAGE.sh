@@ -12,9 +12,13 @@ cd ${workDir}
 # 1. RNA-seq: ubi-rOCRs overlapped genes vs. remaining genes
 ## gene TSindex after quantile: hg38_tissue_gene_exp_TSscore_quantile.txt
 ## ubi-rOCRs overlapped gene list: GRCh38_ubi-rOCR_overlapped_gene_id.txt
-awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$1]==1){print $1,$2,"ubi-rOCRs_overlapped_genes"}else{if($1!="gene"){print $1,$2,"remaining_genes"}}}}' \
-GRCh38_ubi-rOCR_overlapped_gene_id.txt hg38_tissue_gene_exp_TSscore_quantile.txt > \
-GRCh38_gene_TSindex_quantile.txt
+intersectBed -a TSS.Filtered.bed -b GRCh38-rOCRs.bed -wa -u | cut -f 7 | sort -u > \
+GRCh38_gene_with_TSSs_overlapping_rOCRs_list.txt
+
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(FNR>1){if(a[$1]){print $1,$2,"other_genes_overlapping_rOCRs"}else{print $1,$2,"genes_not_overlapping_rOCRs"}}}}' \
+GRCh38_gene_with_TSSs_overlapping_rOCRs_list.txt hg38_tissue_gene_exp_TSscore_quantile.txt > tmp.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$1]==1){print $1,$2,"genes_overlapping_ubi-rOCRs"}else{print $0}}}' \
+GRCh38_ubi-rOCR_overlapped_gene_id.txt tmp.txt > GRCh38_gene_TSindex_quantile.txt
 
 # 2. RAMPAGE: ubi-rOCRs overlapped TSSs vs. non_overlapped TSSs in overlapped genes vs. remaining TSSs
 #### do quantile
@@ -33,11 +37,15 @@ GRCh38_allTSS_ubi-rOCR_overlapped_gene.txt
 ## TSS TSindex after quantile: hg38_tissue_TSS_exp_TSscore_uniqID_quantile.txt
 ## ubi-rOCRs overlapped TSS list: GRCh38_ubi-rOCR_overlapped_TSS_uniqID.txt
 ## ubi-rOCR overlapped gene's TSS list: GRCh38_allTSS_ubi-rOCR_overlapped_gene.txt
-awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$1]){print $1,$2,"other_TSSs_in_ubi-rOCRs_overlapped_genes"}else{if($1!="gene"){print $1,$2,"remaining_TSSs"}}}}' \
-GRCh38_allTSS_ubi-rOCR_overlapped_gene.txt hg38_tissue_TSS_exp_TSscore_uniqID_quantile.txt > tmp.txt
-awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$1]){print $1,$2,"ubi-rOCRs_overlapped_TSSs"}else{if($1!="gene"){print $1,$2,$3}}}}' \
-GRCh38_ubi-rOCR_overlapped_TSS_uniqID.txt tmp.txt > GRCh38_TSS_TSindex_quantile.txt
+intersectBed -a TSS.Filtered.uniq.bed -b GRCh38-rOCRs.bed -wa -u > GRCh38_TSS_rOCRs_overlapped.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$8]=1}else{if(a[$1]){print $1,$2,"other_TSSs_overlapping_rOCRs"}else{print $1,$2,"TSSs_not_overlapping_rOCRs"}}}' \
+GRCh38_TSS_rOCRs_overlapped.txt hg38_tissue_TSS_exp_TSscore_uniqID_quantile.txt > tmp.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$1]){print $1,$2,"other_TSSs_of_genes_overlapping_ubi-rOCRs"}else{print $0}}}' \
+GRCh38_allTSS_ubi-rOCR_overlapped_gene.txt tmp.txt > tmp2.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$1]){print $1,$2,"TSSs_overlapping_ubi-rOCRs"}else{if($1!="gene"){print $1,$2,$3}}}}' \
+GRCh38_ubi-rOCR_overlapped_TSS_uniqID.txt tmp2.txt > GRCh38_TSS_TSindex_quantile.txt
 
+rm tmp*.txt
 
 
 

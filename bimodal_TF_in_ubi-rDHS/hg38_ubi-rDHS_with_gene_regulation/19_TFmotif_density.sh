@@ -9,6 +9,7 @@
 # 5. filter motif by overlapping peaks
 # 6. calculate TF density in each rOCRs
 # 7. make figures
+# 8. TF binding preferency
 
 scriptDir="/data/zusers/fankaili/github/weng-lab/Kaili/bimodal_TF_in_ubi-rDHS/hg38_ubi-rDHS_with_gene_regulation/"
 dailyCodeDir="/data/zusers/fankaili/github/weng-lab/Kaili/DailyCode/"
@@ -85,8 +86,8 @@ awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=1}else{if(a[$4]){print $0,"ubi-rOCRs"}else{
 # 7. make figures
 # Rscript make_TF_density_figures.R
 
-
-
+# 8. TF binding preferency
+## 1) TF motfi preferency
 awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=$9}else{print $0,a[$4]}}' rOCRs_TF_density_withlable_553.txt motif_in_rOCRs.bed | sort -k5,5 -k4,4 > motif_in_rOCRs_withlabel.bed
 cut -f 5 motif_in_rOCRs_withlabel.bed | sort -u > motif_list.txt
 #
@@ -98,3 +99,26 @@ do
     non_ubi_TF=`awk -v motif="$motif" '{if($5==motif && $6=="rOCRs"){print $0}}' motif_in_rOCRs_withlabel.bed | cut -f 4 | sort -u | wc -l`
     echo -e ${motif}"\t"${ubi_TF}"\t"${non_ubi_TF}"\t7543\t26635" >> motif_contigency_table.txt
 done < motif_list.txt
+# rOCRs overlapping TSSs
+echo -e "motif\tubi_TF\tnon_ubi_TF\tubi\tnon_ubi" > motif_contigency_table_rOCRs_overlapping_TSss.txt
+while read motif
+do
+    echo ${motif}
+    ubi_TF=`awk -v motif="$motif" '{FS=OFS="\t"}{if(NR==FNR){a[$4]=1}else{if(a[$4] && $5==motif){print $4}}}' /data/zusers/fankaili/ccre/hg38_ubi-rDHS/basic_annotation/ubi-rOCRs_overlap_hg38_v28_basic_TSS.bed motif_in_rOCRs.bed | sort -u | wc -l`
+    non_ubi_TF=`awk -v motif="$motif" '{FS=OFS="\t"}{if(NR==FNR){a[$4]=1}else{if(a[$4] && $5==motif){print $4}}}' /data/zusers/fankaili/ccre/hg38_ubi-rDHS/basic_annotation/non-ubi-rOCRs_overlap_hg38_v28_basic_TSS.bed motif_in_rOCRs.bed | sort -u | wc -l`
+    ubi=`wc -l /data/zusers/fankaili/ccre/hg38_ubi-rDHS/basic_annotation/ubi-rOCRs_overlap_hg38_v28_basic_TSS.bed | awk '{print $1}'`
+    non_ubi=`wc -l /data/zusers/fankaili/ccre/hg38_ubi-rDHS/basic_annotation/non-ubi-rOCRs_overlap_hg38_v28_basic_TSS.bed | awk '{print $1}'`
+    echo -e ${motif}"\t"${ubi_TF}"\t"${non_ubi_TF}"\t"${ubi}"\t"${non_ubi} >> motif_contigency_table_rOCRs_overlapping_TSss.txt
+done < motif_list.txt
+## 2) cell line-specific TF peaks preferency
+### get peak file list
+# - K562
+python ${scriptDir}get_TF_peak_file_list.py "https://www.encodeproject.org/search/?type=Experiment&status=released&assay_title=ChIP-seq&target.investigated_as=transcription+factor&assembly=GRCh38&biosample_ontology.term_name=K562&assay_title=ChIP-seq&limit=all&format=json" "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/TFmotif/K562_TF_peak_filelist.txt"
+# - HepG2
+python ${scriptDir}get_TF_peak_file_list.py "https://www.encodeproject.org/search/?type=Experiment&status=released&assay_title=ChIP-seq&assembly=GRCh38&target.investigated_as=transcription+factor&biosample_ontology.term_name=HepG2&assay_title=ChIP-seq&limit=all&format=json" "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/TFmotif/HepG2_TF_peak_filelist.txt"
+# - GM12878
+python ${scriptDir}get_TF_peak_file_list.py "https://www.encodeproject.org/search/?type=Experiment&status=released&assay_title=ChIP-seq&assembly=GRCh38&target.investigated_as=transcription+factor&biosample_ontology.term_name=GM12878&assay_title=ChIP-seq&limit=all&format=json" "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/TFmotif/GM12878_TF_peak_filelist.txt"
+# - H1-hECS
+python ${scriptDir}get_TF_peak_file_list.py "https://www.encodeproject.org/search/?type=Experiment&status=released&assay_title=ChIP-seq&assembly=GRCh38&target.investigated_as=transcription+factor&biosample_ontology.term_name=H1&assay_title=ChIP-seq&limit=all&format=json" "/data/zusers/fankaili/ccre/hg38_ubi-rDHS/TFmotif/H1_TF_peak_filelist.txt"
+### make contigency table
+bash ${scriptDir}make_TF_preference_contigency.sh

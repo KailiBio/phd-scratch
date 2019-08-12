@@ -103,7 +103,18 @@ GRCh38_loop_overlapped_CTCF_peaks.txt | sort -u | wc -l
 # CTCF peaks be called in Hi-C loops
 intersectBed -a GM12878_CTCF_peaks_ENCSR000DRZ.bed -b GRCh38_loop_peak_loci.txt -wa | sort -u \
  > GRCh38_CTCF_peaks_overlapped_loops.txt
+#
+head -100000 GM12878_CTCF_peaks_ENCSR000DRZ.bed > GM12878_CTCF_peaks_ENCSR000DRZ_top100000.bed
+intersectBed -a GM12878_CTCF_peaks_ENCSR000DRZ_top100000.bed -b GRCh38_loop_peak_loci.txt -wa | sort -u | wc -l
+#
+head -30000 GM12878_CTCF_peaks_ENCSR000DRZ.bed > GM12878_CTCF_peaks_ENCSR000DRZ_top30000.bed
 intersectBed -a GM12878_CTCF_peaks_ENCSR000DRZ_top30000.bed -b GRCh38_loop_peak_loci.txt -wa | sort -u | wc -l
+#
+head -10000 GM12878_CTCF_peaks_ENCSR000DRZ.bed > GM12878_CTCF_peaks_ENCSR000DRZ_top10000.bed
+intersectBed -a GM12878_CTCF_peaks_ENCSR000DRZ_top10000.bed -b GRCh38_loop_peak_loci.txt -wa | sort -u | wc -l
+#
+head -1000 GM12878_CTCF_peaks_ENCSR000DRZ.bed > GM12878_CTCF_peaks_ENCSR000DRZ_top1000.bed
+intersectBed -a GM12878_CTCF_peaks_ENCSR000DRZ_top1000.bed -b GRCh38_loop_peak_loci.txt -wa | sort -u | wc -l
 
 
 # 4. loop anchors overlapped with CTCF motif
@@ -171,6 +182,8 @@ cut -f 9 GRCh38_loop_overlapped_GM12878_active_rOCRs.txt | sort -u | wc -l
 # 18,010 active-rOCRs overlapped with loop anchors
 cut -f 4,5 GRCh38_loop_overlapped_GM12878_active_rOCRs.txt | sort -u | cut -f 2 | sort | uniq -d | wc -l
 # 3560 loops both end overlapped with active-rOCRs
+cut -f 9 GRCh38_loop_overlapped_GM12878_active_rOCRs.txt | sort -u | wc -l
+# 18,010 GM-active rOCRs
 #### Jan06
 intersectBed -a GRCh38_loop_peak_loci.txt -b GRCh38_loop_overlapped_GM12878_active_rOCRs.txt -wa | sort -u | wc -l
 

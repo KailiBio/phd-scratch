@@ -39,6 +39,8 @@ if __name__ == "__main__":
 
         myexp = myexp = Exp.fromJsonFile(expID)
 
+Exp.fromJsonFile("ENCFF847LUK")
+
         # get donorID
         if len(myexp.jsondata["replicates"])==2 :
             if myexp.jsondata["replicates"][0]["biological_replicate_number"]==1:
@@ -52,9 +54,9 @@ if __name__ == "__main__":
             donor2 = "---"
         else:
             for i in range(0,len(myexp.jsondata["replicates"])):
-		if myexp.jsondata["replicates"][i]["biological_replicate_number"]==1:
-		    donor1 = myexp.jsondata["replicates"][i]["library"]["biosample"]["accession"]
-	        else:
+				if myexp.jsondata["replicates"][i]["biological_replicate_number"]==1:
+		    		donor1 = myexp.jsondata["replicates"][i]["library"]["biosample"]["accession"]
+	        	else:
                     donor2 += myexp.jsondata["replicates"][i]["library"]["biosample"]["accession"]+"_"
 
         # get file bio_replicate number

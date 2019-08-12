@@ -14,11 +14,11 @@ outFile = args[3]
 main = args[4]
 n = args[5]
 
-# workDir = "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/"
-# inputFile = "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/hg19_ubi-rDHS_BP_clean.txt"
-# outFile = "hg19_ubi-rDHS_BP_15.pdf"
-# main = "10,921 ubi-rDHS (top 15)"
-# n=15
+workDir = "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/"
+inputFile = "/Users/kaili/Dropbox (UMass Medical School)/Project/ccre/bimodal_tf_rdhs/data_figure/GO/hg19_ubi-rDHS_BP_clean.txt"
+outFile = "hg19_ubi-rDHS_BP_15.pdf"
+main = "10,921 ubi-rDHS (top 15)"
+n=15
 
 setwd(workDir)
 
@@ -47,4 +47,18 @@ ggplot(dat, aes(x=go, y=fe)) + geom_bar(stat = "identity") + coord_flip() +
 ggsave(paste(outFile,".pdf",sep=""), width = 9, height = 9)
 ggsave(paste(outFile,".png",sep=""), width = 9, height = 9)
 
+####################
+# Nov29 for PrepQE
 
+main = "top 15 of 10,921 ubi-rDHS enriched\nGO biological processes"
+ggplot(dat, aes(x=go, y=fe)) + geom_bar(stat = "identity") + coord_flip() + 
+  labs(title=main, y="fold enrichment", x=type) + 
+  scale_fill_manual(values="#41ae76") + 
+  geom_text(aes(label = format(fdr, scientific = TRUE)), colour = "white", 
+            position = position_stack(vjust = 0.5), size = 4, fontface = "bold") +
+  scale_x_discrete(limits = go[n:1]) + 
+  theme(axis.text.y=element_text(size=15, face="bold"), axis.title.y=element_blank(),
+        plot.title=element_text(size=18, face="bold"))
+
+  
+  

@@ -153,3 +153,86 @@ awk '{FS=FOS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$1]){print $0,"in_linc_PC_ubi-r
 # intersectBed -a hg38_v28_basic_TSS_filtered.bed -b /data/zusers/fankaili/ccre/hg38_ubi-rDHS/GRCh38_ubi-rOCRs_EDGEid.bed -wa -u | cut -f 7 | sort -u > ss.txt
 #
 # awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$4]){print $0}}}' ss.txt hg38_v28_basic_gene_filtered.txt | head
+
+
+
+##############
+# Jun16
+# re-calculate gene overlapping ubi-rOCRs, remove ubi-rOCRs that overlapping PC while calculating for non-ubi-rOCRs.
+cd /data/zusers/fankaili/ccre/hg38_ubi-rDHS/basic_annotation/ubi-rOCRs_overlap_geneType/
+#
+intersectBed -a /home/fankaili/genome/hg38_v28_basic_TSS_filtered.bed -b /data/zusers/fankaili/ccre/hg38_ubi-rDHS/GRCh38-rOCRs_withLable.bed -wa -wb > all_TSS_rOCRs.txt
+## ubi-rOCRs
+awk '{if($12=="ubi-rOCR"){print $0}}' all_TSS_rOCRs.txt > all_TSS_ubi-rOCRs.txt
+# 1. for PC_ubi
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=1}else{if(a[$4]){print $0}}}' /home/fankaili/genome/hg38_v28_basic_TSS_protein_coding.bed all_TSS_ubi-rOCRs.txt > PC-TSS_ubi-rOCRs.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=1}else{if(a[$4]!=1){print $0}}}' /home/fankaili/genome/hg38_v28_basic_TSS_protein_coding.bed all_TSS_ubi-rOCRs.txt > tmp1.txt
+cut -f 7 PC-TSS_ubi-rOCRs.txt | sort -u > PC_ubi-rOCRs_genelist.txt
+cut -f 11 PC-TSS_ubi-rOCRs.txt | sort -u > PC_ubi-rOCRs_rOCRlist.txt
+# 2. for non-PC_ubi
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$7]!=1){print $0}}}' PC_ubi-rOCRs_genelist.txt tmp1.txt > tmp1.1.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$11]!=1){print $0}}}' PC_ubi-rOCRs_rOCRlist.txt tmp1.1.txt > nonPC-TSS_ubi-rOCRs.txt
+cut -f 7 nonPC-TSS_ubi-rOCRs.txt | sort -u > nonPC_ubi-rOCRs_genelist.txt
+cut -f 11 nonPC-TSS_ubi-rOCRs.txt | sort -u > nonPC_ubi-rOCRs_rOCRlist.txt
+## non-ubi-rOCRs
+awk '{if($12=="non-ubi-rOCR"){print $0}}' all_TSS_rOCRs.txt > tmp.all_TSS_non-ubi-rOCRs.txt
+cat PC_ubi-rOCRs_genelist.txt nonPC_ubi-rOCRs_genelist.txt > tmp.genelist.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$7]!=1){print $0}}}' tmp.genelist.txt tmp.all_TSS_non-ubi-rOCRs.txt > all_TSS_non-ubi-rOCRs.txt
+# 3. for PC_non-ubi
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=1}else{if(a[$4]){print $0}}}' /home/fankaili/genome/hg38_v28_basic_TSS_protein_coding.bed all_TSS_non-ubi-rOCRs.txt > PC-TSS_non-ubi-rOCRs.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=1}else{if(a[$4]!=1){print $0}}}' /home/fankaili/genome/hg38_v28_basic_TSS_protein_coding.bed all_TSS_non-ubi-rOCRs.txt > tmp2.txt
+cut -f 7 PC-TSS_non-ubi-rOCRs.txt | sort -u > PC_non-ubi-rOCRs_genelist.txt
+cut -f 11 PC-TSS_non-ubi-rOCRs.txt | sort -u > PC_non-ubi-rOCRs_rOCRlist.txt
+# 4. for non-PC_non-ubi
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$7]!=1){print $0}}}' PC_non-ubi-rOCRs_genelist.txt tmp2.txt > tmp2.1.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$11]!=1){print $0}}}' PC_non-ubi-rOCRs_rOCRlist.txt tmp2.1.txt > nonPC-TSS_non-ubi-rOCRs.txt
+cut -f 7 nonPC-TSS_non-ubi-rOCRs.txt | sort -u > nonPC_non-ubi-rOCRs_genelist.txt
+cut -f 11 nonPC-TSS_non-ubi-rOCRs.txt | sort -u > nonPC_non-ubi-rOCRs_rOCRlist.txt
+# gene without rOCRs
+intersectBed -a /home/fankaili/genome/hg38_v28_basic_TSS_filtered.bed -b /data/zusers/fankaili/ccre/hg38_ubi-rDHS/GRCh38-rOCRs_withLable.bed -v > tmp.TSS_no-rOCRs.txt
+cat PC_ubi-rOCRs_genelist.txt nonPC_ubi-rOCRs_genelist.txt PC_non-ubi-rOCRs_genelist.txt nonPC_non-ubi-rOCRs_genelist.txt > tmp.genelist2.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$7]!=1){print $0}}}' tmp.genelist2.txt tmp.TSS_no-rOCRs.txt > TSS_no-rOCRs.txt
+##
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$7]=1}else{if(a[$7]){print $0}}}' /home/fankaili/genome/hg38_v28_basic_TSS_protein_coding.bed TSS_no-rOCRs.txt > PC-TSS_no-rOCRs.txt
+cut -f 7 PC-TSS_no-rOCRs.txt | sort -u > PC-TSS_no-rOCRs_genelist.txt
+##
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$7]=1}else{if(a[$7]!=1){print $0}}}' /home/fankaili/genome/hg38_v28_basic_TSS_protein_coding.bed TSS_no-rOCRs.txt > non-PC-TSS_no-rOCRs.txt
+cut -f 7 non-PC-TSS_no-rOCRs.txt | sort -u > non-PC-TSS_no-rOCRs_genelist.txt
+
+
+
+
+### PCgene
+# PCgene & ubi-rOCRs
+intersectBed -a /home/fankaili/genome/hg38_v28_basic_TSS_protein_coding.bed -b /data/zusers/fankaili/ccre/hg38_ubi-rDHS/GRCh38_ubi-rOCRs_EDGEid.bed -wa -wb > PC-TSS_ubi-rOCRs.txt
+cut -f 7 PC-TSS_ubi-rOCRs.txt | sort -u > PCgene_overlapping_ubi-rOCRs.txt
+cut -f 11 PC-TSS_ubi-rOCRs.txt | sort -u > ubi-rOCRs_overlapping_PCgene-TSS.txt
+# PCgene & non-ubi-rOCRs
+intersectBed -a /home/fankaili/genome/hg38_v28_basic_TSS_protein_coding.bed -b /data/zusers/fankaili/ccre/hg38_ubi-rDHS/GRCh38-non-ubi-rOCRs.bed -wa -wb > tmp.PC-TSS_non-ubi-rOCRs.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$7]!=1){print $7}}}' PCgene_overlapping_ubi-rOCRs.txt tmp.PC-TSS_non-ubi-rOCRs.txt | sort -u > PC-TSS_non-ubi-rOCRs.txt
+cut -f 11 tmp.PC-TSS_non-ubi-rOCRs.txt | sort -u > non-ubi-rOCRs_overlapping_PCgene-TSS.txt
+# PCgene no rOCRs
+intersectBed -a /home/fankaili/genome/hg38_v28_basic_TSS_protein_coding.bed -b /data/zusers/fankaili/ccre/hg38_ubi-rDHS/GRCh38-rOCRs.bed -v > tmp.PC-TSS_no-rOCRs.txt
+cat PCgene_overlapping_ubi-rOCRs.txt PC-TSS_non-ubi-rOCRs.txt > tmp.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$7]!=1){print $7}}}' tmp.txt tmp.PC-TSS_no-rOCRs.txt | sort -u > PC-TSS_no-rOCRs.txt
+
+### non-PCgene
+# non-PCgene & ubi-rOCRs
+intersectBed -a /home/fankaili/genome/hg38_v28_basic_TSS_filtered.bed -b /data/zusers/fankaili/ccre/hg38_ubi-rDHS/GRCh38_ubi-rOCRs_EDGEid.bed -wa -wb > tmp.non-PC-TSS_ubi-rOCRs.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=1}else{if(a[$7]!=1){print $0}}}' /home/fankaili/genome/hg38_v28_basic_gene_protein_coding.txt tmp.non-PC-TSS_ubi-rOCRs.txt > tmp.non-PC-TSS_ubi-rOCRs2.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$11]!=1){print $0}}}' ubi-rOCRs_overlapping_PCgene-TSS.txt tmp.non-PC-TSS_ubi-rOCRs2.txt > non-PC-TSS_ubi-rOCRs.txt
+cut -f 7 non-PC-TSS_ubi-rOCRs.txt | sort -u > non-PCgene_overlapping_ubi-rOCRs.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$4]){print $0}}}' non-PCgene_overlapping_ubi-rOCRs.txt /home/fankaili/genome/hg38_v28_basic_gene_filtered.txt > non-PCgene_overlapping_ubi-rOCRs_withType.txt
+# non-PCgene & non-ubi-rOCRs
+intersectBed -a /home/fankaili/genome/hg38_v28_basic_TSS_filtered.bed -b /data/zusers/fankaili/ccre/hg38_ubi-rDHS/GRCh38-non-ubi-rOCRs.bed -wa -wb > tmp.non-PC-TSS_non-ubi-rOCRs.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=1}else{if(a[$7]!=1){print $0}}}' /home/fankaili/genome/hg38_v28_basic_gene_protein_coding.txt tmp.non-PC-TSS_non-ubi-rOCRs.txt > tmp.non-PC-TSS_non-ubi-rOCRs2.txt
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$1]=1}else{if(a[$11]!=1){print $0}}}' non-ubi-rOCRs_overlapping_PCgene-TSS.txt tmp.non-PC-TSS_non-ubi-rOCRs2.txt > non-PC-TSS_non-ubi-rOCRs.txt
+cut -f 7 non-PC-TSS_non-ubi-rOCRs.txt | sort -u > non-PCgene_overlapping_non-ubi-rOCRs.txt
+# non-PC no rOCRs
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=1}else{if(a[$7]!=1){print $0}}}' /home/fankaili/genome/hg38_v28_basic_gene_protein_coding.txt /home/fankaili/genome/hg38_v28_basic_TSS_filtered.bed > tmp.noPC.bed
+intersectBed -a tmp.noPC.bed -b /data/zusers/fankaili/ccre/hg38_ubi-rDHS/GRCh38-rOCRs.bed -v > non-PC-TSS_no-rOCRs.txt
+cut -f 7 non-PC-TSS_no-rOCRs.txt | sort -u > nonPC-TSS_no-rOCRs.txt
+
+
+
+intersectBed -a /home/fankaili/genome/hg38_v28_basic_TSS_filtered.bed -b /data/zusers/fankaili/ccre/hg38_ubi-rDHS/GRCh38-rOCRs.bed -v | cut -f 7 | sort -u | wc -l

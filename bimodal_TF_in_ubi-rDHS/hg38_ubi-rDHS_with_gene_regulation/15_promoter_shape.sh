@@ -56,8 +56,8 @@ do
     expID=`awk '{print $1}' <<< ${line}`
     echo ${expID}
     #
-    awk '{FS=OFS="\t"}{if($9=="255,0,0"){print $1,$2,$3,"sp",$5,$6}else{print $1,$2,$3,"np",$5,$6}}' ${promoterShapeResult}${expID}_rampage_peak_high.bed | sort -k1,1 -k2,2n > tmp.bed
-    intersectBed -a all_promoter_peak_list.txt -b tmp.bed -wa -wb -s | awk 'BEGIN{FS=OFS="\t";name="";sp=0;np=0}{if(NR==1){name=$4;if($10=="np"){np+=1}else{sp+=1}}else{if($4==name){if($10=="np"){np+=1}else{sp+=1}}else{print name,sp,np;name=$4;sp=0;np=0;if($10=="np"){np+=1}else{sp+=1}}}}END{print name,sp,np}' | awk 'BEGIN{FS=OFS="\t"}{if($2==0){print $0,"np"}else if($3==0){print $0,"sp"}else{print $0,"mixed"}}' > ./promoter_shape_file/${expID}_promoter_type.txt
+    awk '{FS=OFS="\t"}{if($9=="255,0,0"){print $1,$2,$3,"sp",$5,$6}else{print $1,$2,$3,"bp",$5,$6}}' ${promoterShapeResult}${expID}_rampage_peak_high.bed | sort -k1,1 -k2,2n > tmp.bed
+    intersectBed -a all_promoter_peak_list.txt -b tmp.bed -wa -wb -s | awk 'BEGIN{FS=OFS="\t";name="";sp=0;bp=0}{if(NR==1){name=$4;if($10=="bp"){np+=1}else{sp+=1}}else{if($4==name){if($10=="bp"){np+=1}else{sp+=1}}else{print name,sp,np;name=$4;sp=0;bp=0;if($10=="bp"){bp+=1}else{sp+=1}}}}END{print name,sp,bp}' | awk 'BEGIN{FS=OFS="\t"}{if($2==0){print $0,"bp"}else if($3==0){print $0,"sp"}else{print $0,"mixed"}}' > ./promoter_shape_file/${expID}_promoter_type.txt
 done < /data/zusers/fankaili/ccre/hg38_ubi-rDHS/hg38_RAMPAGE_list.txt
 rm tmp.bed
 ## 3) count peaks occurence in all samples
@@ -116,3 +116,113 @@ awk '{FS=OFS="\t"}{if($13=="bp" && $8=="ubi-rOCR"){print $4}}' peak_master_list_
 
 
 # 5. statistical analysis for each sample
+# Jun08
+if [ -f fisher_matrix_each_sample.txt ];then rm fisher_matrix_each_sample.txt; fi
+while read line
+do
+    dnase_expID=`awk '{print $1}' <<< ${line}`
+    rampage_expID=`awk '{print $7}' <<< ${line}`
+    sample=`awk '{print $3}' <<< ${line}`
+    echo ${sample}
+    #
+    awk '{FS=OFS="\t"}{if($9=="255,0,0"){print $1,$2,$3,"np",$5,$6}else{print $1,$2,$3,"bp",$5,$6}}' ${promoterShapeResult}${rampage_expID}_rampage_peak_high.bed | awk '{FS=OFS="\t"}{print $0,"peak_"NR}' > tmp.bed
+    # ubi-rOCRs
+    intersectBed -a tmp.bed -b /data/zusers/fankaili/ccre/hg38_ubi-rDHS/GRCh38_ubi-rOCRs_EDGEid.bed -wa -wb | cut -f 4,7 | sort -u > tmp.txt
+    ubi_bp=`grep "bp" tmp.txt | wc -l`
+    ubi_np=`grep "np" tmp.txt | wc -l`
+    # non-ubi rOCRs
+    intersectBed -a tmp.bed -b /data/zusers/fankaili/ccre/hg38_ubi-rDHS/non_ubi_active_OCR/${dnase_expID}_OCR.bed -wa -wb | cut -f 4,7 | sort -u > tmp2.txt
+    awk '{FS=OFS="\t"}{if(NR==FNR){a[$2]=1}else{if(a[$2]!=1){print $0}}}' tmp.txt tmp2.txt > tmp3.txt
+    non_ubi_bp=`grep "bp" tmp3.txt | wc -l`
+    non_ubi_np=`grep "np" tmp3.txt | wc -l`
+    #
+    echo -e ${sample}"\t"${ubi_bp}"\t"${ubi_np}"\t"${non_ubi_bp}"\t"${non_ubi_np} >> fisher_matrix_each_sample.txt
+done < /data/zusers/fankaili/ccre/hg38_ubi-rDHS/hg38_RAMPAGE_DNase_matched_list.txt
+
+# Rscript make_peak_shape_figures.R
+
+### rOCRs overlapping TSSs only
+if [ -f fisher_matrix_each_sample_2.txt ];then rm fisher_matrix_each_sample_2.txt; fi
+while read line
+do
+    dnase_expID=`awk '{print $1}' <<< ${line}`
+    rampage_expID=`awk '{print $7}' <<< ${line}`
+    sample=`awk '{print $3}' <<< ${line}`
+    echo ${sample}
+    #
+    awk '{FS=OFS="\t"}{if($9=="255,0,0"){print $1,$2,$3,"np",$5,$6}else{print $1,$2,$3,"bp",$5,$6}}' ${promoterShapeResult}${rampage_expID}_rampage_peak_high.bed | awk '{FS=OFS="\t"}{print $0,"peak_"NR}' > tmp.bed
+    # ubi-rOCRs
+    intersectBed -a tmp.bed -b /data/zusers/fankaili/ccre/hg38_ubi-rDHS/basic_annotation/ubi-rOCRs_overlap_hg38_v28_basic_TSS.bed -wa -wb | cut -f 4,7 | sort -u > tmp.txt
+    ubi_bp=`grep "bp" tmp.txt | wc -l`
+    ubi_np=`grep "np" tmp.txt | wc -l`
+    # non-ubi rOCRs
+    intersectBed -a /data/zusers/fankaili/ccre/hg38_ubi-rDHS/non_ubi_active_OCR/${dnase_expID}_OCR.bed -b /home/fankaili/genome/mm10_vM18_basic_TSS_filtered.bed -wa -u | sort -k1,1 -k2,2n > tmp2.bed
+    intersectBed -a tmp.bed -b tmp2.bed -wa -wb | cut -f 4,7 | sort -u > tmp2.txt
+    awk '{FS=OFS="\t"}{if(NR==FNR){a[$2]=1}else{if(a[$2]!=1){print $0}}}' tmp.txt tmp2.txt > tmp3.txt
+    non_ubi_bp=`grep "bp" tmp3.txt | wc -l`
+    non_ubi_np=`grep "np" tmp3.txt | wc -l`
+    #
+    echo -e ${sample}"\t"${ubi_bp}"\t"${ubi_np}"\t"${non_ubi_bp}"\t"${non_ubi_np} >> fisher_matrix_each_sample_2.txt
+done < /data/zusers/fankaili/ccre/hg38_ubi-rDHS/hg38_RAMPAGE_DNase_matched_list.txt
+
+### all rOCRs
+if [ -f fisher_matrix_each_sample_3.txt ];then rm fisher_matrix_each_sample_3.txt; fi
+while read line
+do
+    dnase_expID=`awk '{print $1}' <<< ${line}`
+    rampage_expID=`awk '{print $7}' <<< ${line}`
+    sample=`awk '{print $3}' <<< ${line}`
+    echo ${sample}
+    #
+    awk '{FS=OFS="\t"}{if($9=="255,0,0"){print $1,$2,$3,"np",$5,$6}else{print $1,$2,$3,"bp",$5,$6}}' ${promoterShapeResult}${rampage_expID}_rampage_peak_high.bed | awk '{FS=OFS="\t"}{print $0,"peak_"NR}' > tmp.bed
+    # ubi-rOCRs
+    intersectBed -a tmp.bed -b /data/zusers/fankaili/ccre/hg38_ubi-rDHS/basic_annotation/ubi-rOCRs_overlap_hg38_v28_basic_TSS.bed -wa -wb | cut -f 4,7 | sort -u > tmp.txt
+    ubi_bp=`grep "bp" tmp.txt | wc -l`
+    ubi_np=`grep "np" tmp.txt | wc -l`
+    # non-ubi rOCRs
+    intersectBed -a tmp.bed -b /data/zusers/fankaili/ccre/hg38_ubi-rDHS/GRCh38-rOCRs.bed -wa -wb | cut -f 4,7 | sort -u > tmp2.txt
+    awk '{FS=OFS="\t"}{if(NR==FNR){a[$2]=1}else{if(a[$2]!=1){print $0}}}' tmp.txt tmp2.txt > tmp3.txt
+    non_ubi_bp=`grep "bp" tmp3.txt | wc -l`
+    non_ubi_np=`grep "np" tmp3.txt | wc -l`
+    #
+    echo -e ${sample}"\t"${ubi_bp}"\t"${ubi_np}"\t"${non_ubi_bp}"\t"${non_ubi_np} >> fisher_matrix_each_sample_3.txt
+done < /data/zusers/fankaili/ccre/hg38_ubi-rDHS/hg38_RAMPAGE_DNase_matched_list.txt
+
+
+
+
+
+
+
+
+while read line
+do
+    dnase_expID=`awk '{print $1}' <<< ${line}`
+    rampage_expID=`awk '{print $7}' <<< ${line}`
+    sample=`awk '{print $3}' <<< ${line}`
+    echo ${sample}
+    #
+    awk '{FS=OFS="\t"}{if($9=="255,0,0"){print $1,$2,$3,"np",$5,$6}else{print $1,$2,$3,"bp",$5,$6}}' ${promoterShapeResult}${rampage_expID}_rampage_peak_high.bed | awk '{FS=OFS="\t"}{print $0,"peak_"NR}' > tmp.bed
+    wc -l ${promoterShapeResult}${rampage_expID}_rampage_peak_high.bed
+    grep "bp" tmp.bed | wc -l
+    grep "np" tmp.bed | wc -l
+done < /data/zusers/fankaili/ccre/hg38_ubi-rDHS/hg38_RAMPAGE_DNase_matched_list.txt
+
+
+## Jul21
+new_peak_shape_enrichment.sh
+
+
+
+define_RAMPAGE_peak_cutoff.sh
+
+
+
+########
+# Aug04
+# make track hub
+cd /data/public_html_users/fankaili/GRCh38_rOCRs/
+awk '{FS=OFS="\t"}{print $0,"1",".",$2,$3,"140,140,140"}' /data/zusers/fankaili/ccre/hg38_ubi-rDHS/GRCh38-rOCRs.bed | sort -k1,1 -k2,2n > GRCh38-rOCRs_bed9.bed0
+awk '{FS=OFS="\t"}{if(NR==FNR){a[$4]=1}else{if(a[$4]){print $1,$2,$3,$4,$5,$6,$7,$8,"6,218,14"}else{print $0}}}' GRCh38_ubi-rOCRs.bed GRCh38-rOCRs_bed9.bed0 | sort -k1,1 -k2,2n > GRCh38-rOCRs_bed9.bed
+bedToBigBed GRCh38-rOCRs_bed9.bed /home/fankaili/genome/hg38.chrom.sizes.clean GRCh38-rOCRs_bed9.bb
+vim trackDb_ubi-OCR_bed.txt

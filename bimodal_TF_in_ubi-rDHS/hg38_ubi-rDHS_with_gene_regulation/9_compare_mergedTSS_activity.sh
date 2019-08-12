@@ -17,7 +17,7 @@ cd /data/zusers/fankaili/ccre/hg38_ubi-rDHS/
 #
 mkdir mergedTSS_exp_comparison_file
 mkdir mergedTSS_exp_comparison_pdf
-#
+#cd m
 while read line
 do
     echo ${line};

@@ -15,3 +15,6 @@ cd ${workDir}
 bash ${scriptDir}fig1_DNase_RNA_RAMPAGE_signal_comparison_boxplot.sh
 
 # fig2. tissue-specificity index density plot
+bash ${scriptDir}fig2_TSindex_RNA_RAMPAGE.sh
+
+# fig3. 

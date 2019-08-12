@@ -60,8 +60,22 @@ venn.plot <- draw.triple.venn(
 grid.draw(venn.plot);
 grid.newpage();
 
-
-
-
-
+####################
+# Jun08
+# fisher for each sample (n=16)
+####################
+dat = read.table("fisher_matrix_each_sample.txt", row.names = 1)
+dat2 = read.table("fisher_matrix_each_sample_2.txt", row.names = 1)
+dat3 = read.table("fisher_matrix_each_sample_3.txt", row.names = 1)
+p = apply(dat,1,function(x) fisher.test(cbind(c(x[1],x[2]),c(x[3],x[4])))$p.value)
+p_matrix = data.frame(rownames(dat), p)
+colnames(p_matrix) = c("sample", "p")
+ggplot(p_matrix, aes(x="",y=-log(p,10))) + geom_boxplot(binwidth=0.7) +
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.7) +
+  theme_classic() + theme(title=element_text(face="bold", size=12)) +
+  geom_hline(yintercept = 2, linetype="dashed", col="red") + ylab("Fisher.test: -log10(p-value)") +
+  labs(title="RAMPAGE peaks overlapping\nubi-rOCRs are enrcihed in\nbroad shape peaks (16 samples)") +
+  xlab("")
+ggsave("promoter_peak_shapes_fisher_eachsample.pdf", width=4, height=7)
+ggsave("promoter_peak_shapes_fisher_eachsample.png", width=4, height=7)
 ####################
