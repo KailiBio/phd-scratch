@@ -23,4 +23,4 @@ name=paste(sample, " R=", r, sep="")
 
 ggplot(dat, aes(x=log10(spikeIn92+0.1), y=log10(spikeIn96+0.1))) + geom_point() +
   labs(title=name) + theme_minimal() + theme(title = element_text(size=12, face = "bold"))
-ggsave(paste("./check/",sample,".pdf",sep=""))
+ggsave(paste("./check_version/",sample,".png",sep=""))

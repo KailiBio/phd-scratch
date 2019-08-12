@@ -25,9 +25,15 @@ prefix=$9
 
 SECONDS=0
 
+set -e
 
+if [ -d /tmp/${prefix} ];then rm -rf /tmp/${prefix}/; fi
 mkdir /tmp/${prefix}/
 cd /tmp/${prefix}/
+
+MAXWAIT=600 #MAXWAIT is the maximum wait second
+sleep $((RANDOM % MAXWAIT))
+
 cp ${read1} /tmp/${prefix}/${prefix}.fastq
 
 # executables
