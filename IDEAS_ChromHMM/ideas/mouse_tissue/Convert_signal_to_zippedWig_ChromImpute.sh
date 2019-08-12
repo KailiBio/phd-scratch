@@ -3,19 +3,19 @@
 # -- Kaili
 # This script is for converting signal file into zipped wig for running ChromImpute.
 
+sample=$1
+
 signalDir="/data/zusers/fankaili/ideas/signal/rep1_signal_25bp_bins/"
 ordered_bed_file="/data/zusers/fankaili/ideas/imputation_comparison/mm10_25bp_inOrder.bed"
 outDir="/data/zusers/fankaili/ideas/imputation_comparison/chromimpute_wholeGenome/input_data/"
 outDir_unzip="/data/zusers/fankaili/ideas/imputation_comparison/chromimpute_wholeGenome/input_data2/"
 chrom_size_file="/data/zusers/fankaili/ideas/imputation_comparison/chromimpute_wholeGenome/mm10.chrom.sizes.clean2"
 
-for file in `ls ${signalDir}*.txt`
+for mark in H3K4me1 H3K4me2 H3K4me3 H3K9me3 H3K9ac H3K27me3 H3K27ac H3K36me3 ATAC CTCF DNAme
 do
-    name0=${file%_25bp.txt}
-    name=${name0#$signalDir}
-    echo $name
+    name=${sample}"_"${mark}"_25bp"
     #
-    paste ${ordered_bed_file} ${file} > tmp.convert_zippedWig.txt
+    paste ${ordered_bed_file} ${signalDir}${name}.txt > tmp.convert_zippedWig.txt
     #
     echo "track type=wiggle_0 name="${name} > ${outDir_unzip}${name}_25bp.wig
     for c in {1..19} X Y
